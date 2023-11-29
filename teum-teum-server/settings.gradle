@@ -1,0 +1,10 @@
+pluginManagement {
+    plugins {
+        id 'org.springframework.boot' version "${springBootVersion}"
+        id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+        id 'org.sonarqube' version "${sonarVersion}"
+    }
+}
+
+rootProject.name = 'teum-teum-server'
+
