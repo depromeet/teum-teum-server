@@ -22,7 +22,7 @@ public class UserFixture {
             userBuilder.birth,
             userBuilder.character,
             userBuilder.mannerTemperature,
-            userBuilder.authenticated,
+            userBuilder.oauth,
             userBuilder.activityArea,
             userBuilder.mbti,
             userBuilder.status,
@@ -46,7 +46,7 @@ public class UserFixture {
         @Builder.Default
         private int mannerTemperature = 36;
         @Builder.Default
-        private String authenticated = "Kakao";
+        private Oauth oauth = new Oauth("hello123@naver.com", "naver");
         @Builder.Default
         private ActivityArea activityArea = new ActivityArea("서울", List.of("강남", "홍대"));
         @Builder.Default

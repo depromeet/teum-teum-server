@@ -38,8 +38,8 @@ public class User {
     @Column(name = "manner_temperature")
     private int mannerTemperature;
 
-    @Column(name = "authenticated")
-    private String authenticated;
+    @Embedded
+    private Oauth oauth;
 
     @Embedded
     private ActivityArea activityArea;
