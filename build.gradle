@@ -7,7 +7,7 @@ plugins {
 
 apply from: "gradle/spring.gradle"
 apply from: "gradle/devtool.gradle"
-apply from: "gradle/junit.gradle"
+apply from: "gradle/test.gradle"
 apply from: "gradle/sonar.gradle"
 apply from: "gradle/db.gradle"
 
