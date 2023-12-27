@@ -60,6 +60,9 @@ public class User {
     @ElementCollection
     private List<String> interests;
 
+    @Embedded
+    private Terms terms;
+
     @PrePersist
     private void assertField() {
         assertName();

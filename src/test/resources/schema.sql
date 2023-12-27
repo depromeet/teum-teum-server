@@ -14,6 +14,8 @@ create table if not exists users(
   job_class varchar(255),
   job_name varchar(255),
   status enum('직장인','학생','취업준비생'),
+  terms_of_service boolean not null,
+  privacy_policy boolean not null,
   primary key (id)
 );
 

@@ -1,6 +1,5 @@
 package net.teumteum.user.domain;
 
-import jakarta.persistence.Column;
 import java.util.List;
 import lombok.Builder;
 
@@ -29,7 +28,8 @@ public class UserFixture {
             userBuilder.status,
             userBuilder.goal,
             userBuilder.job,
-            userBuilder.interests
+            userBuilder.interests,
+            userBuilder.terms
         );
     }
 
@@ -62,6 +62,8 @@ public class UserFixture {
         private List<String> interests = List.of(
             "game", "sleep", "Eating delicious food"
         );
+        @Builder.Default
+        private Terms terms = new Terms(true, true);
     }
 
 }
