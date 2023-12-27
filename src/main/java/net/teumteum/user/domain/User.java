@@ -8,6 +8,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -59,7 +60,7 @@ public class User extends TimeBaseEntity {
     private Job job;
 
     @ElementCollection
-    private List<String> interests;
+    private List<String> interests = new ArrayList<>();
 
     @Embedded
     private Terms terms;
