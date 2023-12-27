@@ -2,7 +2,6 @@ create table if not exists users(
   certificated boolean,
   manner_temperature integer,
   mbti varchar(4),
-  background_color_id bigint,
   character_id bigint,
   id bigint not null,
   birth varchar(10),

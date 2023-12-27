@@ -32,8 +32,8 @@ public class User {
     @DateTimeFormat(pattern = "yyyy.MM.dd")
     private String birth;
 
-    @Embedded
-    private Character character;
+    @Column(name = "character_id")
+    private Long characterId;
 
     @Column(name = "manner_temperature")
     private int mannerTemperature;

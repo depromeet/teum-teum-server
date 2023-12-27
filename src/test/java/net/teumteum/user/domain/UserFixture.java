@@ -1,5 +1,6 @@
 package net.teumteum.user.domain;
 
+import jakarta.persistence.Column;
 import java.util.List;
 import lombok.Builder;
 
@@ -20,7 +21,7 @@ public class UserFixture {
             userBuilder.id,
             userBuilder.name,
             userBuilder.birth,
-            userBuilder.character,
+            userBuilder.characterId,
             userBuilder.mannerTemperature,
             userBuilder.oauth,
             userBuilder.activityArea,
@@ -42,7 +43,7 @@ public class UserFixture {
         @Builder.Default
         private String birth = "2000.02.05";
         @Builder.Default
-        private Character character = new Character(1L, 1L);
+        private Long characterId = 1L;
         @Builder.Default
         private int mannerTemperature = 36;
         @Builder.Default
