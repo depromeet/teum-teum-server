@@ -16,6 +16,8 @@ create table if not exists users(
   status enum('직장인','학생','취업준비생'),
   terms_of_service boolean not null,
   privacy_policy boolean not null,
+  created_at timestamp(6) not null,
+  updated_at timestamp(6) not null,
   primary key (id)
 );
 

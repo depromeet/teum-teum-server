@@ -58,6 +58,7 @@ class UserRepositoryTest {
             Assertions.assertThat(result)
                 .isPresent()
                 .usingRecursiveComparison()
+                .ignoringFields("value.createdAt", "value.updatedAt")
                 .isEqualTo(Optional.of(existsUser));
         }
     }

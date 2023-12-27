@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.teumteum.core.entity.TimeBaseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.Assert;
 
@@ -19,7 +20,7 @@ import org.springframework.util.Assert;
 @Entity(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends TimeBaseEntity {
 
     @Id
     @Column(name = "id")
