@@ -1,9 +1,9 @@
 create table if not exists users(
+  id bigint not null auto_increment,
   certificated boolean,
   manner_temperature integer,
   mbti varchar(4),
   character_id bigint,
-  id bigint not null,
   birth varchar(10),
   name varchar(10),
   goal varchar(50),

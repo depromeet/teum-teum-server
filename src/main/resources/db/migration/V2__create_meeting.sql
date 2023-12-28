@@ -1,7 +1,7 @@
 create table if not exists meeting
 (
     id                 bigint                                       not null
-    primary key,
+    primary key auto_increment,
     number_of_recruits int                                          null,
     promise_date       date                                         null,
     promise_time       time(6)                                      null,
