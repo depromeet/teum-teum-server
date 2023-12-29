@@ -5,6 +5,12 @@ import lombok.Builder;
 
 public class UserFixture {
 
+    public static User getNullIdUser() {
+        return newUserByBuilder(UserBuilder.builder()
+            .id(null)
+            .build());
+    }
+
     public static User getUserWithId(Long id) {
         return newUserByBuilder(UserBuilder.builder()
             .id(id)
