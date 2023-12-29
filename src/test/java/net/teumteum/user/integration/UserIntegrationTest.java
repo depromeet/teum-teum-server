@@ -1,5 +1,6 @@
 package net.teumteum.user.integration;
 
+import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -53,7 +54,8 @@ class UserIntegrationTest extends IntegrationTest {
             var result = api.getUser(VALID_TOKEN, notExistUserId);
 
             // then
-            result.expectStatus().isBadRequest();
+            result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class);
         }
     }
 }

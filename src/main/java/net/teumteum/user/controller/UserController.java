@@ -1,6 +1,7 @@
 package net.teumteum.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
-    public void handleIllegalArgumentException() {
+    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+        return ErrorResponse.of(illegalArgumentException);
     }
-
-
 }
