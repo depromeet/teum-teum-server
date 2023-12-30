@@ -24,4 +24,11 @@ class Api {
             .exchange();
     }
 
+    ResponseSpec getUsersById(String token, String userIds) {
+        return webTestClient.get()
+            .uri("/users?id=" + userIds)
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
 }
