@@ -4,8 +4,7 @@ package net.teumteum.meeting.domain.response;
 import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.Topic;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record MeetingResponse(
@@ -15,7 +14,7 @@ public record MeetingResponse(
         String title,
         String introduction,
         List<String> photoUrls,
-        PromiseDateTime promiseDateTime,
+        LocalDateTime promiseDateTime,
         int numberOfRecruits,
         MeetingArea meetingArea,
         List<Long> participantIds
@@ -30,7 +29,7 @@ public record MeetingResponse(
                 meeting.getTitle(),
                 meeting.getIntroduction(),
                 meeting.getImageUrls(),
-                PromiseDateTime.of(meeting),
+                meeting.getPromiseDateTime(),
                 meeting.getNumberOfRecruits(),
                 MeetingArea.of(meeting),
                 meeting.getParticipantUserIds()
@@ -49,20 +48,6 @@ public record MeetingResponse(
                     meeting.getMeetingArea().getCity(),
                     meeting.getMeetingArea().getStreet(),
                     meeting.getMeetingArea().getZipCode()
-            );
-        }
-    }
-
-    public record PromiseDateTime(
-            LocalDate date,
-            LocalTime time
-    ) {
-        public static PromiseDateTime of(
-                Meeting meeting
-        ) {
-            return new PromiseDateTime(
-                    meeting.getPromiseDateTime().getDate(),
-                    meeting.getPromiseDateTime().getTime()
             );
         }
     }

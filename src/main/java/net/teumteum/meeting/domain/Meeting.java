@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import net.teumteum.core.entity.TimeBaseEntity;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Meeting extends TimeBaseEntity {
     @Column(name = "host_user_id")
     private Long hostUserId;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Long> participantUserIds = new ArrayList<>();
 
     @Column(name = "topic")
@@ -43,10 +44,10 @@ public class Meeting extends TimeBaseEntity {
     @Column(name = "number_of_recruits")
     private int numberOfRecruits;
 
-    @Embedded
-    private PromiseDateTime promiseDateTime;
+    @Column(name = "promise_date_time")
+    private LocalDateTime promiseDateTime;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> imageUrls = new ArrayList<>();
 
     @PrePersist
