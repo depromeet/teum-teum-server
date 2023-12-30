@@ -1,5 +1,6 @@
 package net.teumteum.user.integration;
 
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
@@ -20,5 +21,4 @@ class Repository {
     void clear() {
         userRepository.deleteAll();
     }
-
 }

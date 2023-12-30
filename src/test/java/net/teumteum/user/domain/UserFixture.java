@@ -1,6 +1,7 @@
 package net.teumteum.user.domain;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.Builder;
 
 public class UserFixture {
@@ -53,7 +54,7 @@ public class UserFixture {
         @Builder.Default
         private int mannerTemperature = 36;
         @Builder.Default
-        private Oauth oauth = new Oauth("hello123@naver.com", "naver");
+        private Oauth oauth = new Oauth(UUID.randomUUID().toString(), "naver");
         @Builder.Default
         private ActivityArea activityArea = new ActivityArea("서울", List.of("강남", "홍대"));
         @Builder.Default

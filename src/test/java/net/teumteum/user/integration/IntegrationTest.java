@@ -1,6 +1,8 @@
 package net.teumteum.user.integration;
 
 import net.teumteum.Application;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -15,5 +17,11 @@ abstract class IntegrationTest {
 
     @Autowired
     protected Repository repository;
+
+    @AfterEach
+    @BeforeEach
+    void clearAll() {
+        repository.clear();
+    }
 
 }
