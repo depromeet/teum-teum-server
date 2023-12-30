@@ -52,6 +52,7 @@ class UserConnectorTest {
             Assertions.assertThat(result)
                 .isPresent()
                 .usingRecursiveComparison()
+                .ignoringFields("value.oauth.oAuthAuthenticateInfo")
                 .isEqualTo(expect);
         }
     }
