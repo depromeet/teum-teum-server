@@ -2,21 +2,28 @@ package net.teumteum.meeting.domain;
 
 import lombok.Builder;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MeetingFixture {
 
-    public static Meeting getMeetingWithId(Long id) {
-        return newMeetingByBuilder(MeetingBuilder.builder()
-                .id(id)
-                .build());
-    }
-
     public static Meeting getDefaultMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder().build());
+    }
+
+    public static Meeting getOpenMeeting() {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0 ,0))
+                .build()
+        );
+    }
+
+    public static Meeting getCloseMeeting() {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0 ,0))
+                .build()
+        );
     }
 
     public static Meeting newMeetingByBuilder(MeetingBuilder meetingBuilder) {
@@ -37,7 +44,7 @@ public class MeetingFixture {
     @Builder
     public static class MeetingBuilder {
         @Builder.Default
-        private Long id = 0L;
+        private Long id = null;
 
         @Builder.Default
         private String title = "모임 제목";
@@ -61,7 +68,7 @@ public class MeetingFixture {
         private int numberOfRecruits = 3;
 
         @Builder.Default
-        private PromiseDateTime promiseDateTime = new PromiseDateTime(LocalDate.of(2023, 1, 1), LocalTime.of(12, 0));
+        private LocalDateTime promiseDateTime = LocalDateTime.of(2024, 10, 10, 0, 0);
 
         @Builder.Default
         private List<String> imageUrls = new ArrayList<>(List.of("https://www.google.com"));
