@@ -37,10 +37,7 @@ public class MeetingController {
                                                                 @RequestParam(value = "size", defaultValue = "20") int size) {
         List<MeetingResponse> meetings = meetingService.getMeetings(cursorId, PageRequest.of(0, size + 1));
 
-        if (hasNextData(size, meetings)) {
-            return ResultCursor.of(meetings.subList(0, size), true, meetings.get(size).id());
-        }
-        return ResultCursor.of(meetings, false, null);
+        return ResultCursor.create(meetings, meetings.getLast().id(), size);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -48,9 +45,4 @@ public class MeetingController {
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
         return ErrorResponse.of(illegalArgumentException);
     }
-
-    private boolean hasNextData(int size, List<MeetingResponse> meetings) {
-        return meetings.size() == size + 1;
-    }
-
 }

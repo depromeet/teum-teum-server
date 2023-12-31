@@ -63,7 +63,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             List<MeetingResponse> expectedData = meetings.reversed().stream()
                     .map(MeetingResponse::of)
                     .toList();
-            var expected = ResultCursor.of(expectedData, false, null);
+            var expected = ResultCursor.create(expectedData, expectedData.getLast().id(), existSize);
             var requestSize = 5;
             // when
             var result = api.getOpenMeetings(VALID_TOKEN, FIRST_REQUEST_CURSOR_ID, requestSize);
@@ -90,7 +90,7 @@ class MeetingIntegrationTest extends IntegrationTest {
                     .map(MeetingResponse::of)
                     .toList();
             var cursorId = expectedData.getFirst().id();
-            ResultCursor<MeetingResponse> expected = ResultCursor.of(expectedData, true, cursorId);
+            ResultCursor<MeetingResponse> expected = ResultCursor.create(expectedData, expectedData.getLast().id(), requestSize);
             // when
             var result = api.getOpenMeetings(VALID_TOKEN, cursorId, requestSize);
             // then
