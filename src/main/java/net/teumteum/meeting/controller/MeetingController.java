@@ -33,8 +33,8 @@ public class MeetingController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResultCursor<MeetingResponse> getMeetingsOrderByDate(@RequestParam("cursorId") Long cursorId, @RequestParam("size") int size) {
-
+    public ResultCursor<MeetingResponse> getMeetingsOrderByDate(@RequestParam(value = "cursorId", defaultValue = "0") Long cursorId,
+                                                                @RequestParam(value = "size", defaultValue = "20") int size) {
         List<MeetingResponse> meetings = meetingService.getMeetings(cursorId, PageRequest.of(0, size + 1));
 
         if (hasNextData(size, meetings)) {
