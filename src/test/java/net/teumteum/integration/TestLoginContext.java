@@ -1,4 +1,4 @@
-package net.teumteum.user.integration;
+package net.teumteum.integration;
 
 import net.teumteum.core.context.LoginContext;
 import org.springframework.boot.test.context.TestComponent;

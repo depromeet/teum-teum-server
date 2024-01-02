@@ -1,4 +1,4 @@
-package net.teumteum.user.integration;
+package net.teumteum.integration;
 
 import java.util.List;
 import net.teumteum.core.error.ErrorResponse;

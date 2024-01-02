@@ -1,4 +1,4 @@
-package net.teumteum.user.integration;
+package net.teumteum.integration;
 
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import org.springframework.boot.test.context.TestComponent;
@@ -43,6 +43,22 @@ class Api {
     ResponseSpec addFriends(String token, Long friendId) {
         return webTestClient.post()
             .uri("/users/" + friendId + "/friends")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec getMeetingById(String token, Long meetingId) {
+        return webTestClient.get()
+            .uri("/meetings/" + meetingId)
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec getOpenMeetings(String token, Long cursorId, int size) {
+        return webTestClient.get()
+            .uri("/meetings" +
+                "?cursorId=" + cursorId +
+                "&size=" + size)
             .header(HttpHeaders.AUTHORIZATION, token)
             .exchange();
     }

@@ -1,4 +1,4 @@
-package net.teumteum.user.integration;
+package net.teumteum.integration;
 
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.request.UserUpdateRequest;
