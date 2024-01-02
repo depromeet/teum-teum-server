@@ -2,6 +2,7 @@ package net.teumteum.user.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import java.util.Set;
 import net.teumteum.user.domain.ActivityArea;
 import net.teumteum.user.domain.Job;
 import net.teumteum.user.domain.JobStatus;
@@ -27,6 +28,7 @@ public record UserUpdateRequest(
     private static final Oauth IGNORE_OAUTH = null;
     private static final boolean NOT_CERTIFICATED = false;
     private static final Terms IGNORE_TERMS = null;
+    private static final Set<Long> IGNORE_FRIENDS = Set.of();
 
     public User toUser() {
         return new User(
@@ -50,7 +52,8 @@ public record UserUpdateRequest(
                 newJob.detailClass
             ),
             newInterests,
-            IGNORE_TERMS
+            IGNORE_TERMS,
+            IGNORE_FRIENDS
         );
     }
 

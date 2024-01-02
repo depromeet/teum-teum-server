@@ -1,6 +1,7 @@
 package net.teumteum.user.domain;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
 
@@ -36,7 +37,8 @@ public class UserFixture {
             userBuilder.goal,
             userBuilder.job,
             userBuilder.interests,
-            userBuilder.terms
+            userBuilder.terms,
+            Set.of()
         );
     }
 
