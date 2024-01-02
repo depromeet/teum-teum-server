@@ -72,11 +72,30 @@ public class User extends TimeBaseEntity {
     @PrePersist
     private void assertField() {
         assertName();
+        assertMannerTemperature();
+    }
+
+    public void update(User updatedUser) {
+        this.name = updatedUser.name;
+        this.birth = updatedUser.birth;
+        this.characterId = updatedUser.characterId;
+        this.activityArea = updatedUser.activityArea;
+        this.mbti = updatedUser.mbti;
+        this.status = updatedUser.status;
+        this.goal = updatedUser.goal;
+        this.job = updatedUser.job;
+        this.interests = updatedUser.interests;
+        assertName();
+        assertMannerTemperature();
     }
 
     private void assertName() {
         Assert.doesNotContain(name, " ", () -> "이름에 공백이 포함되어 있습니다. \"" + name + "\"");
         Assert.isTrue(name.length() >= 2 && name.length() <= 10, () -> "이름은 2자 ~ 10자 사이가 되어야 합니다. \"" + name + "\"");
+    }
+
+    private void assertMannerTemperature() {
+        Assert.isTrue(mannerTemperature >= 0, () -> "매너 온도는 0도 이상 이여야 합니다. \"" + mannerTemperature + "\"");
     }
 
 }

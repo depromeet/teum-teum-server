@@ -5,8 +5,6 @@ import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -101,6 +99,25 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             result.expectStatus().isBadRequest();
+        }
+    }
+
+    @Nested
+    @DisplayName("유저 수정 API는")
+    class Update_user_api {
+
+        @Test
+        @DisplayName("수정할 회원의 정보가 주어지면, 회원 정보를 수정한다")
+        void Update_user_info() {
+            // given
+            var existUser = repository.saveAndGetUser();
+            var updateUser = RequestFixture.userUpdateRequest(existUser);
+
+            // when
+            var result = api.updateUser(VALID_TOKEN, updateUser);
+
+            // then
+            result.expectStatus().isOk();
         }
     }
 }

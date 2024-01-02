@@ -1,5 +1,6 @@
 package net.teumteum.user.integration;
 
+import net.teumteum.user.domain.request.UserUpdateRequest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
@@ -28,6 +29,14 @@ class Api {
         return webTestClient.get()
             .uri("/users?id=" + userIds)
             .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec updateUser(String token, UserUpdateRequest userUpdateRequest) {
+        return webTestClient.put()
+            .uri("/users")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .bodyValue(userUpdateRequest)
             .exchange();
     }
 
