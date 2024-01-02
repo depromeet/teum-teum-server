@@ -92,7 +92,8 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveFieldByFieldElementComparator()
+                    .usingRecursiveComparison()
+                    .ignoringFields("value.createdAt", "value.updatedAt")
                     .isEqualTo(
                             expectedMeetings.stream()
                                     .sorted(Comparator.comparing(Meeting::getId).reversed())
@@ -121,7 +122,8 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveFieldByFieldElementComparator()
+                    .usingRecursiveComparison()
+                    .ignoringFields("value.createdAt", "value.updatedAt")
                     .isEqualTo(
                             expectedMeetings.stream()
                                     .sorted(Comparator.comparing(Meeting::getId).reversed())
@@ -156,7 +158,8 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveFieldByFieldElementComparator()
+                    .usingRecursiveComparison()
+                    .ignoringFields("value.createdAt", "value.updatedAt")
                     .isEqualTo(
                             expectedMeetings.stream()
                                     .sorted(Comparator.comparing(Meeting::getId).reversed())
@@ -200,7 +203,8 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveFieldByFieldElementComparator()
+                    .usingRecursiveComparison()
+                    .ignoringFields("value.createdAt", "value.updatedAt")
                     .isEqualTo(
                             Stream.of(existsMeetingsWithTitle, existsMeetingsWithIntroduction)
                                     .flatMap(Collection::stream)
