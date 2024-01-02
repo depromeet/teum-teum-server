@@ -3,6 +3,7 @@ package net.teumteum.user.controller;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
+import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -36,6 +39,12 @@ public class UserController {
             .toList();
 
         return userService.getUsersById(parsedUserIds);
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void updateUser(@RequestBody UserUpdateRequest request) {
+        userService.updateUser(request);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
