@@ -12,7 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,6 +71,9 @@ public class User extends TimeBaseEntity {
     @Embedded
     private Terms terms;
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    private Set<Long> friends = new HashSet<>();
+
     @PrePersist
     private void assertField() {
         assertName();
@@ -96,6 +101,10 @@ public class User extends TimeBaseEntity {
 
     private void assertMannerTemperature() {
         Assert.isTrue(mannerTemperature >= 0, () -> "매너 온도는 0도 이상 이여야 합니다. \"" + mannerTemperature + "\"");
+    }
+
+    public void addFriend(User user) {
+        friends.add(user.id);
     }
 
 }
