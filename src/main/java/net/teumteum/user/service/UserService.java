@@ -38,8 +38,8 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(UserUpdateRequest request) {
-        var existUser = getUser(request.id());
+    public void updateUser(Long userId, UserUpdateRequest request) {
+        var existUser = getUser(userId);
 
         existUser.update(request.toUser());
     }

@@ -113,6 +113,8 @@ class UserIntegrationTest extends IntegrationTest {
             var existUser = repository.saveAndGetUser();
             var updateUser = RequestFixture.userUpdateRequest(existUser);
 
+            loginContext.setUserId(existUser.getId());
+
             // when
             var result = api.updateUser(VALID_TOKEN, updateUser);
 

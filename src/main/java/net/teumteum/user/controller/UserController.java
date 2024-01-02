@@ -47,7 +47,7 @@ public class UserController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@RequestBody UserUpdateRequest request) {
-        userService.updateUser(request);
+        userService.updateUser(loginContext.getUserId(), request);
     }
 
     @PostMapping("/{friendId}/friends")
