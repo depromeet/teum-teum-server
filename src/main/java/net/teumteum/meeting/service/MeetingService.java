@@ -6,8 +6,8 @@ import net.teumteum.meeting.domain.MeetingRepository;
 import net.teumteum.meeting.domain.MeetingSpecification;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.response.MeetingResponse;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +27,8 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Meeting> getMeetingsBySpecification(Pageable pageable, Topic topic, String meetingAreaStreet,
-                                                    Long participantUserId, String searchWord, boolean isOpen) {
+    public Slice<Meeting> getMeetingsBySpecification(Pageable pageable, Topic topic, String meetingAreaStreet,
+                                                     Long participantUserId, String searchWord, boolean isOpen) {
         Specification<Meeting> spec = MeetingSpecification.withIsOpen(isOpen);
 
         if (topic != null) spec = spec.and(MeetingSpecification.withTopic(topic));
