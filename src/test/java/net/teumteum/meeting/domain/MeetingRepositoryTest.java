@@ -92,8 +92,7 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveComparison()
-                    .ignoringFields("value.createdAt", "value.updatedAt")
+                    .usingRecursiveFieldByFieldElementComparatorIgnoringFields("value.createdAt", "value.updatedAt")
                     .isEqualTo(
                             expectedMeetings.stream()
                                     .sorted(Comparator.comparing(Meeting::getId).reversed())
@@ -122,8 +121,7 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveComparison()
-                    .ignoringFields("value.createdAt", "value.updatedAt")
+                    .usingRecursiveFieldByFieldElementComparatorIgnoringFields("value.createdAt", "value.updatedAt")
                     .isEqualTo(
                             expectedMeetings.stream()
                                     .sorted(Comparator.comparing(Meeting::getId).reversed())
@@ -158,8 +156,7 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveComparison()
-                    .ignoringFields("value.createdAt", "value.updatedAt")
+                    .usingRecursiveFieldByFieldElementComparatorIgnoringFields("value.createdAt", "value.updatedAt")
                     .isEqualTo(
                             expectedMeetings.stream()
                                     .sorted(Comparator.comparing(Meeting::getId).reversed())
@@ -203,8 +200,7 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveComparison()
-                    .ignoringFields("value.createdAt", "value.updatedAt")
+                    .usingRecursiveFieldByFieldElementComparatorIgnoringFields("value.createdAt", "value.updatedAt")
                     .isEqualTo(
                             Stream.of(existsMeetingsWithTitle, existsMeetingsWithIntroduction)
                                     .flatMap(Collection::stream)
