@@ -29,14 +29,16 @@ public class MeetingService {
     @Transactional(readOnly = true)
     public Slice<Meeting> getMeetingsBySpecification(Pageable pageable, Topic topic, String meetingAreaStreet,
                                                      Long participantUserId, String searchWord, boolean isOpen) {
+
         Specification<Meeting> spec = MeetingSpecification.withIsOpen(isOpen);
 
         if (topic != null) spec = spec.and(MeetingSpecification.withTopic(topic));
-        else if (meetingAreaStreet != null) spec = spec.and(MeetingSpecification.withAreaStreet(meetingAreaStreet));
+        else if (meetingAreaStreet != null) spec.and(MeetingSpecification.withAreaStreet(meetingAreaStreet));
         else if (participantUserId != null)
             spec = spec.and(MeetingSpecification.withParticipantUserId(participantUserId));
         else if (searchWord != null)
-            spec = spec.and(MeetingSpecification.withSearchWordInTitle(searchWord)).or(MeetingSpecification.withSearchWordInIntroduction(searchWord));
+            spec = MeetingSpecification.withSearchWordInTitle(searchWord).or(MeetingSpecification.withSearchWordInIntroduction(searchWord))
+                    .and(MeetingSpecification.withIsOpen(isOpen));
 
         return meetingRepository.findAll(spec, pageable);
     }
