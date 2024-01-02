@@ -32,13 +32,19 @@ public class MeetingService {
 
         Specification<Meeting> spec = MeetingSpecification.withIsOpen(isOpen);
 
-        if (topic != null) spec = spec.and(MeetingSpecification.withTopic(topic));
-        else if (meetingAreaStreet != null) spec.and(MeetingSpecification.withAreaStreet(meetingAreaStreet));
-        else if (participantUserId != null)
+        if (topic != null) {
+            spec = spec.and(MeetingSpecification.withTopic(topic));
+        }
+        else if (meetingAreaStreet != null) {
+            spec.and(MeetingSpecification.withAreaStreet(meetingAreaStreet));
+        }
+        else if (participantUserId != null) {
             spec = spec.and(MeetingSpecification.withParticipantUserId(participantUserId));
-        else if (searchWord != null)
+        }
+        else if (searchWord != null) {
             spec = MeetingSpecification.withSearchWordInTitle(searchWord).or(MeetingSpecification.withSearchWordInIntroduction(searchWord))
                     .and(MeetingSpecification.withIsOpen(isOpen));
+        }
 
         return meetingRepository.findAll(spec, pageable);
     }
