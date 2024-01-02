@@ -2,7 +2,7 @@ package net.teumteum.meeting.integration;
 
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.meeting.domain.Meeting;
-import net.teumteum.meeting.domain.PageDto;
+import net.teumteum.meeting.model.PageDto;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;

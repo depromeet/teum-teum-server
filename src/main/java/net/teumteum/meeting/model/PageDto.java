@@ -1,4 +1,4 @@
-package net.teumteum.meeting.domain;
+package net.teumteum.meeting.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
