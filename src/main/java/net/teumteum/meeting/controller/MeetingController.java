@@ -2,14 +2,12 @@ package net.teumteum.meeting.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
-import net.teumteum.meeting.domain.Meeting;
-import net.teumteum.meeting.model.PageDto;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
+import net.teumteum.meeting.model.PageDto;
 import net.teumteum.meeting.service.MeetingService;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,9 +33,7 @@ public class MeetingController {
                                                             @RequestParam(value = "participantUserId", required = false) Long participantUserId,
                                                             @RequestParam(value = "searchWord", required = false) String searchWord) {
 
-        Slice<Meeting> meetings = meetingService.getMeetingsBySpecification(pageable, topic, meetingAreaStreet, participantUserId, searchWord, isOpen);
-
-        return PageDto.of(MeetingsResponse.of(meetings.getContent()), meetings.hasNext());
+        return meetingService.getMeetingsBySpecification(pageable, topic, meetingAreaStreet, participantUserId, searchWord, isOpen);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
