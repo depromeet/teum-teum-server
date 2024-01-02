@@ -40,4 +40,11 @@ class Api {
             .exchange();
     }
 
+    ResponseSpec addFriends(String token, Long friendId) {
+        return webTestClient.post()
+            .uri("/users/" + friendId + "/friends")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
 }
