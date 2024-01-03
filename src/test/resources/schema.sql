@@ -67,3 +67,8 @@ create table if not exists meeting_participant_user_ids
     foreign key (meeting_id) references meeting (id)
 );
 
+create table if not exists users_friends(
+  users_id               bigint not null,
+  friends                bigint not null,
+  foreign key (users_id) references users(id)
+);

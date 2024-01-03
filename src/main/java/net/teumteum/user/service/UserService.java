@@ -19,8 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserGetResponse getUserById(Long userId) {
-        var existUser = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 user를 찾을 수 없습니다. \"" + userId + "\""));
+        var existUser = getUser(userId);
 
         return UserGetResponse.of(existUser);
     }
@@ -39,10 +38,22 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(UserUpdateRequest request) {
-        var existUser = userRepository.findById(request.id())
-            .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 user를 찾을 수 없습니다. \"" + request.id() + "\""));
+    public void updateUser(Long userId, UserUpdateRequest request) {
+        var existUser = getUser(userId);
 
         existUser.update(request.toUser());
+    }
+
+    @Transactional
+    public void addFriends(Long myId, Long friendId) {
+        var me = getUser(myId);
+        var friend = getUser(friendId);
+
+        me.addFriend(friend);
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 user를 찾을 수 없습니다. \"" + userId + "\""));
     }
 }

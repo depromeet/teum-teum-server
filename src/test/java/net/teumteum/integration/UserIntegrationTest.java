@@ -1,4 +1,4 @@
-package net.teumteum.user.integration;
+package net.teumteum.integration;
 
 import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
@@ -113,8 +113,32 @@ class UserIntegrationTest extends IntegrationTest {
             var existUser = repository.saveAndGetUser();
             var updateUser = RequestFixture.userUpdateRequest(existUser);
 
+            loginContext.setUserId(existUser.getId());
+
             // when
             var result = api.updateUser(VALID_TOKEN, updateUser);
+
+            // then
+            result.expectStatus().isOk();
+        }
+    }
+
+    @Nested
+    @DisplayName("친구 맺기 API는")
+    class Add_friends_api {
+
+        @Test
+        @DisplayName("존재하는 userId와 올바른 토큰이 주어지면, 친구를 맺고 200 OK를 반환한다.")
+        void Return_200_ok_with_success_make_friends() {
+            // given
+            var me = repository.saveAndGetUser();
+            var myToken = "JWT MY_TOKEN";
+            var friend = repository.saveAndGetUser();
+
+            loginContext.setUserId(me.getId());
+
+            // when
+            var result = api.addFriends(myToken, friend.getId());
 
             // then
             result.expectStatus().isOk();
