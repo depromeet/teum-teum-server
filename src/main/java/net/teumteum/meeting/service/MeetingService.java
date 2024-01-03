@@ -1,14 +1,17 @@
 package net.teumteum.meeting.service;
 
 import lombok.RequiredArgsConstructor;
+import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.MeetingRepository;
+import net.teumteum.meeting.domain.MeetingSpecification;
+import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.response.MeetingResponse;
+import net.teumteum.meeting.domain.response.MeetingsResponse;
+import net.teumteum.meeting.model.PageDto;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +28,28 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public List<MeetingResponse> getMeetings(Long cursorId, Pageable size) {
-        var existMeetings = cursorId == 0 ?
-                meetingRepository.findByPromiseDateTimeGreaterThanOrderByIdDesc(size, LocalDateTime.now()) :
-                meetingRepository.findByIdLessThanEqualAndPromiseDateTimeGreaterThanOrderByIdDesc(cursorId, size, LocalDateTime.now());
+    public PageDto<MeetingsResponse> getMeetingsBySpecification(Pageable pageable, Topic topic, String meetingAreaStreet,
+                                                                Long participantUserId, String searchWord, boolean isOpen) {
 
-        return existMeetings.stream()
-                .map(MeetingResponse::of)
-                .toList();
+        Specification<Meeting> spec = MeetingSpecification.withIsOpen(isOpen);
+
+        if (topic != null) {
+            spec = spec.and(MeetingSpecification.withTopic(topic));
+        }
+        else if (meetingAreaStreet != null) {
+            spec.and(MeetingSpecification.withAreaStreet(meetingAreaStreet));
+        }
+        else if (participantUserId != null) {
+            spec = spec.and(MeetingSpecification.withParticipantUserId(participantUserId));
+        }
+        else if (searchWord != null) {
+            spec = MeetingSpecification.withSearchWordInTitle(searchWord).or(MeetingSpecification.withSearchWordInIntroduction(searchWord))
+                    .and(MeetingSpecification.withIsOpen(isOpen));
+        }
+
+        var meetings = meetingRepository.findAll(spec, pageable);
+
+        return PageDto.of(MeetingsResponse.of(meetings.getContent()), meetings.hasNext());
     }
 
 }
