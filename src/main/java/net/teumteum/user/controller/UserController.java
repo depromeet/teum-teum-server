@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.teumteum.core.context.LoginContext;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.request.UserUpdateRequest;
+import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
@@ -56,6 +57,11 @@ public class UserController {
         userService.addFriends(loginContext.getUserId(), friendId);
     }
 
+    @GetMapping("/{userId}/friends")
+    @ResponseStatus(HttpStatus.OK)
+    public FriendsResponse findFriends(@PathVariable("userId") Long userId) {
+        return userService.findFriendsByUserId(userId);
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)

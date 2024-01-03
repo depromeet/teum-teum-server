@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
 import net.teumteum.user.domain.request.UserUpdateRequest;
+import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,13 @@ public class UserService {
         var friend = getUser(friendId);
 
         me.addFriend(friend);
+    }
+
+    public FriendsResponse findFriendsByUserId(Long userId) {
+        var user = getUser(userId);
+        var friends = userRepository.findAllById(user.getFriends());
+
+        return FriendsResponse.of(friends);
     }
 
     private User getUser(Long userId) {
