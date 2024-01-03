@@ -14,14 +14,86 @@ public class MeetingFixture {
 
     public static Meeting getOpenMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0 ,0))
+                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
                 .build()
         );
     }
 
     public static Meeting getCloseMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0 ,0))
+                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+                .build()
+        );
+    }
+
+    public static Meeting getOpenMeetingWithTopic(Topic topic) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+                .topic(topic)
+                .build()
+        );
+    }
+
+    public static Meeting getCloseMeetingWithTopic(Topic topic) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+                .topic(topic)
+                .build()
+        );
+    }
+
+    public static Meeting getOpenMeetingWithStreet(String street) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+                .meetingArea(new MeetingArea("서울특별시", street, "강남대로 390"))
+                .build()
+        );
+    }
+
+    public static Meeting getOpenMeetingWithParticipantUserId(Long participantUserId) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+                .participantUserIds(new ArrayList<>(List.of(participantUserId)))
+                .build()
+        );
+    }
+
+    public static Meeting getCloseMeetingWithParticipantUserId(Long participantUserId) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+                .participantUserIds(new ArrayList<>(List.of(participantUserId)))
+                .build()
+        );
+    }
+
+    public static Meeting getOpenMeetingWithTitle(String title) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+                .title(title)
+                .build()
+        );
+    }
+
+    public static Meeting getCloseMeetingWithTitle(String title) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .title(title)
+                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+                .build()
+        );
+    }
+
+    public static Meeting getOpenMeetingWithIntroduction(String introduction) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+                .introduction(introduction)
+                .build()
+        );
+    }
+
+    public static Meeting getCloseMeetingWithIntroduction(String introduction) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+                .introduction(introduction)
                 .build()
         );
     }
