@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 public class UserAuthentication extends AbstractAuthenticationToken {
 
-    private final Long id;
+    private Long id;
     private final String oauthId;
 
     public UserAuthentication(User user) {
@@ -44,5 +44,9 @@ public class UserAuthentication extends AbstractAuthenticationToken {
     @Override
     public boolean isAuthenticated() {
         return true;
+    }
+
+    public void setUserId(Long userId) {
+        id = userId;
     }
 }

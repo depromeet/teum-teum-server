@@ -113,7 +113,7 @@ class UserIntegrationTest extends IntegrationTest {
             var existUser = repository.saveAndGetUser();
             var updateUser = RequestFixture.userUpdateRequest(existUser);
 
-            loginContext.setUserId(existUser.getId());
+            securityService.setUserId(existUser.getId());
 
             // when
             var result = api.updateUser(VALID_TOKEN, updateUser);
@@ -135,7 +135,7 @@ class UserIntegrationTest extends IntegrationTest {
             var myToken = "JWT MY_TOKEN";
             var friend = repository.saveAndGetUser();
 
-            loginContext.setUserId(me.getId());
+            securityService.setUserId(me.getId());
 
             // when
             var result = api.addFriends(myToken, friend.getId());

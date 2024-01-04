@@ -1,7 +1,7 @@
 package net.teumteum.integration;
 
 import net.teumteum.Application;
-import net.teumteum.core.security.SecurityUtil;
+import net.teumteum.core.security.service.SecurityService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(classes = {Application.class, Api.class, Repository.class, TestLoginContext.class})
+@ContextConfiguration(classes = {Application.class, Api.class, Repository.class})
 abstract public class IntegrationTest {
 
     @Autowired
@@ -20,7 +20,7 @@ abstract public class IntegrationTest {
     protected Repository repository;
 
     @Autowired
-    protected SecurityUtil securityUtil;
+    protected SecurityService securityService;
 
     @AfterEach
     @BeforeEach

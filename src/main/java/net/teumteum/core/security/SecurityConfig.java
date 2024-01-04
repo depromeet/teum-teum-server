@@ -30,10 +30,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request
-                        -> request.requestMatchers(allowedUrl).permitAll()
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .anyRequest().authenticated()
-                )
+                        -> request.requestMatchers("/**").permitAll()
+                        .requestMatchers(PathRequest.toH2Console()).permitAll())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement

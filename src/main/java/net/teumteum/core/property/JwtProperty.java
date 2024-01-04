@@ -17,7 +17,7 @@ public class JwtProperty {
 
     @Getter
     @Setter
-    static class Access{
+    public static class Access{
         private long expiration;
         private String header;
 
@@ -25,7 +25,7 @@ public class JwtProperty {
 
     @Getter
     @Setter
-    static class Refresh {
+    public static class Refresh {
         private long expiration;
         private String header;
     }

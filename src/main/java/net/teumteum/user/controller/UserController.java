@@ -3,7 +3,7 @@ package net.teumteum.user.controller;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
-import net.teumteum.core.security.SecurityUtil;
+import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
@@ -20,15 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.security.auth.login.LoginContext;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
-    private final SecurityUtil securityUtil;
+    private final SecurityService securityService;
 
     /* userId 로 회원 조회 */
     @GetMapping("/{userId}")
@@ -68,6 +66,6 @@ public class UserController {
     }
 
     private Long getCurrentUserId() {
-        return securityUtil.getCurrentUserId();
+        return securityService.getCurrentUserId();
     }
 }
