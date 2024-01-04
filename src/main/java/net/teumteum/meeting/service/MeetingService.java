@@ -52,4 +52,16 @@ public class MeetingService {
         return PageDto.of(MeetingsResponse.of(meetings.getContent()), meetings.hasNext());
     }
 
+    @Transactional
+    public MeetingResponse addParticipant(Long meetingId, Long userId) {
+        var existMeeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
+
+        if (existMeeting.alreadyParticipant(userId)) {
+            throw new IllegalArgumentException("이미 참여한 모임입니다.");
+        }
+
+        existMeeting.addParticipant(userId);
+        return MeetingResponse.of(existMeeting);
+    }
 }

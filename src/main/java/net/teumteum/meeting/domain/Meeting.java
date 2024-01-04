@@ -8,8 +8,8 @@ import net.teumteum.core.entity.TimeBaseEntity;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -29,7 +29,7 @@ public class Meeting extends TimeBaseEntity {
     private Long hostUserId;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Long> participantUserIds = new ArrayList<>();
+    private Set<Long> participantUserIds = new HashSet<>();
 
     @Column(name = "topic")
     @Enumerated(EnumType.STRING)
@@ -48,7 +48,16 @@ public class Meeting extends TimeBaseEntity {
     private LocalDateTime promiseDateTime;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> imageUrls = new ArrayList<>();
+    private Set<String> imageUrls = new HashSet<>();
+
+    public void addParticipant(Long userId) {
+        assertParticipantUserIds();
+        participantUserIds.add(userId);
+    }
+
+    public boolean alreadyParticipant(Long userId) {
+        return participantUserIds.contains(userId);
+    }
 
     @PrePersist
     private void assertField() {
@@ -67,6 +76,10 @@ public class Meeting extends TimeBaseEntity {
 
     private void assertTitle() {
         Assert.isTrue(title.length() >= 2 && title.length() <= 32, "모임 제목은 2자 ~ 32자 사이가 되어야 합니다. [현재 입력된 모임 제목] : " + title);
+    }
+
+    private void assertParticipantUserIds() {
+        Assert.isTrue(participantUserIds.size() + 1 <= numberOfRecruits, "최대 참여자 수에 도달한 모임에 참여할 수 없습니다." + "[최대 참여자 수] : " + numberOfRecruits + "[현재 참여자 수] : " + participantUserIds.size());
     }
 
 }

@@ -5,7 +5,7 @@ import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.Topic;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 public record MeetingResponse(
         Long id,
@@ -13,11 +13,11 @@ public record MeetingResponse(
         Topic topic,
         String title,
         String introduction,
-        List<String> photoUrls,
+        Set<String> photoUrls,
         LocalDateTime promiseDateTime,
         int numberOfRecruits,
         MeetingArea meetingArea,
-        List<Long> participantIds
+        Set<Long> participantIds
 ) {
     public static MeetingResponse of(
             Meeting meeting
