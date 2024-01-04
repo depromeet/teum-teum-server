@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(classes = {Application.class, Api.class, Repository.class})
+@ContextConfiguration(classes = {Application.class, Api.class, Repository.class, SecurityService.class})
 abstract public class IntegrationTest {
 
     @Autowired
@@ -21,7 +21,7 @@ abstract public class IntegrationTest {
 
     @Autowired
     protected SecurityService securityService;
-
+    
     @AfterEach
     @BeforeEach
     void clearAll() {

@@ -4,10 +4,12 @@ import net.teumteum.core.security.UserAuthentication;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.security.auth.login.LoginContext;
-
 @TestComponent
-public class SecurityUtil {
+public class SecurityService {
+
+    private static UserAuthentication getUserAuthentication() {
+        return (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
+    }
 
     public void clearSecurityContext() {
         SecurityContextHolder.clearContext();
@@ -28,9 +30,5 @@ public class SecurityUtil {
     public void setUserId(Long userId) {
         UserAuthentication userAuthentication = getUserAuthentication();
         userAuthentication.setUserId(userId);
-    }
-
-    private static UserAuthentication getUserAuthentication() {
-        return (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 }
