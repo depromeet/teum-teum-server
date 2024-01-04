@@ -1,0 +1,25 @@
+## DEVELOPMENT
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+### JPA ###
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+
+
+## LOGGING
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace

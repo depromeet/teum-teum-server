@@ -1,0 +1,14 @@
+## DATASOURCE
+spring:
+  config:
+    activate:
+      on-profile: "datasource"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT}/${DATABASE_NAME}?&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&autoReconnect=true
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      connection-timeout: 3000
+      maximum-pool-size: 80
