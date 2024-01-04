@@ -3,12 +3,10 @@ package net.teumteum.user.domain.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Set;
-import net.teumteum.user.domain.ActivityArea;
-import net.teumteum.user.domain.Job;
-import net.teumteum.user.domain.JobStatus;
-import net.teumteum.user.domain.Oauth;
-import net.teumteum.user.domain.Terms;
-import net.teumteum.user.domain.User;
+
+import net.teumteum.user.domain.*;
+
+import static net.teumteum.user.domain.RoleType.ROLE_USER;
 
 public record UserUpdateRequest(
     Long id,
@@ -25,7 +23,7 @@ public record UserUpdateRequest(
 
     private static final Long IGNORE_ID = null;
     private static final int IGNORE_MANNER_TEMPERATURE = -1;
-    private static final Oauth IGNORE_OAUTH = null;
+    private static final OAuth IGNORE_O_AUTH = null;
     private static final boolean NOT_CERTIFICATED = false;
     private static final Terms IGNORE_TERMS = null;
     private static final Set<Long> IGNORE_FRIENDS = Set.of();
@@ -37,7 +35,8 @@ public record UserUpdateRequest(
             newBirth,
             newCharacterId,
             IGNORE_MANNER_TEMPERATURE,
-            IGNORE_OAUTH,
+                IGNORE_O_AUTH,
+            ROLE_USER,
             new ActivityArea(
                 newActivityArea.city,
                 newActivityArea.streets

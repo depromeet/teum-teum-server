@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
+import net.teumteum.core.security.Authenticated;
+
+import static net.teumteum.core.security.Authenticated.네이버;
 
 public class UserFixture {
 
@@ -31,6 +34,7 @@ public class UserFixture {
             userBuilder.characterId,
             userBuilder.mannerTemperature,
             userBuilder.oauth,
+            userBuilder.roleType,
             userBuilder.activityArea,
             userBuilder.mbti,
             userBuilder.status,
@@ -56,7 +60,9 @@ public class UserFixture {
         @Builder.Default
         private int mannerTemperature = 36;
         @Builder.Default
-        private Oauth oauth = new Oauth(UUID.randomUUID().toString(), "naver");
+        private OAuth oauth = new OAuth(UUID.randomUUID().toString(), 네이버);
+        @Builder.Default
+        private RoleType roleType = RoleType.ROLE_USER;
         @Builder.Default
         private ActivityArea activityArea = new ActivityArea("서울", List.of("강남", "홍대"));
         @Builder.Default

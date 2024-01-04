@@ -1,7 +1,7 @@
 package net.teumteum.integration;
 
 import net.teumteum.Application;
-import net.teumteum.core.context.LoginContext;
+import net.teumteum.core.security.SecurityUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ abstract public class IntegrationTest {
     protected Repository repository;
 
     @Autowired
-    protected LoginContext loginContext;
+    protected SecurityUtil securityUtil;
 
     @AfterEach
     @BeforeEach

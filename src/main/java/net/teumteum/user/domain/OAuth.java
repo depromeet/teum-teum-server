@@ -5,17 +5,17 @@ import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.teumteum.core.security.Authenticated;
 
 @Getter
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class Oauth {
+public class OAuth {
 
-    @Column(name = "oauth_authenticate_info", unique = true)
-    private String oAuthAuthenticateInfo;
+    @Column(name = "oauth_id", unique = true, nullable = false)
+    private String oauthId;
 
-    @Column(name = "authenticated")
-    private String authenticated;
-
+    @Column(name = "provider_type",  nullable = false)
+    private Authenticated authenticated;
 }

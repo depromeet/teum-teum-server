@@ -47,7 +47,11 @@ public class User extends TimeBaseEntity {
     private int mannerTemperature;
 
     @Embedded
-    private Oauth oauth;
+    private OAuth oauth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private RoleType roleType;
 
     @Embedded
     private ActivityArea activityArea;

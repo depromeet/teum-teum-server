@@ -2,8 +2,8 @@ package net.teumteum.user.controller;
 
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
-import net.teumteum.core.context.LoginContext;
 import net.teumteum.core.error.ErrorResponse;
+import net.teumteum.core.security.SecurityUtil;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
@@ -20,20 +20,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.security.auth.login.LoginContext;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
-    private final LoginContext loginContext;
+    private final SecurityUtil securityUtil;
 
+    /* userId 로 회원 조회 */
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserGetResponse getUserById(@PathVariable("userId") Long userId) {
         return userService.getUserById(userId);
     }
 
+    /* 여러 userId 로 회원 들 조회 */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public UsersGetByIdResponse getUsersById(@RequestParam("id") String userIds) {
@@ -47,13 +51,13 @@ public class UserController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@RequestBody UserUpdateRequest request) {
-        userService.updateUser(loginContext.getUserId(), request);
+        userService.updateUser(getCurrentUserId(), request);
     }
 
     @PostMapping("/{friendId}/friends")
     @ResponseStatus(HttpStatus.OK)
     public void addFriend(@PathVariable("friendId") Long friendId) {
-        userService.addFriends(loginContext.getUserId(), friendId);
+        userService.addFriends(getCurrentUserId(), friendId);
     }
 
 
@@ -61,5 +65,9 @@ public class UserController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
         return ErrorResponse.of(illegalArgumentException);
+    }
+
+    private Long getCurrentUserId() {
+        return securityUtil.getCurrentUserId();
     }
 }
