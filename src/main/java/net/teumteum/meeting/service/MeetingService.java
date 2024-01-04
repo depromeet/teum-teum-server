@@ -61,6 +61,10 @@ public class MeetingService {
             throw new IllegalArgumentException("이미 참여한 모임입니다.");
         }
 
+        if (!existMeeting.isOpen()) {
+            throw new IllegalArgumentException("모임 참여 기간이 종료되었습니다.");
+        }
+
         existMeeting.addParticipant(userId);
         return MeetingResponse.of(existMeeting);
     }

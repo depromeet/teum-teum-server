@@ -59,6 +59,10 @@ public class Meeting extends TimeBaseEntity {
         return participantUserIds.contains(userId);
     }
 
+    public boolean isOpen() {
+        return promiseDateTime.isAfter(LocalDateTime.now());
+    }
+
     @PrePersist
     private void assertField() {
         assertTitle();
