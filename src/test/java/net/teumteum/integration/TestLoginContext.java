@@ -1,20 +1,21 @@
 package net.teumteum.integration;
 
-import net.teumteum.core.context.LoginContext;
 import org.springframework.boot.test.context.TestComponent;
 
-@TestComponent
-public class TestLoginContext implements LoginContext {
+import javax.security.auth.login.LoginContext;
 
-    private Long userId;
-
-    @Override
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    @Override
-    public Long getUserId() {
-        return this.userId;
-    }
-}
+//@TestComponent
+//public class TestLoginContext implements LoginContext {
+//
+//    private Long userId;
+//
+//    @Override
+//    public void setUserId(Long userId) {
+//        this.userId = userId;
+//    }
+//
+//    @Override
+//    public Long getUserId() {
+//        return this.userId;
+//    }
+//}
