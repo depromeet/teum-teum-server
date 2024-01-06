@@ -58,6 +58,13 @@ class Api {
                 .exchange();
     }
 
+    ResponseSpec getFriendsByUserId(String token, Long userId) {
+        return webTestClient.get()
+            .uri("/users/" + userId + "/friends")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
     ResponseSpec getOpenMeetings(String token, Long cursorId, int size) {
         return webTestClient.get()
                 .uri("/meetings" +
