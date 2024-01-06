@@ -2,6 +2,8 @@ package net.teumteum.user.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,7 @@ public class OAuth {
     @Column(name = "oauth_id", unique = true, nullable = false)
     private String oauthId;
 
-    @Column(name = "provider_type",  nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider_type", nullable = false)
     private Authenticated authenticated;
 }

@@ -1,6 +1,5 @@
 package net.teumteum.integration;
 
-import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
@@ -8,6 +7,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {
@@ -31,11 +32,11 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(
-                    result.expectStatus().isOk()
-                        .expectBody(UserGetResponse.class)
-                        .returnResult().getResponseBody())
-                .usingRecursiveComparison()
-                .isEqualTo(expected);
+                            result.expectStatus().isOk()
+                                    .expectBody(UserGetResponse.class)
+                                    .returnResult().getResponseBody())
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
         }
 
         @Test
@@ -49,7 +50,7 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             result.expectStatus().isBadRequest()
-                .expectBody(ErrorResponse.class);
+                    .expectBody(ErrorResponse.class);
         }
     }
 
@@ -71,9 +72,9 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(result.expectStatus().isOk()
-                .expectBody(UsersGetByIdResponse.class)
-                .returnResult()
-                .getResponseBody()
+                    .expectBody(UsersGetByIdResponse.class)
+                    .returnResult()
+                    .getResponseBody()
             ).usingRecursiveComparison().isEqualTo(expected);
         }
 
@@ -113,7 +114,7 @@ class UserIntegrationTest extends IntegrationTest {
             var existUser = repository.saveAndGetUser();
             var updateUser = RequestFixture.userUpdateRequest(existUser);
 
-            securityService.setUserId(existUser.getId());
+            loginContext.setUserId(existUser.getId());
 
             // when
             var result = api.updateUser(VALID_TOKEN, updateUser);
@@ -135,7 +136,7 @@ class UserIntegrationTest extends IntegrationTest {
             var myToken = "JWT MY_TOKEN";
             var friend = repository.saveAndGetUser();
 
-            securityService.setUserId(me.getId());
+            loginContext.setUserId(me.getId());
 
             // when
             var result = api.addFriends(myToken, friend.getId());
