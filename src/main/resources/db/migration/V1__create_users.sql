@@ -7,8 +7,9 @@ create table if not exists users(
   birth varchar(10),
   name varchar(10),
   goal varchar(50),
-  authenticated varchar(255),
-  oauth_authenticate_info varchar(255) unique,
+  oauth_id varchar(255) not null, unique,
+  authenticated varchar(255) not null,
+  role_type varchar(255) not null
   city varchar(255),
   detail_job_class varchar(255),
   job_class varchar(255),

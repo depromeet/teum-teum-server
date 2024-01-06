@@ -19,6 +19,6 @@ public class OAuth {
     private String oauthId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "provider_type", nullable = false)
+    @Column(name = "authenticated", nullable = false)
     private Authenticated authenticated;
 }
