@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient(timeout = "10000")
-@ContextConfiguration(classes = {Application.class, Api.class, Repository.class, SecurityContextSetting.class})
+@ContextConfiguration(classes = {Application.class, Api.class, Repository.class, SecurityContextSetting.class, TestLoginContext.class})
 abstract public class IntegrationTest {
 
     @Autowired
@@ -22,6 +22,9 @@ abstract public class IntegrationTest {
 
     @Autowired
     protected SecurityContextSetting securityContextSetting;
+
+    @Autowired
+    protected TestLoginContext loginContext;
 
     @AfterEach
     @BeforeEach
