@@ -1,15 +1,19 @@
 package net.teumteum.user.domain;
 
 import jakarta.persistence.EntityManager;
-import java.util.Optional;
+import net.teumteum.core.config.AppConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+
+import java.util.Optional;
 
 @DataJpaTest
+@Import(AppConfig.class)
 @DisplayName("UserRepository 클래스의")
 class UserRepositoryTest {
 
@@ -56,10 +60,10 @@ class UserRepositoryTest {
 
             // then
             Assertions.assertThat(result)
-                .isPresent()
-                .usingRecursiveComparison()
-                .ignoringFields("value.createdAt", "value.updatedAt")
-                .isEqualTo(Optional.of(existsUser));
+                    .isPresent()
+                    .usingRecursiveComparison()
+                    .ignoringFields("value.createdAt", "value.updatedAt")
+                    .isEqualTo(Optional.of(existsUser));
         }
     }
 

@@ -1,33 +1,27 @@
 package net.teumteum.user.controller;
 
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
-import net.teumteum.core.context.LoginContext;
 import net.teumteum.core.error.ErrorResponse;
+import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
+    private final ApplicationContext applicationContext;
     private final UserService userService;
-    private final LoginContext loginContext;
+    private final SecurityService securityService;
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
@@ -39,8 +33,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UsersGetByIdResponse getUsersById(@RequestParam("id") String userIds) {
         var parsedUserIds = Arrays.stream(userIds.split(","))
-            .map(Long::valueOf)
-            .toList();
+                .map(Long::valueOf)
+                .toList();
 
         return userService.getUsersById(parsedUserIds);
     }
@@ -48,13 +42,13 @@ public class UserController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@RequestBody UserUpdateRequest request) {
-        userService.updateUser(loginContext.getUserId(), request);
+        userService.updateUser(getCurrentUserId(), request);
     }
 
     @PostMapping("/{friendId}/friends")
     @ResponseStatus(HttpStatus.OK)
     public void addFriend(@PathVariable("friendId") Long friendId) {
-        userService.addFriends(loginContext.getUserId(), friendId);
+        userService.addFriends(getCurrentUserId(), friendId);
     }
 
     @GetMapping("/{userId}/friends")
@@ -67,5 +61,9 @@ public class UserController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
         return ErrorResponse.of(illegalArgumentException);
+    }
+
+    private Long getCurrentUserId() {
+        return securityService.getCurrentUserId();
     }
 }

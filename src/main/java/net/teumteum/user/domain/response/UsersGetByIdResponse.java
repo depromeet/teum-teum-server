@@ -2,6 +2,8 @@ package net.teumteum.user.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+
+import net.teumteum.core.security.Authenticated;
 import net.teumteum.user.domain.User;
 
 public record UsersGetByIdResponse(
@@ -21,7 +23,7 @@ public record UsersGetByIdResponse(
         String birth,
         Long characterId,
         int mannerTemperature,
-        String authenticated,
+        Authenticated authenticated,
         ActivityArea activityArea,
         String mbti,
         String status,

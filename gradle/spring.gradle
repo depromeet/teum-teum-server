@@ -13,12 +13,24 @@ allprojects {
     dependencies {
         implementation "org.springframework.boot:spring-boot-starter"
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-configuration-processor'
+
+        runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.104.Final:osx-aarch_64'
         implementation "org.springframework.boot:spring-boot-starter-webflux"
+
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
         implementation "org.springframework.boot:spring-boot-starter-actuator"
+
+        implementation "org.springframework.boot:spring-boot-starter-security"
+        implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+        implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
 
         runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
         testImplementation "org.springframework.boot:spring-boot-starter-test"
+        testImplementation 'org.springframework.security:spring-security-test'
     }
 }

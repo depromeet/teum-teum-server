@@ -1,35 +1,29 @@
 package net.teumteum.core.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import java.time.Instant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
 
 @Getter
+@SuperBuilder
 @NoArgsConstructor
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class TimeBaseEntity {
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP(6)", nullable = false, updatable = false)
-    protected Instant createdAt;
-
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP(6)", nullable = false)
-    protected Instant updatedAt;
-
-    @PrePersist
-    void prePersist() {
-        var now = Instant.now();
-
-        createdAt = createdAt != null ? createdAt : now;
-        updatedAt = updatedAt != null ? updatedAt : now;
-    }
-
-    @PreUpdate
-    void preUpdate() {
-        updatedAt = updatedAt != null ? updatedAt : Instant.now();
-    }
-
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 }
+

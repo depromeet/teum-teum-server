@@ -13,13 +13,12 @@ public class LoginContextImpl implements LoginContext {
     private Long userId;
 
     @Override
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    @Override
     public Long getUserId() {
         return userId;
     }
 
+    @Override
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 }
