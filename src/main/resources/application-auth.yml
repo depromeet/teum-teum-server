@@ -1,0 +1,16 @@
+## AUTHENTICATION & AUTHORIZATION
+spring:
+  config:
+    activate:
+      on-profile: "auth"
+
+## JWT
+jwt:
+  bearer: Bearer
+  secret: ${JWT_SECRET_KEY}
+  access:
+    expiration: ${JWT_ACCESS_EXPIRATION:3600000}
+    header: Authorization
+  refresh:
+    expiration: ${JWT_REFRESH_EXPIRATION:1209600000}
+    header: Authorization-refresh
