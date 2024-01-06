@@ -2,6 +2,10 @@ package net.teumteum.core.security;
 
 
 import lombok.RequiredArgsConstructor;
+import net.teumteum.core.property.JwtProperty;
+import net.teumteum.core.security.filter.JwtAuthenticationFilter;
+import net.teumteum.core.security.service.AuthService;
+import net.teumteum.core.security.service.JwtService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -21,8 +26,9 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // authentication 필요 없는 url 정보
-//    private final String[] allowedUrl = {"/auth/reissue", "/users/signup"};
+    private final JwtService jwtService;
+    private final AuthService authService;
+    private final JwtProperty jwtProperty;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
@@ -34,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toH2Console()).permitAll())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(sessionManagement
                         -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -54,5 +61,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    private JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtService, authService, jwtProperty);
     }
 }
