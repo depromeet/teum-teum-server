@@ -1,7 +1,0 @@
-dependencies {
-    implementation "org.flywaydb:flyway-core"
-    implementation "org.flywaydb:flyway-mysql"
-    implementation "mysql:mysql-connector-java:${mysqlConnectorVersion}"
-
-    testRuntimeOnly "com.h2database:h2"
-}
