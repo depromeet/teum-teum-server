@@ -27,5 +27,4 @@ abstract public class IntegrationTest {
     void clearAll() {
         repository.clear();
     }
-
 }

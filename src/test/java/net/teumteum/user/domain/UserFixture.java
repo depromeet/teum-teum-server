@@ -16,6 +16,12 @@ public class UserFixture {
                 .build());
     }
 
+    public static User getIdUser() {
+        return newUserByBuilder(UserBuilder.builder()
+                .id(1L)
+                .build());
+    }
+
     public static User getUserWithId(Long id) {
         return newUserByBuilder(UserBuilder.builder()
                 .id(id)

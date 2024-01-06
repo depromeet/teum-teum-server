@@ -22,7 +22,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 public class SecurityConfig {
 
     // authentication 필요 없는 url 정보
-    private final String[] allowedUrl = {"/auth/reissue", "/users/signup"};
+//    private final String[] allowedUrl = {"/auth/reissue", "/users/signup"};
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {

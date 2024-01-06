@@ -56,6 +56,7 @@ public class UserController {
     }
 
     private Long getCurrentUserId() {
-        return securityService.getCurrentUserId();
+        Long currentUserId = securityService.getCurrentUserId();
+        return currentUserId;
     }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {
 
