@@ -17,7 +17,7 @@ public class SecurityService {
 
     public Long getCurrentUserId() {
         UserAuthentication userAuthentication = getUserAuthentication();
-        return userAuthentication == null ? 1L : userAuthentication.getId();
+        return userAuthentication == null ? 10000000000L : userAuthentication.getId();
     }
 
 

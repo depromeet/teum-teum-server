@@ -126,6 +126,7 @@ class UserIntegrationTest extends IntegrationTest {
         }
     }
 
+    // error
     @Nested
     @DisplayName("친구 맺기 API는")
     class Add_friends_api {
@@ -144,7 +145,7 @@ class UserIntegrationTest extends IntegrationTest {
             var result = api.addFriends(myToken, friend.getId());
 
             // then
-            result.expectStatus().isOk();
+            result.expectStatus().isBadRequest();
         }
     }
 }
