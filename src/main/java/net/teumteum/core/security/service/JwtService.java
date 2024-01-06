@@ -11,15 +11,14 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
 /* JWT 관련 모든 작업을 위한 Service */
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtService {
     private final JwtProperty jwtProperty;
     private final RedisService redisService;

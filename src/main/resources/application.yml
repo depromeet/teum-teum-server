@@ -9,4 +9,4 @@ spring:
     group:
       "dev": "dev, auth, datasource, redis"
       "prod": "prod, auth, datasource, redis"
-      "test":
+#      "test":

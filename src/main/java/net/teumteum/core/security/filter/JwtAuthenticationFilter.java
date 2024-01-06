@@ -10,9 +10,7 @@ import net.teumteum.core.property.JwtProperty;
 import net.teumteum.core.security.UserAuthentication;
 import net.teumteum.core.security.service.AuthService;
 import net.teumteum.core.security.service.JwtService;
-import net.teumteum.core.security.service.RedisService;
 import net.teumteum.user.domain.User;
-import net.teumteum.user.domain.UserRepository;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -27,11 +25,8 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final RedisService redisService;
     private final AuthService authService;
-
     private final JwtProperty jwtProperty;
-    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
