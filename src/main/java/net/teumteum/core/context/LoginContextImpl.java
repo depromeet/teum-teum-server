@@ -21,5 +21,4 @@ public class LoginContextImpl implements LoginContext {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
 }

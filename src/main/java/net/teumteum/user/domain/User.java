@@ -41,7 +41,7 @@ public class User extends TimeBaseEntity {
     private OAuth oauth;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_type", nullable = false)
+    @Column(name = "role_type")
     private RoleType roleType;
 
     @Embedded
