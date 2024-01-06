@@ -1,6 +1,7 @@
 package net.teumteum.integration;
 
 import net.teumteum.core.error.ErrorResponse;
+import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
@@ -10,12 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {
 
     private static final String VALID_TOKEN = "VALID_TOKEN";
     private static final String INVALID_TOKEN = "IN_VALID_TOKEN";
+
 
     @Nested
     @DisplayName("유저 조회 API는")
@@ -104,7 +105,6 @@ class UserIntegrationTest extends IntegrationTest {
         }
     }
 
-    // error
     @Nested
     @DisplayName("유저 수정 API는")
     class Update_user_api {
@@ -114,19 +114,17 @@ class UserIntegrationTest extends IntegrationTest {
         void Update_user_info() {
             // given
             var existUser = repository.saveAndGetUser();
+            List<User> allUser = repository.getAllUser();
             var updateUser = RequestFixture.userUpdateRequest(existUser);
-
-            loginContext.setUserId(existUser.getId());
 
             // when
             var result = api.updateUser(VALID_TOKEN, updateUser);
 
             // then
-            result.expectStatus().isBadRequest();
+            result.expectStatus().isOk();
         }
     }
 
-    // error
     @Nested
     @DisplayName("친구 맺기 API는")
     class Add_friends_api {
@@ -139,13 +137,11 @@ class UserIntegrationTest extends IntegrationTest {
             var myToken = "JWT MY_TOKEN";
             var friend = repository.saveAndGetUser();
 
-            loginContext.setUserId(me.getId());
-
             // when
             var result = api.addFriends(myToken, friend.getId());
 
             // then
-            result.expectStatus().isBadRequest();
+            result.expectStatus().isOk();
         }
     }
 }

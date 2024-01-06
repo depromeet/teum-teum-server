@@ -7,6 +7,7 @@ import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.Arrays;
 @RequestMapping("/users")
 public class UserController {
 
+    private final ApplicationContext applicationContext;
     private final UserService userService;
     private final SecurityService securityService;
 
@@ -56,7 +58,6 @@ public class UserController {
     }
 
     private Long getCurrentUserId() {
-        Long currentUserId = securityService.getCurrentUserId();
-        return currentUserId;
+        return securityService.getCurrentUserId();
     }
 }

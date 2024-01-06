@@ -2,10 +2,7 @@ package net.teumteum.core.security;
 
 
 import lombok.RequiredArgsConstructor;
-import net.teumteum.core.property.JwtProperty;
 import net.teumteum.core.security.filter.JwtAuthenticationFilter;
-import net.teumteum.core.security.service.AuthService;
-import net.teumteum.core.security.service.JwtService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,13 +19,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
-@RequiredArgsConstructor
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtService jwtService;
-    private final AuthService authService;
-    private final JwtProperty jwtProperty;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
@@ -36,11 +31,12 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request
-                        -> request.requestMatchers("/**").permitAll()
-                        .requestMatchers(PathRequest.toH2Console()).permitAll())
+                        -> request.requestMatchers("/users").permitAll()
+                        .requestMatchers(PathRequest.toH2Console()).permitAll()
+                        .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(sessionManagement
                         -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -49,21 +45,16 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /* Cors 관련 설정 */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*"); // Access-Control-Allow-Origin
-        configuration.addAllowedMethod("*"); // Access-Control-Allow-Methods
-        configuration.addAllowedHeader("*"); // Access-Control-Allow-Headers
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    private JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtService, authService, jwtProperty);
     }
 }

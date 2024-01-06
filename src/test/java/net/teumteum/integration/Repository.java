@@ -1,5 +1,6 @@
 package net.teumteum.integration;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.config.AppConfig;
 import net.teumteum.meeting.domain.Meeting;
@@ -22,11 +23,17 @@ class Repository {
 
     private final UserRepository userRepository;
     private final MeetingRepository meetingRepository;
+    private final EntityManager entityManager;
 
     User saveAndGetUser() {
         var user = UserFixture.getNullIdUser();
         return userRepository.saveAndFlush(user);
     }
+
+    List<User> getAllUser() {
+        return userRepository.findAll();
+    }
+
 
     Meeting saveAndGetOpenMeeting() {
         var meeting = MeetingFixture.getOpenMeeting();
@@ -101,5 +108,4 @@ class Repository {
         userRepository.deleteAll();
         meetingRepository.deleteAll();
     }
-
 }

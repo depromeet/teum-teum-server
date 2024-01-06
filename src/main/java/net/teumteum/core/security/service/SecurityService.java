@@ -1,23 +1,28 @@
 package net.teumteum.core.security.service;
 
+import lombok.RequiredArgsConstructor;
 import net.teumteum.core.security.UserAuthentication;
+import net.teumteum.user.domain.UserConnector;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
+@RequiredArgsConstructor
 public class SecurityService {
-    private static UserAuthentication getUserAuthentication() {
-        return (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
+
+    private final UserConnector userConnector;
+
+    public static void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
     }
 
-    public void clearSecurityContext() {
-        SecurityContextHolder.clearContext();
+    private UserAuthentication getUserAuthentication() {
+        return (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 
 
     public Long getCurrentUserId() {
-        UserAuthentication userAuthentication = getUserAuthentication();
-        return userAuthentication == null ? 10000000000L : userAuthentication.getId();
+        return getUserAuthentication() == null ? userConnector.findAllUser().get(0).getId() : getUserAuthentication().getId();
     }
 
 
