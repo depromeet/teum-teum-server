@@ -36,29 +36,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException
-    {
+                                    FilterChain filterChain) throws ServletException, IOException {
         /* Cors Preflight Request */
-        if(request.getMethod().equals("OPTIONS")) {
+        if (request.getMethod().equals("OPTIONS")) {
             return;
         }
-        /**
-         * 전달 받은 Access token 부터 Authentication 인증 객체 Security Context에 저장
-         */
+
         try {
             String token = this.resolveTokenFromRequest(request);
-            // access token 이 있고 유효하다면
-            if (StringUtils.hasText(token) && this.jwtService.validateToken(token)) {
+            if (checkTokenExistenceAndValidation(token)) {
                 User user = this.authService.findUserByToken(token).get();
                 UserAuthentication authentication = new UserAuthentication(user);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-            // access token 이 만료된 경우 or access token 정보로 식별 안되는 경우
-            // 예외가 발생하기만 해도 ExceptionTranslationFilter 호출
         } catch (InsufficientAuthenticationException e) {
             log.info("JwtAuthentication UnauthorizedUserException!");
         }
         filterChain.doFilter(request, response);
+    }
+
+    private boolean checkTokenExistenceAndValidation(String token) {
+        return StringUtils.hasText(token) && this.jwtService.validateToken(token);
     }
 
     private String resolveTokenFromRequest(HttpServletRequest request) {
