@@ -1,6 +1,5 @@
 package net.teumteum.integration;
 
-import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
@@ -9,6 +8,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {

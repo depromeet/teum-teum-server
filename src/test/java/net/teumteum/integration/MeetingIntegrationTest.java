@@ -1,8 +1,5 @@
 package net.teumteum.integration;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.stream.Stream;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.Topic;
@@ -10,6 +7,7 @@ import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +15,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 @DisplayName("미팅 통합테스트의")
 class MeetingIntegrationTest extends IntegrationTest {
@@ -178,6 +180,72 @@ class MeetingIntegrationTest extends IntegrationTest {
                         .returnResult().getResponseBody())
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("미팅 참여 API는")
+    class Join_meeting_api {
+
+        @Test
+        @DisplayName("존재하는 모임의 id가 주어지면, 모임에 참여한다.")
+        void Join_meeting_if_exist_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var existMeeting = repository.saveAndGetOpenMeeting();
+
+            loginContext.setUserId(me.getId());
+            // when
+            var result = api.joinMeeting(VALID_TOKEN, existMeeting.getId());
+            // then
+            Assertions.assertThat(
+                            result.expectStatus().isCreated()
+                                    .expectBody(MeetingResponse.class)
+                                    .returnResult()
+                                    .getResponseBody())
+                    .extracting(MeetingResponse::participantIds)
+                    .has(new Condition<>(ids -> ids.contains(me.getId()), "참여자 목록에 나를 포함한다.")
+                    );
+        }
+
+        @Test
+        @DisplayName("이미 참여한 모임의 id가 주어지면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_already_joined_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeeting();
+
+            loginContext.setUserId(me.getId());
+            api.joinMeeting(VALID_TOKEN, meeting.getId());
+            // when
+            var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                    .expectBody(ErrorResponse.class);
+        }
+
+        @Test
+        @DisplayName("종료된 모임의 id가 주어진다면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_closed_meeting_id_received() {
+            // given
+            var meeting = repository.saveAndGetCloseMeeting();
+            // when
+            var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                    .expectBody(ErrorResponse.class);
+        }
+
+        @Test
+        @DisplayName("최대 인원이 초과된 모임의 id가 주어지면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_exceed_max_number_of_recruits_meeting_id_received() {
+            // given
+            var meeting = repository.saveAndGetOpenFullMeeting();
+            // when
+            var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                    .expectBody(ErrorResponse.class);
         }
     }
 }

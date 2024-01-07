@@ -1,7 +1,5 @@
 package net.teumteum.integration;
 
-import java.util.List;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.MeetingFixture;
@@ -12,11 +10,14 @@ import net.teumteum.user.domain.UserFixture;
 import net.teumteum.user.domain.UserRepository;
 import org.springframework.boot.test.context.TestComponent;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @TestComponent
 @RequiredArgsConstructor
 class Repository {
-
     private final UserRepository userRepository;
+
     private final MeetingRepository meetingRepository;
 
     User saveAndGetUser() {
@@ -26,6 +27,16 @@ class Repository {
 
     Meeting saveAndGetOpenMeeting() {
         var meeting = MeetingFixture.getOpenMeeting();
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
+    Meeting saveAndGetCloseMeeting() {
+        var meeting = MeetingFixture.getCloseMeeting();
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
+    Meeting saveAndGetOpenFullMeeting() {
+        var meeting = MeetingFixture.getOpenFullMeeting();
         return meetingRepository.saveAndFlush(meeting);
     }
 
@@ -97,5 +108,4 @@ class Repository {
         userRepository.deleteAll();
         meetingRepository.deleteAll();
     }
-
 }

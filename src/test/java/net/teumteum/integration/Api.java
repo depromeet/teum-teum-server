@@ -89,4 +89,10 @@ class Api {
             .exchange();
     }
 
+    ResponseSpec joinMeeting(String token, Long meetingId) {
+        return webTestClient.post()
+            .uri("/meetings/" + meetingId + "/participants")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
 }
