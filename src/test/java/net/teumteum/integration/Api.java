@@ -102,4 +102,10 @@ class Api {
             .exchange();
     }
 
+    ResponseSpec cancelMeeting(String token, Long meetingId) {
+        return webTestClient.delete()
+            .uri("/meetings/" + meetingId + "/participants")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
 }
