@@ -1,5 +1,6 @@
 package net.teumteum.integration;
 
+
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.config.AppConfig;
@@ -16,12 +17,15 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 import java.util.stream.Stream;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @TestComponent
 @Import(AppConfig.class)
 @RequiredArgsConstructor
 class Repository {
-
     private final UserRepository userRepository;
+
     private final MeetingRepository meetingRepository;
     private final EntityManager entityManager;
 
@@ -37,6 +41,16 @@ class Repository {
 
     Meeting saveAndGetOpenMeeting() {
         var meeting = MeetingFixture.getOpenMeeting();
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
+    Meeting saveAndGetCloseMeeting() {
+        var meeting = MeetingFixture.getCloseMeeting();
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
+    Meeting saveAndGetOpenFullMeeting() {
+        var meeting = MeetingFixture.getOpenFullMeeting();
         return meetingRepository.saveAndFlush(meeting);
     }
 

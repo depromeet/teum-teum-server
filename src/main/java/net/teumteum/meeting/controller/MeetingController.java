@@ -2,6 +2,7 @@ package net.teumteum.meeting.controller;
 
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
+import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class MeetingController {
 
     private final MeetingService meetingService;
+
+    private final SecurityService securityService;
 
     @GetMapping("/{meetingId}")
     @ResponseStatus(HttpStatus.OK)
@@ -34,6 +37,13 @@ public class MeetingController {
                                                             @RequestParam(value = "searchWord", required = false) String searchWord) {
 
         return meetingService.getMeetingsBySpecification(pageable, topic, meetingAreaStreet, participantUserId, searchWord, isOpen);
+    }
+
+    @PostMapping("/{meetingId}/participants")
+    @ResponseStatus(HttpStatus.CREATED)
+    public MeetingResponse addParticipant(@PathVariable("meetingId") Long meetingId) {
+        Long userId = securityService.getCurrentUserId();
+        return meetingService.addParticipant(meetingId, userId);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
