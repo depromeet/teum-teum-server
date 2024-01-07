@@ -55,6 +55,10 @@ public class Meeting extends TimeBaseEntity {
         participantUserIds.add(userId);
     }
 
+    public void cancelParticipant(Long userId) {
+        participantUserIds.remove(userId);
+    }
+
     public boolean alreadyParticipant(Long userId) {
         return participantUserIds.contains(userId);
     }
@@ -85,5 +89,4 @@ public class Meeting extends TimeBaseEntity {
     private void assertParticipantUserIds() {
         Assert.isTrue(participantUserIds.size() + 1 <= numberOfRecruits, "최대 참여자 수에 도달한 모임에 참여할 수 없습니다." + "[최대 참여자 수] : " + numberOfRecruits + "[현재 참여자 수] : " + participantUserIds.size());
     }
-
 }
