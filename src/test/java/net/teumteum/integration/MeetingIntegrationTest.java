@@ -42,11 +42,11 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingById(VALID_TOKEN, meeting.getId());
             // then
             Assertions.assertThat(
-                    result.expectStatus().isOk()
-                        .expectBody(MeetingResponse.class)
-                        .returnResult().getResponseBody())
-                .usingRecursiveComparison()
-                .isEqualTo(expected);
+                            result.expectStatus().isOk()
+                                    .expectBody(MeetingResponse.class)
+                                    .returnResult().getResponseBody())
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
         }
 
         @Test
@@ -58,7 +58,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingById(VALID_TOKEN, notExistMeetingId);
             // then
             result.expectStatus().isBadRequest()
-                .expectBody(ErrorResponse.class);
+                    .expectBody(ErrorResponse.class);
         }
     }
 
@@ -75,9 +75,9 @@ class MeetingIntegrationTest extends IntegrationTest {
             var closeTopicMeetingsByTopic = repository.saveAndGetOpenMeetingsByTopic(size, Topic.고민_나누기);
 
             var expectedData = MeetingsResponse.of(
-                openMeetingsByTopic.stream()
-                    .sorted(Comparator.comparing(Meeting::getId).reversed())
-                    .toList()
+                    openMeetingsByTopic.stream()
+                            .sorted(Comparator.comparing(Meeting::getId).reversed())
+                            .toList()
             );
 
             var expected = PageDto.of(expectedData, false);
@@ -86,12 +86,12 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
             // then
             Assertions.assertThat(
-                    result.expectStatus().isOk()
-                        .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
-                        })
-                        .returnResult().getResponseBody())
-                .usingRecursiveComparison()
-                .isEqualTo(expected);
+                            result.expectStatus().isOk()
+                                    .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
+                                    })
+                                    .returnResult().getResponseBody())
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
         }
 
         @Test
@@ -102,14 +102,14 @@ class MeetingIntegrationTest extends IntegrationTest {
             var openMeetingsByTitle = repository.saveAndGetOpenMeetingsByTitle(size, "개발자 스터디");
             var closeMeetingsByTitle = repository.saveAndGetCloseMeetingsByTitle(size, "개발자 스터디");
             var openMeetingsByIntroduction = repository.saveAndGetOpenMeetingsByIntroduction(size,
-                "개발자 스터디에 대한 설명입니다.");
+                    "개발자 스터디에 대한 설명입니다.");
             var closeMeetingsByIntroduction = repository.saveAndGetCloseMeetingsByIntroduction(size,
-                "개발자 스터디에 대한 설명입니다.");
+                    "개발자 스터디에 대한 설명입니다.");
 
             var expectedData = MeetingsResponse.of(Stream.of(openMeetingsByIntroduction, openMeetingsByTitle)
-                .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(Meeting::getId).reversed())
-                .toList()
+                    .flatMap(Collection::stream)
+                    .sorted(Comparator.comparing(Meeting::getId).reversed())
+                    .toList()
             );
 
             var expected = PageDto.of(expectedData, false);
@@ -118,12 +118,12 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
             // then
             Assertions.assertThat(
-                    result.expectStatus().isOk()
-                        .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
-                        })
-                        .returnResult().getResponseBody())
-                .usingRecursiveComparison()
-                .isEqualTo(expected);
+                            result.expectStatus().isOk()
+                                    .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
+                                    })
+                                    .returnResult().getResponseBody())
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
         }
 
         @Test
@@ -135,9 +135,9 @@ class MeetingIntegrationTest extends IntegrationTest {
             var closeMeetingsByParticipantUserId = repository.saveAndGetCloseMeetingsByParticipantUserId(size, 2L);
 
             var expectedData = MeetingsResponse.of(
-                openMeetingsByParticipantUserId.stream()
-                    .sorted(Comparator.comparing(Meeting::getId).reversed())
-                    .toList()
+                    openMeetingsByParticipantUserId.stream()
+                            .sorted(Comparator.comparing(Meeting::getId).reversed())
+                            .toList()
             );
 
             var expected = PageDto.of(expectedData, false);
@@ -146,12 +146,12 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
             // then
             Assertions.assertThat(
-                    result.expectStatus().isOk()
-                        .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
-                        })
-                        .returnResult().getResponseBody())
-                .usingRecursiveComparison()
-                .isEqualTo(expected);
+                            result.expectStatus().isOk()
+                                    .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
+                                    })
+                                    .returnResult().getResponseBody())
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
         }
 
         @Test
@@ -162,10 +162,10 @@ class MeetingIntegrationTest extends IntegrationTest {
             var openMeetingsByTopic = repository.saveAndGetOpenMeetingsByTopic(size, Topic.스터디);
 
             var expectedData = MeetingsResponse.of(
-                openMeetingsByTopic.stream()
-                    .sorted(Comparator.comparing(Meeting::getId).reversed())
-                    .toList()
-                    .subList(0, DEFAULT_QUERY_SIZE)
+                    openMeetingsByTopic.stream()
+                            .sorted(Comparator.comparing(Meeting::getId).reversed())
+                            .toList()
+                            .subList(0, DEFAULT_QUERY_SIZE)
             );
 
             var expected = PageDto.of(expectedData, true);
@@ -174,12 +174,12 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
             // then
             Assertions.assertThat(
-                    result.expectStatus().isOk()
-                        .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
-                        })
-                        .returnResult().getResponseBody())
-                .usingRecursiveComparison()
-                .isEqualTo(expected);
+                            result.expectStatus().isOk()
+                                    .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
+                                    })
+                                    .returnResult().getResponseBody())
+                    .usingRecursiveComparison()
+                    .isEqualTo(expected);
         }
     }
 
@@ -228,7 +228,10 @@ class MeetingIntegrationTest extends IntegrationTest {
         @DisplayName("종료된 모임의 id가 주어진다면, 400 Bad Request를 응답한다.")
         void Return_400_bad_request_if_closed_meeting_id_received() {
             // given
+            var me = repository.saveAndGetUser();
             var meeting = repository.saveAndGetCloseMeeting();
+
+            loginContext.setUserId(0L);
             // when
             var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
             // then
@@ -240,6 +243,7 @@ class MeetingIntegrationTest extends IntegrationTest {
         @DisplayName("최대 인원이 초과된 모임의 id가 주어지면, 400 Bad Request를 응답한다.")
         void Return_400_bad_request_if_exceed_max_number_of_recruits_meeting_id_received() {
             // given
+            var me = repository.saveAndGetUser();
             var meeting = repository.saveAndGetOpenFullMeeting();
             // when
             var result = api.joinMeeting(VALID_TOKEN, meeting.getId());

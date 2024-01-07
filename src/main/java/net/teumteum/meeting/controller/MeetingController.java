@@ -1,8 +1,8 @@
 package net.teumteum.meeting.controller;
 
 import lombok.RequiredArgsConstructor;
-import net.teumteum.core.context.LoginContext;
 import net.teumteum.core.error.ErrorResponse;
+import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
@@ -19,7 +19,7 @@ public class MeetingController {
 
     private final MeetingService meetingService;
 
-    private final LoginContext loginContext;
+    private final SecurityService securityService;
 
     @GetMapping("/{meetingId}")
     @ResponseStatus(HttpStatus.OK)
@@ -42,7 +42,7 @@ public class MeetingController {
     @PostMapping("/{meetingId}/participants")
     @ResponseStatus(HttpStatus.CREATED)
     public MeetingResponse addParticipant(@PathVariable("meetingId") Long meetingId) {
-        Long userId = loginContext.getUserId();
+        Long userId = securityService.getCurrentUserId();
         return meetingService.addParticipant(meetingId, userId);
     }
 
