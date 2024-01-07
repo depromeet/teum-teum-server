@@ -252,4 +252,64 @@ class MeetingIntegrationTest extends IntegrationTest {
                     .expectBody(ErrorResponse.class);
         }
     }
+
+    @Nested
+    @DisplayName("미팅 참여 취소 API는")
+    class Cancel_meeting_api {
+
+        @Test
+        @DisplayName("존재하는 모임의 id가 주어지면, 모임에 참여를 취소한다.")
+        void Cancel_meeting_if_exist_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeeting();
+
+            loginContext.setUserId(me.getId());
+            api.joinMeeting(VALID_TOKEN, meeting.getId());
+            // when
+            var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isOk();
+        }
+
+        @Test
+        @DisplayName("참여하지 않은 모임의 id가 주어지면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_not_joined_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeeting();
+
+            loginContext.setUserId(me.getId());
+            // when
+            var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            Assertions.assertThat(result.expectStatus().isBadRequest()
+                            .expectBody(ErrorResponse.class)
+                            .returnResult()
+                            .getResponseBody()
+                    )
+                    .extracting(ErrorResponse::getMessage)
+                    .isEqualTo("참여하지 않은 모임입니다.");
+        }
+
+        @Test
+        @DisplayName("종료된 모임의 id가 주어진다면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_closed_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetCloseMeeting();
+
+            loginContext.setUserId(me.getId());
+            // when
+            var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            Assertions.assertThat(result.expectStatus().isBadRequest()
+                            .expectBody(ErrorResponse.class)
+                            .returnResult()
+                            .getResponseBody()
+                    )
+                    .extracting(ErrorResponse::getMessage)
+                    .isEqualTo("종료된 모임에서 참여를 취소할 수 없습니다.");
+        }
+    }
 }

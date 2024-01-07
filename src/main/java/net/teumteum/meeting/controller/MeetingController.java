@@ -46,6 +46,13 @@ public class MeetingController {
         return meetingService.addParticipant(meetingId, userId);
     }
 
+    @DeleteMapping("/{meetingId}/participants")
+    @ResponseStatus(HttpStatus.OK)
+public void deleteParticipant(@PathVariable("meetingId") Long meetingId) {
+        Long userId = securityService.getCurrentUserId();
+        meetingService.cancelParticipant(meetingId, userId);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {

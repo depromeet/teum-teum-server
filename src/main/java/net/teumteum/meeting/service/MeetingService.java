@@ -68,4 +68,20 @@ public class MeetingService {
         existMeeting.addParticipant(userId);
         return MeetingResponse.of(existMeeting);
     }
+
+    @Transactional
+    public void cancelParticipant(Long meetingId, Long userId) {
+        var existMeeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
+
+        if (!existMeeting.isOpen()) {
+            throw new IllegalArgumentException("종료된 모임에서 참여를 취소할 수 없습니다.");
+        }
+
+        if (!existMeeting.alreadyParticipant(userId)) {
+            throw new IllegalArgumentException("참여하지 않은 모임입니다.");
+        }
+
+        existMeeting.cancelParticipant(userId);
+    }
 }
