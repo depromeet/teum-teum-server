@@ -1,5 +1,6 @@
 package net.teumteum.integration;
 
+import java.util.List;
 import net.teumteum.meeting.config.PageableHandlerMethodArgumentResolver;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.user.domain.request.UserUpdateRequest;
@@ -22,40 +23,40 @@ class Api {
     public Api(ApplicationContext applicationContext) {
         var controllers = applicationContext.getBeansWithAnnotation(Controller.class).values();
         webTestClient = WebTestClient.bindToController(controllers.toArray())
-                .argumentResolvers(resolvers -> resolvers.addCustomResolver(new PageableHandlerMethodArgumentResolver()))
-                .build();
+            .argumentResolvers(resolvers -> resolvers.addCustomResolver(new PageableHandlerMethodArgumentResolver()))
+            .build();
     }
 
 
     ResponseSpec getUser(String token, Long userId) {
         return webTestClient
-                .get()
-                .uri("/users/" + userId)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .exchange();
+            .get()
+            .uri("/users/" + userId)
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
     }
 
     ResponseSpec getUsersById(String token, String userIds) {
         return webTestClient.get()
-                .uri("/users?id=" + userIds)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .exchange();
+            .uri("/users?id=" + userIds)
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
     }
 
     ResponseSpec updateUser(String token, UserUpdateRequest userUpdateRequest) {
         return webTestClient
-                .put()
-                .uri("/users")
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .bodyValue(userUpdateRequest)
-                .exchange();
+            .put()
+            .uri("/users")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .bodyValue(userUpdateRequest)
+            .exchange();
     }
 
     ResponseSpec addFriends(String token, Long friendId) {
         return webTestClient.post()
-                .uri("/users/" + friendId + "/friends")
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .exchange();
+            .uri("/users/" + friendId + "/friends")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
     }
 
     ResponseSpec getFriendsByUserId(String token, Long userId) {
@@ -67,32 +68,32 @@ class Api {
 
     ResponseSpec getOpenMeetings(String token, Long cursorId, int size) {
         return webTestClient.get()
-                .uri("/meetings" +
-                        "?cursorId=" + cursorId +
-                        "&size=" + size)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .exchange();
+            .uri("/meetings" +
+                "?cursorId=" + cursorId +
+                "&size=" + size)
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
     }
 
     ResponseSpec getMeetingById(String token, Long meetingId) {
         return webTestClient.get()
-                .uri("/meetings/" + meetingId)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .exchange();
+            .uri("/meetings/" + meetingId)
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
     }
 
     ResponseSpec getMeetingsByTopic(String token, Pageable pageable, boolean isOpen, Topic topic) {
         String sort = pageable.getSort().toString().replace(": ", ",");
         String uri = "/meetings?sort=" + sort +
-                "&page=" + pageable.getOffset() +
-                "&size=" + pageable.getPageSize() +
-                "&isOpen=" + isOpen +
-                "&topic=" + topic;
+            "&page=" + pageable.getOffset() +
+            "&size=" + pageable.getPageSize() +
+            "&isOpen=" + isOpen +
+            "&topic=" + topic;
 
         return webTestClient.get()
-                .uri(uri)
-                .header(HttpHeaders.AUTHORIZATION, token)
-                .exchange();
+            .uri(uri)
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
     }
 
     ResponseSpec joinMeeting(String token, Long meetingId) {
@@ -105,6 +106,17 @@ class Api {
     ResponseSpec cancelMeeting(String token, Long meetingId) {
         return webTestClient.delete()
             .uri("/meetings/" + meetingId + "/participants")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec getCommonInterests(String token, List<Long> userIds) {
+        var param = new StringBuilder();
+        for (Long userId : userIds) {
+            param.append(userId).append(",");
+        }
+        return webTestClient.get()
+            .uri("/users/interests?user-id=" + param.substring(0, param.length() - 1))
             .header(HttpHeaders.AUTHORIZATION, token)
             .exchange();
     }

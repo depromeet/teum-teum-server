@@ -1,5 +1,7 @@
 package net.teumteum.integration;
 
+import java.util.List;
+import java.util.stream.LongStream;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.response.FriendsResponse;
@@ -9,8 +11,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {
@@ -35,11 +35,11 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(
-                            result.expectStatus().isOk()
-                                    .expectBody(UserGetResponse.class)
-                                    .returnResult().getResponseBody())
-                    .usingRecursiveComparison()
-                    .isEqualTo(expected);
+                    result.expectStatus().isOk()
+                        .expectBody(UserGetResponse.class)
+                        .returnResult().getResponseBody())
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
         }
 
         @Test
@@ -53,7 +53,7 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             result.expectStatus().isBadRequest()
-                    .expectBody(ErrorResponse.class);
+                .expectBody(ErrorResponse.class);
         }
     }
 
@@ -75,9 +75,9 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(result.expectStatus().isOk()
-                    .expectBody(UsersGetByIdResponse.class)
-                    .returnResult()
-                    .getResponseBody()
+                .expectBody(UsersGetByIdResponse.class)
+                .returnResult()
+                .getResponseBody()
             ).usingRecursiveComparison().isEqualTo(expected);
         }
 
@@ -194,6 +194,26 @@ class UserIntegrationTest extends IntegrationTest {
                     .returnResult()
                     .getResponseBody())
                 .usingRecursiveComparison().isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("공통 관심 질문 찾기 API는")
+    class Find_common_interests_question_api {
+
+        @Test
+        @DisplayName("유저의 id들을 입력받고, 공통 관심사 질문을 반환한다.")
+        void Return_common_interests_when_receive_user_ids() {
+            // given
+            var ids = LongStream.range(0, 4)
+                .map(value -> repository.saveAndGetUser().getId())
+                .boxed().toList();
+
+            // when
+            var result = api.getCommonInterests(VALID_TOKEN, ids);
+
+            // then
+            result.expectStatus().isOk();
         }
     }
 }
