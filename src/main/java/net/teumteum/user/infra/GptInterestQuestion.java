@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
@@ -13,16 +15,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @RequiredArgsConstructor
 public class GptInterestQuestion implements InterestQuestion {
 
-    private final ObjectMapper objectMapper;
     private final WebClient webClient;
+    private final ObjectMapper objectMapper;
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     @Value("${gpt.token}")
     private String gptToken;
+
 
     @Override
     public InterestQuestionResponse getQuestion(List<User> users) {
@@ -39,6 +44,7 @@ public class GptInterestQuestion implements InterestQuestion {
                 return response.createError();
             })
             .retry(5)
+            .subscribeOn(Schedulers.fromExecutor(executorService))
             .block(Duration.ofSeconds(5));
     }
 

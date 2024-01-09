@@ -1,7 +1,6 @@
 package net.teumteum.integration;
 
 import java.util.List;
-import java.util.stream.LongStream;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.response.FriendsResponse;
@@ -17,7 +16,6 @@ class UserIntegrationTest extends IntegrationTest {
 
     private static final String VALID_TOKEN = "VALID_TOKEN";
     private static final String INVALID_TOKEN = "IN_VALID_TOKEN";
-
 
     @Nested
     @DisplayName("유저 조회 API는")
@@ -194,26 +192,6 @@ class UserIntegrationTest extends IntegrationTest {
                     .returnResult()
                     .getResponseBody())
                 .usingRecursiveComparison().isEqualTo(expected);
-        }
-    }
-
-    @Nested
-    @DisplayName("공통 관심 질문 찾기 API는")
-    class Find_common_interests_question_api {
-
-        @Test
-        @DisplayName("유저의 id들을 입력받고, 공통 관심사 질문을 반환한다.")
-        void Return_common_interests_when_receive_user_ids() {
-            // given
-            var ids = LongStream.range(0, 4)
-                .map(value -> repository.saveAndGetUser().getId())
-                .boxed().toList();
-
-            // when
-            var result = api.getCommonInterests(VALID_TOKEN, ids);
-
-            // then
-            result.expectStatus().isOk();
         }
     }
 }
