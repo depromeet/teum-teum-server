@@ -11,5 +11,7 @@ allprojects {
         testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 
         testImplementation "org.assertj:assertj-core:${assertJVersion}"
+
+        testImplementation "com.squareup.okhttp3:mockwebserver:${mockWebServerVersion}"
     }
 }

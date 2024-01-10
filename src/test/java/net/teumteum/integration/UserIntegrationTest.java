@@ -1,5 +1,6 @@
 package net.teumteum.integration;
 
+import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.response.FriendsResponse;
@@ -10,14 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {
 
     private static final String VALID_TOKEN = "VALID_TOKEN";
     private static final String INVALID_TOKEN = "IN_VALID_TOKEN";
-
 
     @Nested
     @DisplayName("유저 조회 API는")
@@ -35,11 +33,11 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(
-                            result.expectStatus().isOk()
-                                    .expectBody(UserGetResponse.class)
-                                    .returnResult().getResponseBody())
-                    .usingRecursiveComparison()
-                    .isEqualTo(expected);
+                    result.expectStatus().isOk()
+                        .expectBody(UserGetResponse.class)
+                        .returnResult().getResponseBody())
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
         }
 
         @Test
@@ -53,7 +51,7 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             result.expectStatus().isBadRequest()
-                    .expectBody(ErrorResponse.class);
+                .expectBody(ErrorResponse.class);
         }
     }
 
@@ -75,9 +73,9 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(result.expectStatus().isOk()
-                    .expectBody(UsersGetByIdResponse.class)
-                    .returnResult()
-                    .getResponseBody()
+                .expectBody(UsersGetByIdResponse.class)
+                .returnResult()
+                .getResponseBody()
             ).usingRecursiveComparison().isEqualTo(expected);
         }
 

@@ -1,18 +1,28 @@
 package net.teumteum.user.controller;
 
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
+import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,8 +43,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UsersGetByIdResponse getUsersById(@RequestParam("id") String userIds) {
         var parsedUserIds = Arrays.stream(userIds.split(","))
-                .map(Long::valueOf)
-                .toList();
+            .map(Long::valueOf)
+            .toList();
 
         return userService.getUsersById(parsedUserIds);
     }
@@ -55,6 +65,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public FriendsResponse findFriends(@PathVariable("userId") Long userId) {
         return userService.findFriendsByUserId(userId);
+    }
+
+    @GetMapping("/interests")
+    public InterestQuestionResponse getInterestQuestion(@RequestParam("user-id") List<Long> userIds) {
+        return userService.getInterestQuestionByUserIds(userIds);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

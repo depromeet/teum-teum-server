@@ -31,6 +31,10 @@ management:
       exposure:
         include: prometheus
 
+### GPT ###
+gpt:
+  token: 
+
 ## LOGGING
 logging:
   level:
