@@ -20,7 +20,6 @@ spring:
             client-id: ${NAVER_CLIENT_ID}
             client-secret: ${NAVER_CLIENT_ID}
             redirect-uri: ${NAVER_REDIRECT_URI}
-            client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope:
 
