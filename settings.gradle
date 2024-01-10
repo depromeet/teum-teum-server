@@ -3,6 +3,7 @@ pluginManagement {
         id 'org.springframework.boot' version "${springBootVersion}"
         id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
         id 'org.sonarqube' version "${sonarVersion}"
+        id 'io.sentry.jvm.gradle' version "${sentryVersion}"
     }
 }
 
