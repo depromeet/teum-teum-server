@@ -21,6 +21,8 @@ import reactor.core.scheduler.Schedulers;
 @RequiredArgsConstructor
 public class GptInterestQuestion implements InterestQuestion {
 
+    private static final int MAX_RETRY_COUNT = 5;
+
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
     private final ExecutorService executorService = Executors.newCachedThreadPool();
@@ -43,7 +45,7 @@ public class GptInterestQuestion implements InterestQuestion {
                 }
                 return response.createError();
             })
-            .retry(5)
+            .retry(MAX_RETRY_COUNT)
             .subscribeOn(Schedulers.fromExecutor(executorService))
             .block(Duration.ofSeconds(5));
     }
