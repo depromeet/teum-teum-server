@@ -13,6 +13,7 @@ import net.teumteum.core.security.service.JwtService;
 import net.teumteum.user.domain.User;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -28,11 +29,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthService authService;
     private final JwtProperty jwtProperty;
 
+    private static void saveUserAuthentication(User user) {
+        UserAuthentication authentication = new UserAuthentication(user);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        /* Cors Preflight Request */
         if (request.getMethod().equals("OPTIONS")) {
             return;
         }
@@ -40,14 +45,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = this.resolveTokenFromRequest(request);
             if (checkTokenExistenceAndValidation(token)) {
-                User user = this.authService.findUserByToken(token).get();
-                UserAuthentication authentication = new UserAuthentication(user);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                User user = getUser(token);
+                saveUserAuthentication(user);
             }
         } catch (InsufficientAuthenticationException e) {
-            log.info("JwtAuthentication UnauthorizedUserException!");
+            log.error("JwtAuthentication UnauthorizedUserException!");
         }
         filterChain.doFilter(request, response);
+    }
+
+    private User getUser(String token) {
+        return this.authService.findUserByToken(token)
+                .orElseThrow(() -> new UsernameNotFoundException("일치하는 회원 정보가 존재하지 않습니다."));
     }
 
     private boolean checkTokenExistenceAndValidation(String token) {
