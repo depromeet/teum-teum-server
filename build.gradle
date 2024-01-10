@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' apply false
     id 'io.spring.dependency-management'
     id 'org.sonarqube'
+    id 'io.sentry.jvm.gradle'
 }
 
 apply from: "gradle/spring.gradle"

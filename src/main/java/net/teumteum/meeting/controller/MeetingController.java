@@ -1,5 +1,6 @@
 package net.teumteum.meeting.controller;
 
+import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
@@ -56,6 +57,7 @@ public void deleteParticipant(@PathVariable("meetingId") Long meetingId) {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+        Sentry.captureException(illegalArgumentException);
         return ErrorResponse.of(illegalArgumentException);
     }
 }

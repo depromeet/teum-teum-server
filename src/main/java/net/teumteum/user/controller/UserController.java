@@ -1,5 +1,6 @@
 package net.teumteum.user.controller;
 
+import io.sentry.Sentry;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+        Sentry.captureException(illegalArgumentException);
         return ErrorResponse.of(illegalArgumentException);
     }
 

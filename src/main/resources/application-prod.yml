@@ -33,7 +33,12 @@ management:
 
 ### GPT ###
 gpt:
-  token: 
+  token:
+
+### SENTRY ###
+sentry:
+  dsn: https://59e89fa57d11ed7a7887bcf404179150@o4506545306271744.ingest.sentry.io/4506545307320320
+  traces-sample-rate: 1.0
 
 ## LOGGING
 logging:
