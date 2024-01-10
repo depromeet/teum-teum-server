@@ -42,6 +42,11 @@ public class UserAuthentication extends AbstractAuthenticationToken {
         return true;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
     public void setUserId(Long userId) {
         id = userId;
     }
