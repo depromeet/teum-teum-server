@@ -45,7 +45,7 @@ public class AuthService {
 
     private CustomOAuthUser getCustomOAuthUser(String accessToken, OAuthToken oAuthToken, ClientRegistration clientRegistration) {
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, accessToken, Instant.now(),
-                Instant.ofEpochMilli(Long.valueOf(oAuthToken.getExpiresIn())));
+                Instant.ofEpochMilli(oAuthToken.getExpiresIn()));
 
         OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(clientRegistration, oAuth2AccessToken);
 
