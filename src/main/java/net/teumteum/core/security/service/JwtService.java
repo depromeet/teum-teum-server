@@ -64,7 +64,7 @@ public class JwtService {
         this.redisService.setDataExpire(String.valueOf(users.getId()),
                 refreshToken, this.jwtProperty.getRefresh().getExpiration());
 
-        return new TokenResponse(this.jwtProperty.getBearer() + " " + accessToken, refreshToken);
+        return new TokenResponse(this.jwtProperty.getBearer() + " " + accessToken, refreshToken, null);
 
     }
 

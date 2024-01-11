@@ -1,6 +1,7 @@
 package net.teumteum.user.service;
 
 import lombok.RequiredArgsConstructor;
+import net.teumteum.core.security.Authenticated;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserConnector;
 import net.teumteum.user.domain.UserRepository;
@@ -25,5 +26,10 @@ public class UserConnectorImpl implements UserConnector {
     @Override
     public List<User> findAllUser() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Optional<User> findByAuthenticatedAndOAuthId(Authenticated authenticated, String oAuthId) {
+        return userRepository.findByAuthenticatedAndOAuthId(authenticated, oAuthId);
     }
 }
