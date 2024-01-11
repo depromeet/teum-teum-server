@@ -8,10 +8,10 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-### JPA ###
+  ## JPA
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true

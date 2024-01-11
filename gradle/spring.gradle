@@ -25,7 +25,6 @@ allprojects {
 
         implementation "org.springframework.boot:spring-boot-starter-security"
         implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
-        implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
 
         runtimeOnly 'io.micrometer:micrometer-registry-prometheus'

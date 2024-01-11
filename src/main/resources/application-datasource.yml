@@ -12,3 +12,9 @@ spring:
     hikari:
       connection-timeout: 3000
       maximum-pool-size: 80
+
+  flyway:
+    url: jdbc:mysql://${DATABASE_HOST:localhost}:${DATABASE_PORT}/${DATABASE_NAME}
+    user: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    baseline-on-migrate: true
