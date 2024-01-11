@@ -48,8 +48,7 @@ public class AuthService {
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, accessToken, Instant.now(),
                 Instant.ofEpochMilli(oAuthToken.getExpiresIn()));
 
-        OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(null, oAuth2AccessToken);
-
+        OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(clientRegistration, oAuth2AccessToken);
         return (CustomOAuthUser) oAuthService.loadUser(oAuth2UserRequest);
     }
 
