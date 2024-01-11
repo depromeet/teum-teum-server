@@ -8,7 +8,6 @@ import net.teumteum.core.security.service.JwtService;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserConnector;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,6 @@ public class AuthService {
     private final JwtService jwtService;
     private final OAuthService oAuthService;
     private final UserConnector userConnector;
-    private final InMemoryClientRegistrationRepository inMemoryClientRegistrationRepository;
 
     public Optional<User> findUserByToken(String accessToken) {
         Long id = Long.parseLong(jwtService.getUserIdFromToken(accessToken));
@@ -38,20 +36,20 @@ public class AuthService {
     }
 
     public TokenResponse oAuthLogin(String provider, String code) {
-        ClientRegistration clientRegistration
-                = inMemoryClientRegistrationRepository.findByRegistrationId(provider);
 
-        OAuthToken oAuthToken = getOAuthToken(clientRegistration, code);
-        String accessToken = oAuthToken.getAccessToken();
 
+        OAuthToken oAuthToken = getOAuthToken(null, code);
+        CustomOAuthUser oAuth2User = getCustomOAuthUser(oAuthToken.getAccessToken(), oAuthToken, null);
+        return jwtService.createServiceToken(oAuth2User.getUser());
+    }
+
+    private CustomOAuthUser getCustomOAuthUser(String accessToken, OAuthToken oAuthToken, ClientRegistration clientRegistration) {
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, accessToken, Instant.now(),
                 Instant.ofEpochMilli(Long.valueOf(oAuthToken.getExpiresIn())));
 
         OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(clientRegistration, oAuth2AccessToken);
 
-        CustomOAuthUser oAuth2User = (CustomOAuthUser) oAuthService.loadUser(oAuth2UserRequest);
-
-        return jwtService.createServiceToken(oAuth2User.getUser());
+        return (CustomOAuthUser) oAuthService.loadUser(oAuth2UserRequest);
     }
 
     private OAuthToken getOAuthToken(ClientRegistration clientRegistration, String code) {
