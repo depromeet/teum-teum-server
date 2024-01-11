@@ -1,6 +1,7 @@
 package net.teumteum.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.teumteum.auth.domain.CustomOAuthUser;
 import net.teumteum.auth.domain.OAuthToken;
 import net.teumteum.auth.domain.response.TokenResponse;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -36,8 +38,7 @@ public class AuthService {
     }
 
     public TokenResponse oAuthLogin(String provider, String code) {
-
-
+        log.info("provider is {}", provider);
         OAuthToken oAuthToken = getOAuthToken(null, code);
         CustomOAuthUser oAuth2User = getCustomOAuthUser(oAuthToken.getAccessToken(), oAuthToken, null);
         return jwtService.createServiceToken(oAuth2User.getUser());
@@ -47,7 +48,7 @@ public class AuthService {
         OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, accessToken, Instant.now(),
                 Instant.ofEpochMilli(oAuthToken.getExpiresIn()));
 
-        OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(clientRegistration, oAuth2AccessToken);
+        OAuth2UserRequest oAuth2UserRequest = new OAuth2UserRequest(null, oAuth2AccessToken);
 
         return (CustomOAuthUser) oAuthService.loadUser(oAuth2UserRequest);
     }
