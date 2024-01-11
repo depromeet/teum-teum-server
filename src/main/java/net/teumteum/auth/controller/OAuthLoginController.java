@@ -15,7 +15,7 @@ public class OAuthLoginController {
 
     private final AuthService authService;
 
-    @PostMapping("/login/callback/{provider}")
+    @PostMapping("/logins/callbacks/{provider}")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse oAuthLogin(
             @PathVariable String provider,
