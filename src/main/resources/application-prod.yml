@@ -33,7 +33,7 @@ management:
 
 ### GPT ###
 gpt:
-  token:
+  token: 1234
 
 ### SENTRY ###
 sentry:

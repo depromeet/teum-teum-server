@@ -3,6 +3,7 @@ package net.teumteum.auth.domain;
 import java.util.Map;
 
 public class KakaoOAuthUserInfo extends OAuthUserInfo {
+
     public KakaoOAuthUserInfo(Map<String, Object> attributes) {
         super(attributes);
     }

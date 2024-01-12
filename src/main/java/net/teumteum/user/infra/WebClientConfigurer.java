@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-@Profile("prod")
+@Profile({"prod", "dev"})
 public class WebClientConfigurer {
 
     @Bean
