@@ -77,8 +77,12 @@ public class JwtService {
         Claims claims = Jwts.claims().setSubject(payload);
         Date tokenExpiresIn = new Date(new Date().getTime() + tokenExpiration);
 
-        return Jwts.builder().setClaims(claims).setIssuedAt(new Date()).setExpiration(tokenExpiresIn)
-            .signWith(SignatureAlgorithm.HS512, jwtProperty.getSecret()).compact();
+        return Jwts.builder()
+            .setClaims(claims)
+            .setIssuedAt(new Date())
+            .setExpiration(tokenExpiresIn)
+            .signWith(SignatureAlgorithm.HS512, jwtProperty.getSecret())
+            .compact();
     }
 
     public boolean validateToken(String token) {
