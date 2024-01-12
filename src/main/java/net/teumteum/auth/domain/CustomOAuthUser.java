@@ -13,7 +13,6 @@ public class CustomOAuthUser implements OAuth2User {
 
     private final User user;
     private final Map<String, Object> attributes;
-
     private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomOAuthUser(User user, OAuth2User oAuth2User) {
