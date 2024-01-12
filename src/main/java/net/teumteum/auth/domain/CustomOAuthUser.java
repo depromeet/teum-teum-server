@@ -1,12 +1,11 @@
 package net.teumteum.auth.domain;
 
+import java.util.Collection;
+import java.util.Map;
 import lombok.Getter;
 import net.teumteum.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
-import java.util.Collection;
-import java.util.Map;
 
 @Getter
 public class CustomOAuthUser implements OAuth2User {

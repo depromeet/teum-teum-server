@@ -3,6 +3,7 @@ package net.teumteum.auth.domain;
 import java.util.Map;
 
 public class NaverOAuthUserInfo extends OAuthUserInfo {
+
     public NaverOAuthUserInfo(Map<String, Object> attributes) {
         super(attributes);
     }

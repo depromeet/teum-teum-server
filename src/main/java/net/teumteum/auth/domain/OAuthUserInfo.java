@@ -1,8 +1,7 @@
 package net.teumteum.auth.domain;
 
-import lombok.AllArgsConstructor;
-
 import java.util.Map;
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public abstract class OAuthUserInfo {

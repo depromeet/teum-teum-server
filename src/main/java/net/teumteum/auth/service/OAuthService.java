@@ -1,5 +1,13 @@
 package net.teumteum.auth.service;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static net.teumteum.core.security.Authenticated.네이버;
+import static net.teumteum.core.security.Authenticated.카카오;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.teumteum.auth.domain.KakaoOAuthUserInfo;
@@ -19,15 +27,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static net.teumteum.core.security.Authenticated.네이버;
-import static net.teumteum.core.security.Authenticated.카카오;
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -43,7 +42,8 @@ public class OAuthService {
 
 
     public TokenResponse oAuthLogin(String registrationId, String code) {
-        ClientRegistration clientRegistration = inMemoryClientRegistrationRepository.findByRegistrationId(registrationId);
+        ClientRegistration clientRegistration = inMemoryClientRegistrationRepository.findByRegistrationId(
+            registrationId);
         Authenticated authenticated = getAuthenticated(clientRegistration.getRegistrationId());
         OAuthUserInfo oAuthUserInfo = getOAuthUserInfo(clientRegistration, authenticated, code);
         return checkUserAndMakeResponse(oAuthUserInfo, authenticated);
@@ -56,7 +56,8 @@ public class OAuthService {
         return 카카오;
     }
 
-    private OAuthUserInfo getOAuthUserInfo(ClientRegistration clientRegistration, Authenticated authenticated, String code) {
+    private OAuthUserInfo getOAuthUserInfo(ClientRegistration clientRegistration, Authenticated authenticated,
+        String code) {
         Map<String, Object> oAuthAttribute = getOAuthAttribute(clientRegistration, getToken(clientRegistration, code));
         if (authenticated == 네이버) {
             return new NaverOAuthUserInfo(oAuthAttribute);
@@ -74,8 +75,10 @@ public class OAuthService {
     }
 
     private Map<String, Object> getOAuthAttribute(ClientRegistration clientRegistration, OAuthToken oAuthToken) {
-        return WebClient.create().get().uri(clientRegistration.getProviderDetails().getUserInfoEndpoint().getUri()).headers(header -> header.setBearerAuth(oAuthToken.getAccessToken())).retrieve().bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
-        }).block();
+        return WebClient.create().get().uri(clientRegistration.getProviderDetails().getUserInfoEndpoint().getUri())
+            .headers(header -> header.setBearerAuth(oAuthToken.getAccessToken())).retrieve()
+            .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+            }).block();
     }
 
     private OAuthToken getToken(ClientRegistration clientRegistration, String code) {
@@ -98,5 +101,4 @@ public class OAuthService {
         formData.add("client_id", clientRegistration.getClientId());
         return formData;
     }
-
 }
