@@ -23,3 +23,6 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+
+gpt:
+  token: 1234
