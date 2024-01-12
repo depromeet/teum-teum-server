@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequestMapping
-@RestController
 @RequiredArgsConstructor
 public class OAuthLoginController {
 
