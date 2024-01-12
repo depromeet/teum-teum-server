@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
-
     private final UserConnector userConnector;
 
     public static void clearSecurityContext() {

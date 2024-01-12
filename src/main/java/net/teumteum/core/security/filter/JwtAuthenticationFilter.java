@@ -29,11 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthService authService;
     private final JwtProperty jwtProperty;
 
-    private static void saveUserAuthentication(User user) {
-        UserAuthentication authentication = new UserAuthentication(user);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -61,6 +56,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean checkTokenExistenceAndValidation(String token) {
         return StringUtils.hasText(token) && this.jwtService.validateToken(token);
+    }
+
+    private void saveUserAuthentication(User user) {
+        UserAuthentication authentication = new UserAuthentication(user);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private String resolveTokenFromRequest(HttpServletRequest request) {
