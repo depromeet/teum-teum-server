@@ -1,17 +1,27 @@
 package net.teumteum.user.domain;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import net.teumteum.core.entity.TimeBaseEntity;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.util.Assert;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import net.teumteum.core.entity.TimeBaseEntity;
+import net.teumteum.core.security.Authenticated;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.util.Assert;
 
 @Getter
 @Entity(name = "users")
@@ -68,6 +78,11 @@ public class User extends TimeBaseEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     private Set<Long> friends = new HashSet<>();
+
+    public User(Long id, String oauthId, Authenticated authenticated) {
+        this.id = id;
+        this.oauth = new OAuth(oauthId, authenticated);
+    }
 
     @PrePersist
     private void assertField() {
