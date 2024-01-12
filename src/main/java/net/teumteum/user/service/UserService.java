@@ -68,7 +68,7 @@ public class UserService {
             .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 user를 찾을 수 없습니다. \"" + userId + "\""));
     }
 
-    public InterestQuestionResponse getInterestQuestionByUserIds(List<Long> userIds) {
+    public InterestQuestionResponse getInterestQuestionByUserIds(List<Long> userIds, String type) {
         var users = userRepository.findAllById(userIds);
         Assert.isTrue(users.size() >= 2,
             () -> {
@@ -76,6 +76,9 @@ public class UserService {
             }
         );
 
-        return interestQuestion.getQuestion(users);
+        if (type.equals("balance")) {
+            return interestQuestion.getBalanceGame(users);
+        }
+        return interestQuestion.getStoryGame(users);
     }
 }
