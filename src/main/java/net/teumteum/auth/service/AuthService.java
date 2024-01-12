@@ -26,14 +26,14 @@ public class AuthService {
 
         checkRefreshTokenValidation(refreshToken);
 
-        User user = findUserByToken(accessToken).orElseThrow(
+        User user = findUserByAccessToken(accessToken).orElseThrow(
             () -> new IllegalArgumentException("access token 에 해당하는 user를 찾을 수 없습니다."));
 
         checkRefreshTokenMatch(user, refreshToken);
         return issueNewToken(user);
     }
 
-    public Optional<User> findUserByToken(String accessToken) {
+    public Optional<User> findUserByAccessToken(String accessToken) {
         return userConnector.findUserById(Long.parseLong(jwtService.getUserIdFromToken(accessToken)));
     }
 
