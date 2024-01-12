@@ -20,22 +20,21 @@ public class AuthService {
     private final RedisService redisService;
     private final UserConnector userConnector;
 
-    public Optional<User> findUserByToken(String accessToken) {
-        Long id = Long.parseLong(jwtService.getUserIdFromToken(accessToken));
-        return userConnector.findUserById(id);
-    }
-
     public TokenResponse reissue(HttpServletRequest request) {
         String refreshToken = jwtService.extractRefreshToken(request);
         String accessToken = jwtService.extractAccessToken(request);
 
         checkRefreshTokenValidation(refreshToken);
 
-        User user = findUserByToken(accessToken)
-            .orElseThrow(() -> new IllegalArgumentException("access token 에 해당하는 user를 찾을 수 없습니다."));
+        User user = findUserByToken(accessToken).orElseThrow(
+            () -> new IllegalArgumentException("access token 에 해당하는 user를 찾을 수 없습니다."));
 
         checkRefreshTokenMatch(user, refreshToken);
         return issueNewToken(user);
+    }
+
+    public Optional<User> findUserByToken(String accessToken) {
+        return userConnector.findUserById(Long.parseLong(jwtService.getUserIdFromToken(accessToken)));
     }
 
     private void checkRefreshTokenValidation(String refreshToken) {
@@ -45,8 +44,7 @@ public class AuthService {
     }
 
     private void checkRefreshTokenMatch(User user, String refreshToken) {
-        String savedRefreshToken = redisService.getData(String.valueOf(user.getId()));
-        if (!savedRefreshToken.equals(refreshToken)) {
+        if (!redisService.getData(String.valueOf(user.getId())).equals(refreshToken)) {
             throw new IllegalArgumentException("refresh token 이 일치하지 않습니다.");
         }
     }
