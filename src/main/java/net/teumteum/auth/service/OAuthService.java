@@ -67,9 +67,9 @@ public class OAuthService {
 
     private TokenResponse checkUserAndMakeResponse(OAuthUserInfo oAuthUserInfo, Authenticated authenticated) {
         String oauthId = oAuthUserInfo.getOAuthId();
-        java.util.Optional<net.teumteum.user.domain.User> user = getUser(oauthId, authenticated);
+        java.util.Optional<User> user = getUser(oauthId, authenticated);
         if (user.isEmpty()) {
-            return new net.teumteum.auth.domain.response.TokenResponse(oAuthUserInfo.getOAuthId());
+            return new TokenResponse(oAuthUserInfo.getOAuthId());
         }
         return jwtService.createServiceToken(user.get());
     }
