@@ -48,17 +48,17 @@ public record MeetingsResponse(
         }
 
         public record MeetingArea(
-                String city,
-                String street,
-                String zipCode
+                String mainStreet,
+                String address,
+                String addressDetail
         ) {
             public static MeetingArea of(
                     Meeting meeting
             ) {
                 return new MeetingArea(
-                        meeting.getMeetingArea().getCity(),
-                        meeting.getMeetingArea().getStreet(),
-                        meeting.getMeetingArea().getZipCode()
+                        meeting.getMeetingArea().getMainStreet(),
+                        meeting.getMeetingArea().getAddress(),
+                        meeting.getMeetingArea().getAddressDetail()
                 );
             }
         }

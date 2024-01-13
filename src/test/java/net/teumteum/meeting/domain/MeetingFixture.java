@@ -52,10 +52,10 @@ public class MeetingFixture {
         );
     }
 
-    public static Meeting getOpenMeetingWithStreet(String street) {
+    public static Meeting getOpenMeetingWithMainStreet(String mainStreet) {
         return newMeetingByBuilder(MeetingBuilder.builder()
                 .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .meetingArea(new MeetingArea("서울특별시", street, "강남대로 390"))
+                .meetingArea(new MeetingArea(mainStreet, "서울특별시", "강남대로 390"))
                 .build()
         );
     }
@@ -144,7 +144,7 @@ public class MeetingFixture {
         private String introduction = "모임에 대한 간단한 설명입니다.";
 
         @Builder.Default
-        private MeetingArea meetingArea = new MeetingArea("서울특별시", "강남구", "강남대로 390");
+        private MeetingArea meetingArea = new MeetingArea("강남구", "서울특별시 강남대로 390", "강남역 11번 출구");
 
         @Builder.Default
         private int numberOfRecruits = 3;
