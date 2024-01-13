@@ -231,7 +231,6 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(result.expectStatus().isBadRequest());
-
         }
     }
 }

@@ -63,13 +63,14 @@ public class UserService {
     @Transactional
     public void withdraw(Long userId) {
         var existUser = getUser(userId);
-        deleteUser(existUser);
+
+        userRepository.delete(existUser);
         redisService.deleteData(String.valueOf(userId));
     }
 
     @Transactional
     public Long register(UserRegisterRequest request) {
-        findByAuthenticatedAndOAuthId(request.getAuthenticated(), request.getId());
+        checkUserExistence(request.authenticated(), request.id());
 
         return userRepository.save(request.toUser()).getId();
     }
@@ -97,14 +98,10 @@ public class UserService {
         return interestQuestion.getQuestion(users);
     }
 
-    private void deleteUser(User user) {
-        this.userRepository.delete(user);
+    private void checkUserExistence(Authenticated authenticated, String oauthId) {
+        userRepository.findByAuthenticatedAndOAuthId(authenticated, oauthId)
+            .ifPresent(user -> {
+                throw new IllegalArgumentException("x");
+            });
     }
-
-    private void findByAuthenticatedAndOAuthId(Authenticated authenticated, String oauthId) {
-        if (userRepository.findByAuthenticatedAndOAuthId(authenticated, oauthId).isPresent()) {
-            throw new IllegalArgumentException("이미 회원가입된 회원입니다.");
-        }
-    }
-
 }

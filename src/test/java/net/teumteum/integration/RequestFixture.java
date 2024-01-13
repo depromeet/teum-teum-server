@@ -48,7 +48,6 @@ public class RequestFixture {
             "name",
             user.getBirth(),
             user.getCharacterId(),
-            1,
             네이버,
             activityArea(user),
             user.getMbti(),

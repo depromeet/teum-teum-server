@@ -16,7 +16,6 @@ public record UserRegisterRequest(
     String name,
     String birth,
     Long characterId,
-    int backgroundColorId,
     Authenticated authenticated,
     ActivityArea activityArea,
     String mbti,
@@ -26,60 +25,12 @@ public record UserRegisterRequest(
     String goal
 ) {
 
-
     private static final Long IGNORE_ID = null;
     private static final int IGNORE_MANNER_TEMPERATURE = -1;
     private static final boolean NOT_CERTIFICATED = false;
     private static final Terms IGNORE_TERMS = null;
     private static final Set<Long> IGNORE_FRIENDS = Set.of();
 
-    public String getId() {
-        return this.id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getBirth() {
-        return this.birth;
-    }
-
-    public Long getCharacterId() {
-        return this.characterId;
-    }
-
-    public int getBackgroundColorId() {
-        return this.backgroundColorId;
-    }
-
-    public Authenticated getAuthenticated() {
-        return this.authenticated;
-    }
-
-    public ActivityArea getActivityArea() {
-        return this.activityArea;
-    }
-
-    public String getMbti() {
-        return this.mbti;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public Job getJob() {
-        return this.job;
-    }
-
-    public List<String> getInterests() {
-        return this.interests;
-    }
-
-    public String getGoal() {
-        return this.goal;
-    }
 
     public User toUser() {
         return new User(
