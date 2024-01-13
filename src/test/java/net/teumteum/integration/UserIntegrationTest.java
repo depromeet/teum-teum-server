@@ -194,4 +194,24 @@ class UserIntegrationTest extends IntegrationTest {
                 .usingRecursiveComparison().isEqualTo(expected);
         }
     }
+
+    @Nested
+    @DisplayName("회원 탈퇴 API는")
+    class Withdraw_user {
+
+        @Test
+        @DisplayName("현재 로그인한 회원의 회원 탈퇴를 정상적으로 진행한다.")
+        void Return_200_ok_when_withdraw_current_user() {
+            // given
+            var me = repository.saveAndGetUser();
+
+            loginContext.setUserId(me.getId());
+
+            // when
+            var result = api.withdrawUser(VALID_TOKEN);
+
+            // then
+            Assertions.assertThat(result.expectStatus().isOk());
+        }
+    }
 }

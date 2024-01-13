@@ -1,6 +1,7 @@
 package net.teumteum.auth.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,8 @@ public class TokenResponse {
     private String refreshToken;
     private String oauthId;
 
-    @lombok.Builder
+
+    @Builder
     public TokenResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

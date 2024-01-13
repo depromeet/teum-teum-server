@@ -126,4 +126,11 @@ class Api {
             .header("Authorization-refresh", refreshToken)
             .exchange();
     }
+
+    ResponseSpec withdrawUser(String accessToken) {
+        return webTestClient.delete()
+            .uri("/users/withdraw")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
 }

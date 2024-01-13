@@ -14,6 +14,7 @@ import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,6 +73,13 @@ public class UserController {
     public InterestQuestionResponse getInterestQuestion(@RequestParam("user-id") List<Long> userIds) {
         return userService.getInterestQuestionByUserIds(userIds);
     }
+
+    @DeleteMapping("/withdraw")
+    @ResponseStatus(HttpStatus.OK)
+    public void withdraw() {
+        userService.withdraw(getCurrentUserId());
+    }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
