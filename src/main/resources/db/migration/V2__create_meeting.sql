@@ -9,9 +9,9 @@ create table if not exists meeting
     updated_at         timestamp(6)                                 not null,
     title              varchar(32)                                  null,
     introduction       varchar(200)                                 null,
-    city               varchar(255)                                 null,
-    street             varchar(255)                                 null,
-    zip_code           varchar(255)                                 null,
+    address            varchar(255)                                 null,
+    main_street        varchar(255)                                 null,
+    address_detail     varchar(255)                                 null,
     topic              enum ('고민_나누기', '모여서_작업', '스터디', '사이드_프로젝트') null
 );
 
