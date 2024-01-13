@@ -4,9 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.security.Authenticated;
 import net.teumteum.core.security.service.RedisService;
-import net.teumteum.core.security.service.RedisService;
 import net.teumteum.user.domain.BalanceGameType;
-
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
@@ -100,10 +98,6 @@ public class UserService {
         );
 
         return BalanceGameType.of(type).getInterestQuestionResponse(users, interestQuestion);
-    }
-
-    private void deleteUser(User user) {
-        this.userRepository.delete(user);
     }
 
     private void checkUserExistence(Authenticated authenticated, String oauthId) {
