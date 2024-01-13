@@ -67,7 +67,7 @@ public class OAuthService {
 
     private TokenResponse checkUserAndMakeResponse(OAuthUserInfo oAuthUserInfo, Authenticated authenticated) {
         String oauthId = oAuthUserInfo.getOAuthId();
-        java.util.Optional<User> user = getUser(oauthId, authenticated);
+        Optional<User> user = getUser(oauthId, authenticated);
         if (user.isEmpty()) {
             return new TokenResponse(oAuthUserInfo.getOAuthId());
         }
