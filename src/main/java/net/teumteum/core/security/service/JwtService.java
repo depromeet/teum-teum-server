@@ -57,11 +57,10 @@ public class JwtService {
         String accessToken = createAccessToken(String.valueOf(users.getId()));
         String refreshToken = createRefreshToken();
 
-        this.redisService.setDataExpire(String.valueOf(users.getId()), refreshToken,
+        this.redisService.setDataWithExpiration(String.valueOf(users.getId()), refreshToken,
             this.jwtProperty.getRefresh().getExpiration());
 
         return new TokenResponse(jwtProperty.getBearer() + " " + accessToken, refreshToken);
-
     }
 
     public String createAccessToken(String payload) {
@@ -70,7 +69,6 @@ public class JwtService {
 
     public String createRefreshToken() {
         return this.createToken(UUID.randomUUID().toString(), jwtProperty.getRefresh().getExpiration());
-
     }
 
     private String createToken(String payload, Long tokenExpiration) {
@@ -98,5 +96,4 @@ public class JwtService {
         }
         return false;
     }
-
 }

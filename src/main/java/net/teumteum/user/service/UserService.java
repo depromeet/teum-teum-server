@@ -2,6 +2,7 @@ package net.teumteum.user.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import net.teumteum.core.security.service.RedisService;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
@@ -21,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final InterestQuestion interestQuestion;
+    private final RedisService redisService;
 
     public UserGetResponse getUserById(Long userId) {
         var existUser = getUser(userId);
@@ -56,6 +58,13 @@ public class UserService {
         me.addFriend(friend);
     }
 
+    @Transactional
+    public void withdraw(Long userId) {
+        var existUser = getUser(userId);
+        deleteUser(existUser);
+        redisService.deleteData(String.valueOf(userId));
+    }
+
     public FriendsResponse findFriendsByUserId(Long userId) {
         var user = getUser(userId);
         var friends = userRepository.findAllById(user.getFriends());
@@ -77,5 +86,9 @@ public class UserService {
         );
 
         return interestQuestion.getQuestion(users);
+    }
+
+    private void deleteUser(User user) {
+        this.userRepository.delete(user);
     }
 }
