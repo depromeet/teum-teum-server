@@ -69,8 +69,10 @@ public class UserController {
     }
 
     @GetMapping("/interests")
-    public InterestQuestionResponse getInterestQuestion(@RequestParam("user-id") List<Long> userIds) {
-        return userService.getInterestQuestionByUserIds(userIds);
+    @ResponseStatus(HttpStatus.OK)
+    public InterestQuestionResponse getInterestQuestion(@RequestParam("user-id") List<Long> userIds,
+        @RequestParam("type") String balance) {
+        return userService.getInterestQuestionByUserIds(userIds, balance);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

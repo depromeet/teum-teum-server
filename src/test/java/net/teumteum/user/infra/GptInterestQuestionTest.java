@@ -3,7 +3,8 @@ package net.teumteum.user.infra;
 import java.util.List;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.UserFixture;
-import net.teumteum.user.domain.response.InterestQuestionResponse;
+import net.teumteum.user.domain.response.BalanceQuestionResponse;
+import net.teumteum.user.domain.response.StoryQuestionResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,17 +25,16 @@ class GptInterestQuestionTest {
     @Autowired
     private InterestQuestion interestQuestion;
 
-
     @Nested
-    @DisplayName("getQuestion 메소드는")
-    class GetQuestion_method {
+    @DisplayName("getBalanceGame 메소드는")
+    class GetBalanceGame_method {
 
         @Test
-        @DisplayName("user 목록을 받아서, 관심 질문을 반환한다.")
+        @DisplayName("user 목록을 받아서, 밸런스 게임을 반환한다.")
         void Return_balance_game_when_receive_user_list() {
             // given
             var users = List.of(UserFixture.getDefaultUser(), UserFixture.getDefaultUser());
-            var expected = new InterestQuestionResponse(
+            var expected = new BalanceQuestionResponse(
                 "프로그래머",
                 List.of("프론트엔드", "백엔드")
             );
@@ -43,7 +43,7 @@ class GptInterestQuestionTest {
             gptTestServer.enqueue(expected);
 
             // when
-            var result = interestQuestion.getQuestion(users);
+            var result = interestQuestion.getBalanceGame(users);
 
             // then
             Assertions.assertThat(expected).isEqualTo(result);
@@ -54,7 +54,7 @@ class GptInterestQuestionTest {
         void Do_retry_when_gpt_server_cannot_receive_interests_lists() {
             // given
             var users = List.of(UserFixture.getDefaultUser(), UserFixture.getDefaultUser());
-            var expected = new InterestQuestionResponse(
+            var expected = new BalanceQuestionResponse(
                 "프로그래머",
                 List.of("프론트엔드", "백엔드")
             );
@@ -66,7 +66,7 @@ class GptInterestQuestionTest {
             gptTestServer.enqueue(expected);
 
             // when
-            var result = interestQuestion.getQuestion(users);
+            var result = interestQuestion.getBalanceGame(users);
 
             // then
             Assertions.assertThat(expected).isEqualTo(result);
@@ -84,10 +84,36 @@ class GptInterestQuestionTest {
             gptTestServer.enqueue400();
 
             // when
-            var result = Assertions.catchException(() -> interestQuestion.getQuestion(users));
+            var result = Assertions.catchException(() -> interestQuestion.getBalanceGame(users));
 
             // then
             Assertions.assertThat(result.getClass()).isEqualTo(IllegalStateException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("getStoryGame 메소드는")
+    class GetStoryGame_method {
+
+        @Test
+        @DisplayName("user 목록을 받아서, 밸런스 게임을 반환한다.")
+        void Return_story_game_when_receive_user_list() {
+            // given
+            var users = List.of(UserFixture.getDefaultUser(), UserFixture.getDefaultUser());
+            var expected = new StoryQuestionResponse(
+                "프로그래머",
+                "어떤 프로그래머가 좋은 프로그래머 일까요?"
+            );
+
+            gptTestServer.enqueue400();
+            gptTestServer.enqueue400();
+            gptTestServer.enqueue(expected);
+
+            // when
+            var result = interestQuestion.getStoryGame(users);
+
+            // then
+            Assertions.assertThat(result).isEqualTo(expected);
         }
     }
 }
