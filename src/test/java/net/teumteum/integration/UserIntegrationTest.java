@@ -200,7 +200,7 @@ class UserIntegrationTest extends IntegrationTest {
     class Withdraw_user {
 
         @Test
-        @DisplayName("현재 로그인한 회원의 회원 탈퇴를 전상적으로 진행한다.")
+        @DisplayName("현재 로그인한 회원의 회원 탈퇴를 정상적으로 진행한다.")
         void Return_200_ok_when_withdraw_current_user() {
             // given
             var me = repository.saveAndGetUser();
