@@ -4,6 +4,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.security.Authenticated;
 import net.teumteum.core.security.service.RedisService;
+import net.teumteum.core.security.service.RedisService;
+import net.teumteum.user.domain.BalanceGameType;
+
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
@@ -75,6 +78,7 @@ public class UserService {
         return userRepository.save(request.toUser()).getId();
     }
 
+
     public FriendsResponse findFriendsByUserId(Long userId) {
         var user = getUser(userId);
         var friends = userRepository.findAllById(user.getFriends());
@@ -87,7 +91,7 @@ public class UserService {
             .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 user를 찾을 수 없습니다. \"" + userId + "\""));
     }
 
-    public InterestQuestionResponse getInterestQuestionByUserIds(List<Long> userIds) {
+    public InterestQuestionResponse getInterestQuestionByUserIds(List<Long> userIds, String type) {
         var users = userRepository.findAllById(userIds);
         Assert.isTrue(users.size() >= 2,
             () -> {
@@ -95,7 +99,11 @@ public class UserService {
             }
         );
 
-        return interestQuestion.getQuestion(users);
+        return BalanceGameType.of(type).getInterestQuestionResponse(users, interestQuestion);
+    }
+
+    private void deleteUser(User user) {
+        this.userRepository.delete(user);
     }
 
     private void checkUserExistence(Authenticated authenticated, String oauthId) {

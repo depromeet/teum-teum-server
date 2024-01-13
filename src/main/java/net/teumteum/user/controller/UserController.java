@@ -71,8 +71,10 @@ public class UserController {
     }
 
     @GetMapping("/interests")
-    public InterestQuestionResponse getInterestQuestion(@RequestParam("user-id") List<Long> userIds) {
-        return userService.getInterestQuestionByUserIds(userIds);
+    @ResponseStatus(HttpStatus.OK)
+    public InterestQuestionResponse getInterestQuestion(@RequestParam("user-id") List<Long> userIds,
+        @RequestParam("type") String balance) {
+        return userService.getInterestQuestionByUserIds(userIds, balance);
     }
 
     @DeleteMapping("/withdraws")
@@ -80,12 +82,13 @@ public class UserController {
     public void withdraw() {
         userService.withdraw(getCurrentUserId());
     }
-
+  
     @PostMapping("/registers")
     @ResponseStatus(HttpStatus.CREATED)
     public Long register(@RequestBody UserRegisterRequest request) {
         return userService.register(request);
     }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)

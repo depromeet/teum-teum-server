@@ -17,7 +17,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/reissue")
+    @PostMapping("/reissues")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse reissue(HttpServletRequest request) {
         return authService.reissue(request);
