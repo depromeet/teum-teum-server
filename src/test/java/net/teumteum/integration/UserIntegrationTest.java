@@ -214,4 +214,24 @@ class UserIntegrationTest extends IntegrationTest {
             Assertions.assertThat(result.expectStatus().isOk());
         }
     }
+
+    @Nested
+    @DisplayName("회원 카드 등록 API는")
+    class Register_user_card {
+
+        @Test
+        @DisplayName("요청이 잘못되는 경우 400 Bad Request 을 반환한다 ")
+        void Return_400_badRequest_register_user_card() {
+            // given
+            var existUser = repository.saveAndGetUser();
+
+            var userRegister = RequestFixture.userRegisterRequest(existUser);
+            // when
+            var result = api.registerUserCard(VALID_TOKEN, userRegister);
+
+            // then
+            Assertions.assertThat(result.expectStatus().isBadRequest());
+
+        }
+    }
 }

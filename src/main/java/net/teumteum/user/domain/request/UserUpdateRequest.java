@@ -1,12 +1,16 @@
 package net.teumteum.user.domain.request;
 
+import static net.teumteum.user.domain.RoleType.ROLE_USER;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Set;
-
-import net.teumteum.user.domain.*;
-
-import static net.teumteum.user.domain.RoleType.ROLE_USER;
+import net.teumteum.user.domain.ActivityArea;
+import net.teumteum.user.domain.Job;
+import net.teumteum.user.domain.JobStatus;
+import net.teumteum.user.domain.OAuth;
+import net.teumteum.user.domain.Terms;
+import net.teumteum.user.domain.User;
 
 public record UserUpdateRequest(
     Long id,
@@ -35,7 +39,7 @@ public record UserUpdateRequest(
             newBirth,
             newCharacterId,
             IGNORE_MANNER_TEMPERATURE,
-                IGNORE_O_AUTH,
+            IGNORE_O_AUTH,
             ROLE_USER,
             new ActivityArea(
                 newActivityArea.city,

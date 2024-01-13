@@ -3,6 +3,7 @@ package net.teumteum.integration;
 import java.util.List;
 import net.teumteum.meeting.config.PageableHandlerMethodArgumentResolver;
 import net.teumteum.meeting.domain.Topic;
+import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.ApplicationContext;
@@ -121,7 +122,7 @@ class Api {
 
     ResponseSpec reissueJwt(String accessToken, String refreshToken) {
         return webTestClient.post()
-            .uri("/auth/reissue")
+            .uri("/auth/reissues")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .header("Authorization-refresh", refreshToken)
             .exchange();
@@ -129,8 +130,17 @@ class Api {
 
     ResponseSpec withdrawUser(String accessToken) {
         return webTestClient.delete()
-            .uri("/users/withdraw")
+            .uri("/users/withdraws")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
+
+    ResponseSpec registerUserCard(String accessToken, UserRegisterRequest userRegisterRequest) {
+        return webTestClient
+            .post()
+            .uri("/users/registers")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .bodyValue(userRegisterRequest)
             .exchange();
     }
 }
