@@ -1,15 +1,15 @@
 package net.teumteum.core.security.service;
 
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-
 @Service
 @RequiredArgsConstructor
 public class RedisService {
+
     private final StringRedisTemplate stringRedisTemplate;
 
     public String getData(String key) {
@@ -22,14 +22,14 @@ public class RedisService {
         valueOperations.set(key, value);
     }
 
-    public void deleteData(String key) {
-        this.stringRedisTemplate.delete(key);
-    }
-
-    public void setDataExpire(String key, String value, Long duration) {
+    public void setDataWithExpiration(String key, String value, Long duration) {
         ValueOperations<String, String> valueOperations = getStringStringValueOperations();
         Duration expireDuration = Duration.ofSeconds(duration);
         valueOperations.set(key, value, expireDuration);
+    }
+
+    public void deleteData(String key) {
+        this.stringRedisTemplate.delete(key);
     }
 
     private ValueOperations<String, String> getStringStringValueOperations() {
