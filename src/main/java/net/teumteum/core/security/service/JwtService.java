@@ -61,7 +61,6 @@ public class JwtService {
             this.jwtProperty.getRefresh().getExpiration());
 
         return new TokenResponse(jwtProperty.getBearer() + " " + accessToken, refreshToken);
-
     }
 
     public String createAccessToken(String payload) {
@@ -70,7 +69,6 @@ public class JwtService {
 
     public String createRefreshToken() {
         return this.createToken(UUID.randomUUID().toString(), jwtProperty.getRefresh().getExpiration());
-
     }
 
     private String createToken(String payload, Long tokenExpiration) {
