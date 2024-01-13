@@ -76,7 +76,7 @@ public class UserController {
         return userService.getInterestQuestionByUserIds(userIds, balance);
     }
 
-    @DeleteMapping("/withdraw")
+    @DeleteMapping("/withdraws")
     @ResponseStatus(HttpStatus.OK)
     public void withdraw() {
         userService.withdraw(getCurrentUserId());
