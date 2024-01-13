@@ -2,10 +2,12 @@ package net.teumteum.user.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import net.teumteum.core.security.Authenticated;
 import net.teumteum.core.security.service.RedisService;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
+import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
@@ -65,6 +67,13 @@ public class UserService {
         redisService.deleteData(String.valueOf(userId));
     }
 
+    @Transactional
+    public Long register(UserRegisterRequest request) {
+        findByAuthenticatedAndOAuthId(request.getAuthenticated(), request.getId());
+
+        return userRepository.save(request.toUser()).getId();
+    }
+
     public FriendsResponse findFriendsByUserId(Long userId) {
         var user = getUser(userId);
         var friends = userRepository.findAllById(user.getFriends());
@@ -91,4 +100,11 @@ public class UserService {
     private void deleteUser(User user) {
         this.userRepository.delete(user);
     }
+
+    private void findByAuthenticatedAndOAuthId(Authenticated authenticated, String oauthId) {
+        if (userRepository.findByAuthenticatedAndOAuthId(authenticated, oauthId).isPresent()) {
+            throw new IllegalArgumentException("이미 회원가입된 회원입니다.");
+        }
+    }
+
 }

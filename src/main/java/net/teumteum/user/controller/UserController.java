@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
+import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
@@ -74,12 +75,17 @@ public class UserController {
         return userService.getInterestQuestionByUserIds(userIds);
     }
 
-    @DeleteMapping("/withdraw")
+    @DeleteMapping("/withdraws")
     @ResponseStatus(HttpStatus.OK)
     public void withdraw() {
         userService.withdraw(getCurrentUserId());
     }
 
+    @PostMapping("/registers")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long register(@RequestBody UserRegisterRequest request) {
+        return userService.register(request);
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
