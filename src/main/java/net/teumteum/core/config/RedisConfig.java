@@ -1,7 +1,7 @@
 package net.teumteum.core.config;
 
 import lombok.RequiredArgsConstructor;
-import net.teumteum.core.property.RedisProperty;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final RedisProperty redisProperty;
+    private final RedisProperties redisProperty;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
