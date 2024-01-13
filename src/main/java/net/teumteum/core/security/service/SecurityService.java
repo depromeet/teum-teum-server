@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
+
     private final UserConnector userConnector;
 
     public static void clearSecurityContext() {
@@ -21,7 +22,8 @@ public class SecurityService {
 
 
     public Long getCurrentUserId() {
-        return getUserAuthentication() == null ? userConnector.findAllUser().get(0).getId() : getUserAuthentication().getId();
+        return getUserAuthentication() == null ? userConnector.findAllUser().get(0).getId()
+            : getUserAuthentication().getId();
     }
 
 
