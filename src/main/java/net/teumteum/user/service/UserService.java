@@ -2,6 +2,7 @@ package net.teumteum.user.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import net.teumteum.user.domain.BalanceGameType;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
@@ -76,9 +77,6 @@ public class UserService {
             }
         );
 
-        if (type.equals("balance")) {
-            return interestQuestion.getBalanceGame(users);
-        }
-        return interestQuestion.getStoryGame(users);
+        return BalanceGameType.of(type).getInterestQuestionResponse(users, interestQuestion);
     }
 }
