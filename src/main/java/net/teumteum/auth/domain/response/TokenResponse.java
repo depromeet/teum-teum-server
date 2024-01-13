@@ -14,6 +14,7 @@ public class TokenResponse {
     private String refreshToken;
     private String oauthId;
 
+
     @Builder
     public TokenResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
