@@ -1,4 +1,8 @@
 spring:
+  config:
+    activate:
+      on-profile: "aws"
+      
   cloud:
     aws:
       credentials:
