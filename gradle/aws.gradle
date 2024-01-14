@@ -1,5 +1,5 @@
 dependencies {
-    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}}")
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
     implementation "io.awspring.cloud:spring-cloud-aws-starter-s3"
 
 }
