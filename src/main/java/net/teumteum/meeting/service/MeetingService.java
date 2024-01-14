@@ -1,10 +1,8 @@
 package net.teumteum.meeting.service;
 
 import lombok.RequiredArgsConstructor;
-import net.teumteum.meeting.domain.Meeting;
-import net.teumteum.meeting.domain.MeetingRepository;
-import net.teumteum.meeting.domain.MeetingSpecification;
-import net.teumteum.meeting.domain.Topic;
+import net.teumteum.meeting.domain.*;
+import net.teumteum.meeting.domain.request.CreateMeetingRequest;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
@@ -13,11 +11,32 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class MeetingService {
 
     private final MeetingRepository meetingRepository;
+
+    @Transactional
+    public MeetingResponse createMeeting(CreateMeetingRequest meetingRequest, Long userId) {
+        Meeting meeting = Meeting.builder()
+                .hostUserId(userId)
+                .title(meetingRequest.title())
+                .topic(meetingRequest.topic())
+                .introduction(meetingRequest.introduction())
+                .meetingArea(MeetingArea.of(
+                        meetingRequest.meetingArea().address(),
+                        meetingRequest.meetingArea().addressDetail())
+                )
+                .numberOfRecruits(meetingRequest.numberOfRecruits())
+                .promiseDateTime(meetingRequest.promiseDateTime())
+                .participantUserIds(Set.of(userId))
+                .build();
+
+        return MeetingResponse.of(meetingRepository.save(meeting));
+    }
 
     @Transactional(readOnly = true)
     public MeetingResponse getMeetingById(Long meetingId) {
@@ -35,14 +54,11 @@ public class MeetingService {
 
         if (topic != null) {
             spec = spec.and(MeetingSpecification.withTopic(topic));
-        }
-        else if (meetingAreaStreet != null) {
+        } else if (meetingAreaStreet != null) {
             spec.and(MeetingSpecification.withAreaStreet(meetingAreaStreet));
-        }
-        else if (participantUserId != null) {
+        } else if (participantUserId != null) {
             spec = spec.and(MeetingSpecification.withParticipantUserId(participantUserId));
-        }
-        else if (searchWord != null) {
+        } else if (searchWord != null) {
             spec = MeetingSpecification.withSearchWordInTitle(searchWord).or(MeetingSpecification.withSearchWordInIntroduction(searchWord))
                     .and(MeetingSpecification.withIsOpen(isOpen));
         }

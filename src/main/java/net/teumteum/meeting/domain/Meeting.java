@@ -2,6 +2,7 @@ package net.teumteum.meeting.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.teumteum.core.entity.TimeBaseEntity;
@@ -9,10 +10,12 @@ import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Meeting extends TimeBaseEntity {
@@ -28,6 +31,7 @@ public class Meeting extends TimeBaseEntity {
     @Column(name = "host_user_id")
     private Long hostUserId;
 
+    @Builder.Default
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Long> participantUserIds = new HashSet<>();
 
@@ -47,8 +51,9 @@ public class Meeting extends TimeBaseEntity {
     @Column(name = "promise_date_time")
     private LocalDateTime promiseDateTime;
 
+    @Builder.Default
     @ElementCollection(fetch = FetchType.EAGER)
-    private Set<String> imageUrls = new HashSet<>();
+    private Set<String> imageUrls = new LinkedHashSet<>();
 
     public void addParticipant(Long userId) {
         assertParticipantUserIds();

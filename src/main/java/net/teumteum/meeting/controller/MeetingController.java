@@ -1,10 +1,12 @@
 package net.teumteum.meeting.controller;
 
 import io.sentry.Sentry;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.meeting.domain.Topic;
+import net.teumteum.meeting.domain.request.CreateMeetingRequest;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
@@ -12,6 +14,9 @@ import net.teumteum.meeting.service.MeetingService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +26,15 @@ public class MeetingController {
     private final MeetingService meetingService;
 
     private final SecurityService securityService;
+
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public MeetingResponse createMeeting(
+            @RequestPart @Valid CreateMeetingRequest meetingRequest,
+            @RequestPart List<MultipartFile> images) {
+        Long userId = securityService.getCurrentUserId();
+        return meetingService.createMeeting(meetingRequest, userId);
+    }
 
     @GetMapping("/{meetingId}")
     @ResponseStatus(HttpStatus.OK)
@@ -49,7 +63,7 @@ public class MeetingController {
 
     @DeleteMapping("/{meetingId}/participants")
     @ResponseStatus(HttpStatus.OK)
-public void deleteParticipant(@PathVariable("meetingId") Long meetingId) {
+    public void deleteParticipant(@PathVariable("meetingId") Long meetingId) {
         Long userId = securityService.getCurrentUserId();
         meetingService.cancelParticipant(meetingId, userId);
     }
