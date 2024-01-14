@@ -11,6 +11,7 @@ import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
 import org.springframework.context.ApplicationContext;
@@ -82,10 +83,10 @@ public class UserController {
     public void withdraw() {
         userService.withdraw(getCurrentUserId());
     }
-  
+
     @PostMapping("/registers")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long register(@RequestBody UserRegisterRequest request) {
+    public UserRegisterResponse register(@RequestBody UserRegisterRequest request) {
         return userService.register(request);
     }
 

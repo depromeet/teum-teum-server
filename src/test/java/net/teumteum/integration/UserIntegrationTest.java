@@ -5,6 +5,7 @@ import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -220,12 +221,30 @@ class UserIntegrationTest extends IntegrationTest {
     class Register_user_card {
 
         @Test
-        @DisplayName("요청이 잘못되는 경우 400 Bad Request 을 반환한다 ")
+        @DisplayName("등록할 회원의 정보가 주어지면, 회원 정보를 저장한다.")
+        void Register_user_info() {
+            // given
+            var additionalUser = repository.saveAndGetUser();
+
+            var UserRegister = RequestFixture.userRegisterRequest(additionalUser);
+            // when
+            var result = api.registerUserCard(VALID_TOKEN, UserRegister);
+
+            // then
+            Assertions.assertThat(result.expectStatus().isCreated()
+                    .expectBody(UserRegisterResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison().isNotNull();
+        }
+
+        @Test
+        @DisplayName("이미 존재하는 회원인 경우, 400 Bad Request 을 반환한다 ")
         void Return_400_badRequest_register_user_card() {
             // given
             var existUser = repository.saveAndGetUser();
 
-            var userRegister = RequestFixture.userRegisterRequest(existUser);
+            var userRegister = RequestFixture.userRegisterRequestWithFail(existUser);
             // when
             var result = api.registerUserCard(VALID_TOKEN, userRegister);
 

@@ -13,6 +13,7 @@ import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,10 +71,10 @@ public class UserService {
     }
 
     @Transactional
-    public Long register(UserRegisterRequest request) {
+    public UserRegisterResponse register(UserRegisterRequest request) {
         checkUserExistence(request.authenticated(), request.id());
 
-        return userRepository.save(request.toUser()).getId();
+        return new UserRegisterResponse(userRepository.save(request.toUser()).getId());
     }
 
 
@@ -103,7 +104,7 @@ public class UserService {
     private void checkUserExistence(Authenticated authenticated, String oauthId) {
         userRepository.findByAuthenticatedAndOAuthId(authenticated, oauthId)
             .ifPresent(user -> {
-                throw new IllegalArgumentException("x");
+                throw new IllegalArgumentException("일치하는 user 가 이미 존재합니다.");
             });
     }
 }
