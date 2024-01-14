@@ -40,8 +40,7 @@ public class MeetingService {
 
     @Transactional(readOnly = true)
     public MeetingResponse getMeetingById(Long meetingId) {
-        var existMeeting = meetingRepository.findById(meetingId)
-                .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
+        var existMeeting = getMeeting(meetingId);
 
         return MeetingResponse.of(existMeeting);
     }
@@ -70,8 +69,7 @@ public class MeetingService {
 
     @Transactional
     public MeetingResponse addParticipant(Long meetingId, Long userId) {
-        var existMeeting = meetingRepository.findById(meetingId)
-                .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
+        var existMeeting = getMeeting(meetingId);
 
         if (existMeeting.alreadyParticipant(userId)) {
             throw new IllegalArgumentException("이미 참여한 모임입니다.");
@@ -87,8 +85,7 @@ public class MeetingService {
 
     @Transactional
     public void cancelParticipant(Long meetingId, Long userId) {
-        var existMeeting = meetingRepository.findById(meetingId)
-                .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
+        var existMeeting = getMeeting(meetingId);
 
         if (!existMeeting.isOpen()) {
             throw new IllegalArgumentException("종료된 모임에서 참여를 취소할 수 없습니다.");
@@ -99,5 +96,10 @@ public class MeetingService {
         }
 
         existMeeting.cancelParticipant(userId);
+    }
+
+    private Meeting getMeeting(Long meetingId) {
+        return meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
     }
 }
