@@ -1,32 +1,19 @@
 package net.teumteum.user.controller;
 
 import io.sentry.Sentry;
-import java.util.Arrays;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
-import net.teumteum.user.domain.response.FriendsResponse;
-import net.teumteum.user.domain.response.InterestQuestionResponse;
-import net.teumteum.user.domain.response.UserGetResponse;
-import net.teumteum.user.domain.response.UserRegisterResponse;
-import net.teumteum.user.domain.response.UsersGetByIdResponse;
+import net.teumteum.user.domain.response.*;
 import net.teumteum.user.service.UserService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,6 +38,12 @@ public class UserController {
             .toList();
 
         return userService.getUsersById(parsedUserIds);
+    }
+
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public UserGetResponse getMe() {
+        return userService.getUserById(getCurrentUserId());
     }
 
     @PutMapping
