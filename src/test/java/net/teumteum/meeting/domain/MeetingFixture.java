@@ -3,8 +3,9 @@ package net.teumteum.meeting.domain;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MeetingFixture {
 
@@ -26,6 +27,15 @@ public class MeetingFixture {
         );
     }
 
+    public static Meeting getOpenFullMeeting() {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+                .numberOfRecruits(3)
+                .participantUserIds(new HashSet<>(List.of(0L, 1L, 2L)))
+                .build()
+        );
+    }
+
     public static Meeting getOpenMeetingWithTopic(Topic topic) {
         return newMeetingByBuilder(MeetingBuilder.builder()
                 .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
@@ -42,10 +52,10 @@ public class MeetingFixture {
         );
     }
 
-    public static Meeting getOpenMeetingWithStreet(String street) {
+    public static Meeting getOpenMeetingWithMainStreet(String mainStreet) {
         return newMeetingByBuilder(MeetingBuilder.builder()
                 .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .meetingArea(new MeetingArea("서울특별시", street, "강남대로 390"))
+                .meetingArea(new MeetingArea(mainStreet, "서울특별시", "강남대로 390"))
                 .build()
         );
     }
@@ -53,7 +63,7 @@ public class MeetingFixture {
     public static Meeting getOpenMeetingWithParticipantUserId(Long participantUserId) {
         return newMeetingByBuilder(MeetingBuilder.builder()
                 .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .participantUserIds(new ArrayList<>(List.of(participantUserId)))
+                .participantUserIds(new HashSet<>(List.of(participantUserId)))
                 .build()
         );
     }
@@ -61,7 +71,7 @@ public class MeetingFixture {
     public static Meeting getCloseMeetingWithParticipantUserId(Long participantUserId) {
         return newMeetingByBuilder(MeetingBuilder.builder()
                 .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
-                .participantUserIds(new ArrayList<>(List.of(participantUserId)))
+                .participantUserIds(new HashSet<>(List.of(participantUserId)))
                 .build()
         );
     }
@@ -125,7 +135,7 @@ public class MeetingFixture {
         private Long hostUserId = 0L;
 
         @Builder.Default
-        private List<Long> participantUserIds = new ArrayList<>(List.of(0L));
+        private Set<Long> participantUserIds = new HashSet<>(List.of(0L));
 
         @Builder.Default
         private Topic topic = Topic.스터디;
@@ -134,7 +144,7 @@ public class MeetingFixture {
         private String introduction = "모임에 대한 간단한 설명입니다.";
 
         @Builder.Default
-        private MeetingArea meetingArea = new MeetingArea("서울특별시", "강남구", "강남대로 390");
+        private MeetingArea meetingArea = new MeetingArea("강남구", "서울특별시 강남대로 390", "강남역 11번 출구");
 
         @Builder.Default
         private int numberOfRecruits = 3;
@@ -143,7 +153,7 @@ public class MeetingFixture {
         private LocalDateTime promiseDateTime = LocalDateTime.of(2024, 10, 10, 0, 0);
 
         @Builder.Default
-        private List<String> imageUrls = new ArrayList<>(List.of("https://www.google.com"));
+        private Set<String> imageUrls = new HashSet<>(List.of("https://www.google.com"));
     }
 
 }

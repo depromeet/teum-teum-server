@@ -2,6 +2,7 @@ allprojects {
     dependencies {
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok"
+        implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
         testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
         testAnnotationProcessor "org.projectlombok:lombok"

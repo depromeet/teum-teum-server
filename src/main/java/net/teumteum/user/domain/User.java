@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.teumteum.core.entity.TimeBaseEntity;
+import net.teumteum.core.security.Authenticated;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.Assert;
 
@@ -47,7 +48,11 @@ public class User extends TimeBaseEntity {
     private int mannerTemperature;
 
     @Embedded
-    private Oauth oauth;
+    private OAuth oauth;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_type")
+    private RoleType roleType;
 
     @Embedded
     private ActivityArea activityArea;
@@ -73,6 +78,11 @@ public class User extends TimeBaseEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     private Set<Long> friends = new HashSet<>();
+
+    public User(Long id, String oauthId, Authenticated authenticated) {
+        this.id = id;
+        this.oauth = new OAuth(oauthId, authenticated);
+    }
 
     @PrePersist
     private void assertField() {

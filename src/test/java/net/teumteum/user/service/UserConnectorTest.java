@@ -1,6 +1,5 @@
 package net.teumteum.user.service;
 
-import java.util.Optional;
 import net.teumteum.user.domain.UserConnector;
 import net.teumteum.user.domain.UserFixture;
 import net.teumteum.user.domain.UserRepository;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @DisplayName("UserConnector 클래스의")
@@ -50,10 +51,10 @@ class UserConnectorTest {
 
             // then
             Assertions.assertThat(result)
-                .isPresent()
-                .usingRecursiveComparison()
-                .ignoringFields("value.oauth.oAuthAuthenticateInfo")
-                .isEqualTo(expect);
+                    .isPresent()
+                    .usingRecursiveComparison()
+                    .ignoringFields("value.oauth.oauthId")
+                    .isEqualTo(expect);
         }
     }
 

@@ -1,0 +1,45 @@
+## PRODUCTION
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+### JPA ###
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+
+### ACTUATOR ###
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+
+### GPT ###
+gpt:
+  token: 1234
+
+### SENTRY ###
+sentry:
+  dsn: https://59e89fa57d11ed7a7887bcf404179150@o4506545306271744.ingest.sentry.io/4506545307320320
+  traces-sample-rate: 1.0
+
+## LOGGING
+logging:
+  level:
+    org.hibernate.SQL: info
+    org.hibernate.type: info

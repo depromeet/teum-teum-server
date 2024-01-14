@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: teum-teum-server
+
+  profiles:
+    group:
+      "dev": "dev, auth, datasource, redis, aws"
+      "prod": "prod, auth, datasource, redis, aws"
+

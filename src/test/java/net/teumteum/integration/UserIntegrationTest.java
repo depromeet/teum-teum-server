@@ -2,7 +2,10 @@ package net.teumteum.integration;
 
 import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
+import net.teumteum.user.domain.User;
+import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -111,9 +114,8 @@ class UserIntegrationTest extends IntegrationTest {
         void Update_user_info() {
             // given
             var existUser = repository.saveAndGetUser();
+            List<User> allUser = repository.getAllUser();
             var updateUser = RequestFixture.userUpdateRequest(existUser);
-
-            loginContext.setUserId(existUser.getId());
 
             // when
             var result = api.updateUser(VALID_TOKEN, updateUser);
@@ -135,13 +137,104 @@ class UserIntegrationTest extends IntegrationTest {
             var myToken = "JWT MY_TOKEN";
             var friend = repository.saveAndGetUser();
 
-            loginContext.setUserId(me.getId());
-
             // when
             var result = api.addFriends(myToken, friend.getId());
 
             // then
             result.expectStatus().isOk();
+        }
+    }
+
+    @Nested
+    @DisplayName("친구 조회 API는")
+    class Find_friends_api {
+
+        @Test
+        @DisplayName("user의 id를 입력받으면, id에 해당하는 user의 친구 목록을 반환한다.")
+        void Return_friends_when_received_user_id() {
+            // given
+            var me = repository.saveAndGetUser();
+            var friend1 = repository.saveAndGetUser();
+            var friend2 = repository.saveAndGetUser();
+
+            loginContext.setUserId(me.getId());
+            api.addFriends(VALID_TOKEN, friend1.getId());
+            api.addFriends(VALID_TOKEN, friend2.getId());
+
+            var expected = FriendsResponse.of(List.of(friend1, friend2));
+
+            // when
+            var result = api.getFriendsByUserId(VALID_TOKEN, me.getId());
+
+            // then
+            Assertions.assertThat(result.expectStatus().isOk()
+                    .expectBody(FriendsResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison().isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("user의 id를 입력받았을때, 친구가 한명도 없다면, 빈 목록을 반환한다.")
+        void Return_empty_friends_when_received_empty_friends_user_id() {
+            // given
+            var me = repository.saveAndGetUser();
+
+            loginContext.setUserId(me.getId());
+
+            var expected = FriendsResponse.of(List.of());
+
+            // when
+            var result = api.getFriendsByUserId(VALID_TOKEN, me.getId());
+
+            // then
+            Assertions.assertThat(result.expectStatus().isOk()
+                    .expectBody(FriendsResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison().isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 카드 등록 API는")
+    class Register_user_card {
+
+        @Test
+        @DisplayName("등록할 회원의 정보가 주어지면, 회원 정보를 저장한다.")
+        void Register_user_info() {
+            // given
+            var additionalUser = repository.saveAndGetUser();
+
+            var UserRegister = RequestFixture.userRegisterRequest(additionalUser);
+            // when
+            var result = api.registerUserCard(VALID_TOKEN, UserRegister);
+
+            // then
+            Assertions.assertThat(result.expectStatus().isCreated()
+                    .expectBody(UserRegisterResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison().isNotNull();
+        }
+
+        @Test
+        @DisplayName("이미 존재하는 회원인 경우, 400 Bad Request 을 반환한다 ")
+        void Return_400_badRequest_register_user_card() {
+            // given
+            var existUser = repository.saveAndGetUser();
+
+            var userRegister = RequestFixture.userRegisterRequestWithFail(existUser);
+            // when
+            var result = api.registerUserCard(VALID_TOKEN, userRegister);
+
+            // then
+            var responseBody = result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class)
+                .returnResult().getResponseBody();
+
+            Assertions.assertThat(responseBody)
+                .isNotNull();
         }
     }
 }

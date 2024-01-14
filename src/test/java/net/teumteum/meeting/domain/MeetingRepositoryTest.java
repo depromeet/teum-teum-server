@@ -1,12 +1,14 @@
 package net.teumteum.meeting.domain;
 
 import jakarta.persistence.EntityManager;
+import net.teumteum.core.config.AppConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @DataJpaTest
+@Import(AppConfig.class)
 @DisplayName("MeetingRepository 클래스의")
 class MeetingRepositoryTest {
 
@@ -137,11 +140,11 @@ class MeetingRepositoryTest {
             // given
             var createSize = 3;
 
-            var expectedMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithStreet("강남"))
+            var expectedMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithMainStreet("강남"))
                     .limit(createSize)
                     .toList();
 
-            var existsWrongMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithStreet("판교"))
+            var existsWrongMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithMainStreet("판교"))
                     .limit(createSize)
                     .toList();
 

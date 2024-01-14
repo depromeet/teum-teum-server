@@ -1,7 +1,9 @@
 package net.teumteum.integration;
 
+import java.util.List;
 import net.teumteum.meeting.config.PageableHandlerMethodArgumentResolver;
 import net.teumteum.meeting.domain.Topic;
+import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.ApplicationContext;
@@ -16,6 +18,7 @@ class Api {
 
     private final WebTestClient webTestClient;
 
+
     public Api(ApplicationContext applicationContext) {
         var controllers = applicationContext.getBeansWithAnnotation(Controller.class).values();
         webTestClient = WebTestClient.bindToController(controllers.toArray())
@@ -23,8 +26,10 @@ class Api {
             .build();
     }
 
+
     ResponseSpec getUser(String token, Long userId) {
-        return webTestClient.get()
+        return webTestClient
+            .get()
             .uri("/users/" + userId)
             .header(HttpHeaders.AUTHORIZATION, token)
             .exchange();
@@ -38,7 +43,8 @@ class Api {
     }
 
     ResponseSpec updateUser(String token, UserUpdateRequest userUpdateRequest) {
-        return webTestClient.put()
+        return webTestClient
+            .put()
             .uri("/users")
             .header(HttpHeaders.AUTHORIZATION, token)
             .bodyValue(userUpdateRequest)
@@ -48,6 +54,13 @@ class Api {
     ResponseSpec addFriends(String token, Long friendId) {
         return webTestClient.post()
             .uri("/users/" + friendId + "/friends")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec getFriendsByUserId(String token, Long userId) {
+        return webTestClient.get()
+            .uri("/users/" + userId + "/friends")
             .header(HttpHeaders.AUTHORIZATION, token)
             .exchange();
     }
@@ -82,4 +95,52 @@ class Api {
             .exchange();
     }
 
+    ResponseSpec joinMeeting(String token, Long meetingId) {
+        return webTestClient.post()
+            .uri("/meetings/" + meetingId + "/participants")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec cancelMeeting(String token, Long meetingId) {
+        return webTestClient.delete()
+            .uri("/meetings/" + meetingId + "/participants")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec getCommonInterests(String token, List<Long> userIds) {
+        var param = new StringBuilder();
+        for (Long userId : userIds) {
+            param.append(userId).append(",");
+        }
+        return webTestClient.get()
+            .uri("/users/interests?user-id=" + param.substring(0, param.length() - 1))
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec reissueJwt(String accessToken, String refreshToken) {
+        return webTestClient.post()
+            .uri("/auth/reissues")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .header("Authorization-refresh", refreshToken)
+            .exchange();
+    }
+
+    ResponseSpec withdrawUser(String accessToken) {
+        return webTestClient.delete()
+            .uri("/users/withdraws")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
+
+    ResponseSpec registerUserCard(String accessToken, UserRegisterRequest userRegisterRequest) {
+        return webTestClient
+            .post()
+            .uri("/users/registers")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .bodyValue(userRegisterRequest)
+            .exchange();
+    }
 }

@@ -1,24 +1,25 @@
 create table if not exists users
 (
-    id                      bigint       not null auto_increment,
-    certificated            boolean,
-    manner_temperature      integer,
-    mbti                    varchar(4),
-    character_id            bigint,
-    birth                   varchar(10),
-    name                    varchar(10),
-    goal                    varchar(50),
-    authenticated           varchar(255),
-    oauth_authenticate_info varchar(255) unique,
-    city                    varchar(255),
-    detail_job_class        varchar(255),
-    job_class               varchar(255),
-    job_name                varchar(255),
-    status                  enum ('직장인','학생','취업준비생'),
-    terms_of_service        boolean      not null,
-    privacy_policy          boolean      not null,
-    created_at              timestamp(6) not null,
-    updated_at              timestamp(6) not null,
+    id                 bigint       not null auto_increment,
+    certificated       boolean,
+    manner_temperature integer,
+    mbti               varchar(4),
+    character_id       bigint,
+    birth              varchar(10),
+    name               varchar(10),
+    goal               varchar(50),
+    oauth_id           varchar(255) not null unique,
+    authenticated      varchar(255) not null,
+    role_type          varchar(255),
+    city               varchar(255),
+    detail_job_class   varchar(255),
+    job_class          varchar(255),
+    job_name           varchar(255),
+    status             enum ('직장인','학생','취업준비생'),
+    terms_of_service   boolean      not null,
+    privacy_policy     boolean      not null,
+    created_at         timestamp(6) not null,
+    updated_at         timestamp(6) not null,
     primary key (id)
 );
 
@@ -47,9 +48,9 @@ create table if not exists meeting
     updated_at         timestamp(6)                                 not null,
     title              varchar(32)                                  null,
     introduction       varchar(200)                                 null,
-    city               varchar(255)                                 null,
-    street             varchar(255)                                 null,
-    zip_code           varchar(255)                                 null,
+    address            varchar(255)                                 null,
+    main_street        varchar(255)                                 null,
+    address_detail     varchar(255)                                 null,
     topic              enum ('고민_나누기', '모여서_작업', '스터디', '사이드_프로젝트') null
 );
 
@@ -67,8 +68,9 @@ create table if not exists meeting_participant_user_ids
     foreign key (meeting_id) references meeting (id)
 );
 
-create table if not exists users_friends(
-  users_id               bigint not null,
-  friends                bigint not null,
-  foreign key (users_id) references users(id)
+create table if not exists users_friends
+(
+    users_id bigint not null,
+    friends  bigint not null,
+    foreign key (users_id) references users (id)
 );

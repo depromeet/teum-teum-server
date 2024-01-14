@@ -1,0 +1,33 @@
+## DEVELOPMENT
+spring:
+  config:
+    activate:
+      on-profile: "dev"
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+  ## JPA
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+
+
+## LOGGING
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+
+gpt:
+  token: 1234

@@ -5,6 +5,7 @@ import net.teumteum.meeting.domain.Topic;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public record MeetingsResponse(
         List<MeetingResponse> meetings
@@ -23,11 +24,11 @@ public record MeetingsResponse(
             Topic topic,
             String title,
             String introduction,
-            List<String> photoUrls,
+            Set<String> photoUrls,
             LocalDateTime promiseDateTime,
             int numberOfRecruits,
             MeetingArea meetingArea,
-            List<Long> participantIds
+            Set<Long> participantIds
     ) {
         public static MeetingResponse of(
                 Meeting meeting
@@ -47,17 +48,17 @@ public record MeetingsResponse(
         }
 
         public record MeetingArea(
-                String city,
-                String street,
-                String zipCode
+                String mainStreet,
+                String address,
+                String addressDetail
         ) {
             public static MeetingArea of(
                     Meeting meeting
             ) {
                 return new MeetingArea(
-                        meeting.getMeetingArea().getCity(),
-                        meeting.getMeetingArea().getStreet(),
-                        meeting.getMeetingArea().getZipCode()
+                        meeting.getMeetingArea().getMainStreet(),
+                        meeting.getMeetingArea().getAddress(),
+                        meeting.getMeetingArea().getAddressDetail()
                 );
             }
         }

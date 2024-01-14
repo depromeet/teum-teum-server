@@ -1,0 +1,20 @@
+## DATASOURCE
+spring:
+  config:
+    activate:
+      on-profile: "datasource"
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      connection-timeout: 3000
+      maximum-pool-size: 80
+
+  flyway:
+    url:
+    user: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    baseline-on-migrate: true

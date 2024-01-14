@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' apply false
     id 'io.spring.dependency-management'
     id 'org.sonarqube'
+    id 'io.sentry.jvm.gradle'
 }
 
 apply from: "gradle/spring.gradle"
@@ -10,8 +11,14 @@ apply from: "gradle/devtool.gradle"
 apply from: "gradle/test.gradle"
 apply from: "gradle/sonar.gradle"
 apply from: "gradle/db.gradle"
+apply from: "gradle/aws.gradle"
+apply from: "gradle/sentry.gradle"
 
 allprojects {
+
+    jar {
+        enabled = false
+    }
 
     group = "${projectGroup}"
     version = "${projectVersion}"

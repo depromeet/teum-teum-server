@@ -2,17 +2,20 @@ package net.teumteum.meeting.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.teumteum.core.entity.TimeBaseEntity;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Meeting extends TimeBaseEntity {
@@ -28,8 +31,9 @@ public class Meeting extends TimeBaseEntity {
     @Column(name = "host_user_id")
     private Long hostUserId;
 
+    @Builder.Default
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Long> participantUserIds = new ArrayList<>();
+    private Set<Long> participantUserIds = new HashSet<>();
 
     @Column(name = "topic")
     @Enumerated(EnumType.STRING)
@@ -47,8 +51,26 @@ public class Meeting extends TimeBaseEntity {
     @Column(name = "promise_date_time")
     private LocalDateTime promiseDateTime;
 
+    @Builder.Default
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> imageUrls = new ArrayList<>();
+    private Set<String> imageUrls = new LinkedHashSet<>();
+
+    public void addParticipant(Long userId) {
+        assertParticipantUserIds();
+        participantUserIds.add(userId);
+    }
+
+    public void cancelParticipant(Long userId) {
+        participantUserIds.remove(userId);
+    }
+
+    public boolean alreadyParticipant(Long userId) {
+        return participantUserIds.contains(userId);
+    }
+
+    public boolean isOpen() {
+        return promiseDateTime.isAfter(LocalDateTime.now());
+    }
 
     @PrePersist
     private void assertField() {
@@ -58,15 +80,22 @@ public class Meeting extends TimeBaseEntity {
     }
 
     private void assertIntroduction() {
-        Assert.isTrue(introduction.length() >= 10 && introduction.length() <= 200, "모임 소개는 10자 ~ 200자 사이가 되어야 합니다. [현재 입력된 모임 소개] : " + introduction);
+        Assert.isTrue(introduction.length() >= 10 && introduction.length() <= 200,
+                "모임 소개는 10자 ~ 200자 사이가 되어야 합니다. [현재 입력된 모임 소개] : " + introduction);
     }
 
     private void assertNumberOfRecruits() {
-        Assert.isTrue(numberOfRecruits >= 2 && numberOfRecruits <= 6, "참여자 수는 2명 ~ 6명 사이가 되어야 합니다. [현재 입력된 참여자 수] : " + numberOfRecruits);
+        Assert.isTrue(numberOfRecruits >= 3 && numberOfRecruits <= 6, "참여자 수는 3명 ~ 6명 사이가 되어야 합니다. [현재 입력된 참여자 수] : " + numberOfRecruits);
     }
 
     private void assertTitle() {
-        Assert.isTrue(title.length() >= 2 && title.length() <= 32, "모임 제목은 2자 ~ 32자 사이가 되어야 합니다. [현재 입력된 모임 제목] : " + title);
+        Assert.isTrue(title.length() >= 2 && title.length() <= 32,
+                "모임 제목은 2자 ~ 32자 사이가 되어야 합니다. [현재 입력된 모임 제목] : " + title);
     }
 
+    private void assertParticipantUserIds() {
+        Assert.isTrue(participantUserIds.size() + 1 <= numberOfRecruits,
+                "최대 참여자 수에 도달한 모임에 참여할 수 없습니다." + "[최대 참여자 수] : " + numberOfRecruits + "[현재 참여자 수] : "
+                        + participantUserIds.size());
+    }
 }

@@ -1,0 +1,7 @@
+sentry {
+    includeSourceContext = true
+
+    org = "teum-teum"
+    projectName = "java-spring-boot"
+    authToken = System.getProperty("SENTRY_AUTH_TOKEN")
+}

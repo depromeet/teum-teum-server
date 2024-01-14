@@ -9,12 +9,12 @@ public class TestLoginContext implements LoginContext {
     private Long userId;
 
     @Override
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public Long getUserId() {
+        return this.userId;
     }
 
     @Override
-    public Long getUserId() {
-        return this.userId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }
