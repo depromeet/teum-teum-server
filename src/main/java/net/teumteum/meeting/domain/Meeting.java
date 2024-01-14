@@ -84,7 +84,7 @@ public class Meeting extends TimeBaseEntity {
     }
 
     private void assertNumberOfRecruits() {
-        Assert.isTrue(numberOfRecruits >= 2 && numberOfRecruits <= 6, "참여자 수는 2명 ~ 6명 사이가 되어야 합니다. [현재 입력된 참여자 수] : " + numberOfRecruits);
+        Assert.isTrue(numberOfRecruits >= 3 && numberOfRecruits <= 6, "참여자 수는 3명 ~ 6명 사이가 되어야 합니다. [현재 입력된 참여자 수] : " + numberOfRecruits);
     }
 
     private void assertTitle() {
