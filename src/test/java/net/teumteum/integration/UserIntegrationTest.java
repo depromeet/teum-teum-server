@@ -5,6 +5,7 @@ import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -195,23 +196,45 @@ class UserIntegrationTest extends IntegrationTest {
         }
     }
 
-//    @Nested
-//    @DisplayName("회원 탈퇴 API는")
-//    class Withdraw_user {
-//
-//        @Test
-//        @DisplayName("현재 로그인한 회원의 회원 탈퇴를 정상적으로 진행한다.")
-//        void Return_200_ok_when_withdraw_current_user() {
-//            // given
-//            var me = repository.saveAndGetUser();
-//
-//            loginContext.setUserId(me.getId());
-//
-//            // when
-//            var result = api.withdrawUser(VALID_TOKEN);
-//
-//            // then
-//            Assertions.assertThat(result.expectStatus().isOk());
-//        }
-//    }
+    @Nested
+    @DisplayName("회원 카드 등록 API는")
+    class Register_user_card {
+
+        @Test
+        @DisplayName("등록할 회원의 정보가 주어지면, 회원 정보를 저장한다.")
+        void Register_user_info() {
+            // given
+            var additionalUser = repository.saveAndGetUser();
+
+            var UserRegister = RequestFixture.userRegisterRequest(additionalUser);
+            // when
+            var result = api.registerUserCard(VALID_TOKEN, UserRegister);
+
+            // then
+            Assertions.assertThat(result.expectStatus().isCreated()
+                    .expectBody(UserRegisterResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison().isNotNull();
+        }
+
+        @Test
+        @DisplayName("이미 존재하는 회원인 경우, 400 Bad Request 을 반환한다 ")
+        void Return_400_badRequest_register_user_card() {
+            // given
+            var existUser = repository.saveAndGetUser();
+
+            var userRegister = RequestFixture.userRegisterRequestWithFail(existUser);
+            // when
+            var result = api.registerUserCard(VALID_TOKEN, userRegister);
+
+            // then
+            var responseBody = result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class)
+                .returnResult().getResponseBody();
+
+            Assertions.assertThat(responseBody)
+                .isNotNull();
+        }
+    }
 }

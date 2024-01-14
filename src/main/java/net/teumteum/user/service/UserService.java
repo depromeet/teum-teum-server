@@ -2,15 +2,18 @@ package net.teumteum.user.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import net.teumteum.core.security.Authenticated;
 import net.teumteum.core.security.service.RedisService;
 import net.teumteum.user.domain.BalanceGameType;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
+import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,9 +65,18 @@ public class UserService {
     @Transactional
     public void withdraw(Long userId) {
         var existUser = getUser(userId);
-        deleteUser(existUser);
+
+        userRepository.delete(existUser);
         redisService.deleteData(String.valueOf(userId));
     }
+
+    @Transactional
+    public UserRegisterResponse register(UserRegisterRequest request) {
+        checkUserExistence(request.authenticated(), request.id());
+
+        return new UserRegisterResponse(userRepository.save(request.toUser()).getId());
+    }
+
 
     public FriendsResponse findFriendsByUserId(Long userId) {
         var user = getUser(userId);
@@ -89,7 +101,10 @@ public class UserService {
         return BalanceGameType.of(type).getInterestQuestionResponse(users, interestQuestion);
     }
 
-    private void deleteUser(User user) {
-        this.userRepository.delete(user);
+    private void checkUserExistence(Authenticated authenticated, String oauthId) {
+        userRepository.findByAuthenticatedAndOAuthId(authenticated, oauthId)
+            .ifPresent(user -> {
+                throw new IllegalArgumentException("일치하는 user 가 이미 존재합니다.");
+            });
     }
 }

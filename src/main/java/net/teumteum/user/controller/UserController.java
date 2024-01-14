@@ -6,10 +6,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
+import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
 import org.springframework.context.ApplicationContext;
@@ -80,6 +82,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void withdraw() {
         userService.withdraw(getCurrentUserId());
+    }
+
+    @PostMapping("/registers")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserRegisterResponse register(@RequestBody UserRegisterRequest request) {
+        return userService.register(request);
     }
 
 
