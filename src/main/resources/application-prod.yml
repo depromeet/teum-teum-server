@@ -17,13 +17,6 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
-### FLYWAY ###
-  flyway:
-    url:
-    user:
-    password:
-    baseline-on-migrate: true
-
 ### ACTUATOR ###
 management:
   endpoints:
