@@ -9,7 +9,7 @@ create table if not exists users
     name               varchar(10),
     goal               varchar(50),
     oauth_id           varchar(255) not null unique,
-    authenticated      varchar(255) not null,
+    authenticated      enum ('카카오','네이버') not null,
     role_type          varchar(255),
     city               varchar(255),
     detail_job_class   varchar(255),

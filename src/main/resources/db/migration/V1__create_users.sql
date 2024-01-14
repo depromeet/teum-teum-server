@@ -7,7 +7,7 @@ create table if not exists users(
     birth varchar(10),
     name varchar(10),
     goal varchar(50),
-    authenticated varchar(255) not null,
+    authenticated enum ('카카오','네이버') not null,
     oauth_authenticate_info varchar(255) unique,
     city varchar(255),
     detail_job_class varchar(255),
