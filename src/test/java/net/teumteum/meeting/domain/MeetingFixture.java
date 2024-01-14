@@ -30,8 +30,8 @@ public class MeetingFixture {
     public static Meeting getOpenFullMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder()
                 .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .numberOfRecruits(2)
-                .participantUserIds(new HashSet<>(List.of(0L, 1L)))
+                .numberOfRecruits(3)
+                .participantUserIds(new HashSet<>(List.of(0L, 1L, 2L)))
                 .build()
         );
     }
