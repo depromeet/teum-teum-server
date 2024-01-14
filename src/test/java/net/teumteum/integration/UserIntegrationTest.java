@@ -19,6 +19,7 @@ class UserIntegrationTest extends IntegrationTest {
 
     private static final String VALID_TOKEN = "VALID_TOKEN";
     private static final String INVALID_TOKEN = "IN_VALID_TOKEN";
+    private static final Long DURATION = 3600000L;
 
     @Nested
     @DisplayName("유저 조회 API는")
@@ -207,6 +208,7 @@ class UserIntegrationTest extends IntegrationTest {
         void Withdraw_user_info() {
             // given
             var me = repository.saveAndGetUser();
+            repository.saveRedisDataWithExpiration(String.valueOf(me.getId()), VALID_TOKEN, DURATION);
 
             loginContext.setUserId(me.getId());
 
