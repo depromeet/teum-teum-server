@@ -10,7 +10,7 @@ create table if not exists users
     goal               varchar(50),
     oauth_id           varchar(255) not null unique,
     authenticated      enum ('카카오','네이버') not null,
-    role_type          varchar(255),
+    role_type          enum ('ROLE_USER','ROLE_ADMIN'),
     city               varchar(255),
     detail_job_class   varchar(255),
     job_class          varchar(255),
