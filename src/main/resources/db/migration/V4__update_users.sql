@@ -3,4 +3,4 @@ alter table users
 alter table users
     add column oauth_id varchar(255) not null unique;
 alter table users
-    add column role_type varchar(255);
+    add column role_type enum ('ROLE_USER','ROLE_ADMIN');
