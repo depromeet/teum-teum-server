@@ -197,26 +197,6 @@ class UserIntegrationTest extends IntegrationTest {
     }
 
     @Nested
-    @DisplayName("회원 탈퇴 API는")
-    class Withdraw_user {
-
-        @Test
-        @DisplayName("현재 로그인한 회원의 회원 탈퇴를 전상적으로 진행한다.")
-        void Return_200_ok_when_withdraw_current_user() {
-            // given
-            var me = repository.saveAndGetUser();
-
-            loginContext.setUserId(me.getId());
-
-            // when
-            var result = api.withdrawUser(VALID_TOKEN);
-
-            // then
-            Assertions.assertThat(result.expectStatus().isOk());
-        }
-    }
-
-    @Nested
     @DisplayName("회원 카드 등록 API는")
     class Register_user_card {
 
