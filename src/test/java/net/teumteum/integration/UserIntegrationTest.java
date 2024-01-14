@@ -229,8 +229,14 @@ class UserIntegrationTest extends IntegrationTest {
             var result = api.registerUserCard(VALID_TOKEN, userRegister);
 
             // then
-            Assertions.assertThat(result.expectStatus().isBadRequest()
-                .expectBody(ErrorResponse.class));
+            var responseBody = result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class)
+                .returnResult().getResponseBody();
+
+            Assertions.assertThat(responseBody)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("status", "BAD_REQUEST")
+                .hasFieldOrProperty("일치하는 user 가 이미 존재합니다.");
         }
     }
 }
