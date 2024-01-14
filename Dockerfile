@@ -1,4 +1,4 @@
-FROM openjdk:11.0.11-jre-slim
+FROM openjdk:21
 
 ARG KAKAO_CLIENT_ID
 ARG KAKAO_CLIENT_SECRET
