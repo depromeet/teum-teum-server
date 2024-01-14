@@ -7,6 +7,6 @@ spring:
 
   profiles:
     group:
-      "dev": "dev, auth, datasource, redis"
-      "prod": "prod, auth, datasource, redis"
+      "dev": "dev, auth, datasource, redis, aws"
+      "prod": "prod, auth, datasource, redis, aws"
 
