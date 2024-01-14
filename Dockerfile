@@ -44,7 +44,6 @@ ENV kakao_client_id=${KAKAO_CLIENT_ID} \
 
 
 ENTRYPOINT java -jar -Dspring.profiles.active=prod teum.jar \
-            --spring.datasource.url=${db_url} \
             --spring.security.oauth2.client.registration.kakao.client-id=${kakao_client_id} \
             --spring.security.oauth2.client.registration.kakao.client-secret=${kakao_client_secret} \
             --spring.security.oauth2.client.registration.kakao.redirect-uri=${kakao_redirect_uri} \
