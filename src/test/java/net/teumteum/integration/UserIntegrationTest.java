@@ -197,6 +197,39 @@ class UserIntegrationTest extends IntegrationTest {
     }
 
     @Nested
+    @DisplayName("회원 탈퇴 API는")
+    class Withdraw_user {
+
+        @Test
+        @DisplayName("현재 로그인한 회원을 탈퇴 처리한다.")
+        void Withdraw_user_info() {
+            // given
+            var me = repository.saveAndGetUser();
+
+            loginContext.setUserId(me.getId());
+
+            // when
+            var result = api.withdrawUser(VALID_TOKEN);
+
+            // then
+            Assertions.assertThat(result.expectStatus().isOk());
+        }
+
+        @Test
+        @DisplayName("해당 회원이 존재하지 않으면, 500 에러를 반환한다.")
+        void Return_400_error_if_user_not_exist() {
+            // given
+            repository.clearUserRepository();
+
+            // when
+            var result = api.withdrawUser(VALID_TOKEN);
+
+            // then
+            Assertions.assertThat(result.expectStatus().is5xxServerError());
+        }
+    }
+
+    @Nested
     @DisplayName("회원 카드 등록 API는")
     class Register_user_card {
 
