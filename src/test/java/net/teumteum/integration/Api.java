@@ -8,12 +8,10 @@ import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
-@WithMockUser(username = "user", roles = {"USER"})
 @TestComponent
 class Api {
 
@@ -118,6 +116,21 @@ class Api {
         return webTestClient.get()
             .uri("/users/interests?user-id=" + param.substring(0, param.length() - 1))
             .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec reissueJwt(String accessToken, String refreshToken) {
+        return webTestClient.post()
+            .uri("/auth/reissue")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .header("Authorization-refresh", refreshToken)
+            .exchange();
+    }
+
+    ResponseSpec withdrawUser(String accessToken) {
+        return webTestClient.delete()
+            .uri("/users/withdraw")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
             .exchange();
     }
 }
