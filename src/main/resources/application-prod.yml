@@ -7,13 +7,15 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    static-path-pattern: /static/**
+
 
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 50MB
 
-### JPA ###
+  ### JPA ###
   jpa:
     hibernate:
       ddl-auto: validate
