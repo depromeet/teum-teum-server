@@ -140,11 +140,11 @@ class MeetingRepositoryTest {
             // given
             var createSize = 3;
 
-            var expectedMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithStreet("강남"))
+            var expectedMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithMainStreet("강남"))
                     .limit(createSize)
                     .toList();
 
-            var existsWrongMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithStreet("판교"))
+            var existsWrongMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithMainStreet("판교"))
                     .limit(createSize)
                     .toList();
 
