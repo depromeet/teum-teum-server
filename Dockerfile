@@ -19,7 +19,7 @@ ARG AWS_SECRET_KEY
 ARG AWS_REGION
 ARG AWS_S3_BUCKET
 
-ARG JAR_FILE=./build/libs/*-SNAPSHOT.jar
+ARG JAR_FILE=./build/libs/*.jar
 
 COPY ${JAR_FILE} teum.jar
 
