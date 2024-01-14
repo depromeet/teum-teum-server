@@ -62,7 +62,7 @@ public class AuthControllerTest {
 
             given(authService.reissue(any(HttpServletRequest.class))).willReturn(tokenResponse);
             // when & then
-            mockMvc.perform(post("/auth/reissue")
+            mockMvc.perform(post("/auth/reissues")
                     .with(csrf())
                     .header(AUTHORIZATION, INVALID_ACCESS_TOKEN)
                     .header("Authorization-refresh", VALID_REFRESH_TOKEN))
@@ -80,7 +80,7 @@ public class AuthControllerTest {
                 new IllegalArgumentException("refresh token 이 유효하지 않습니다."));
 
             // when & then
-            mockMvc.perform(post("/auth/reissue")
+            mockMvc.perform(post("/auth/reissues")
                     .with(csrf())
                     .header(AUTHORIZATION, INVALID_ACCESS_TOKEN)
                     .header("Authorization-refresh", INVALID_REFRESH_TOKEN))
