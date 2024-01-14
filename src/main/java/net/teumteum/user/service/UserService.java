@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.security.Authenticated;
 import net.teumteum.core.security.service.RedisService;
+import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.user.domain.BalanceGameType;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
@@ -27,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final InterestQuestion interestQuestion;
     private final RedisService redisService;
+    private final SecurityService securityService;
 
     public UserGetResponse getUserById(Long userId) {
         var existUser = getUser(userId);
@@ -75,6 +77,13 @@ public class UserService {
         checkUserExistence(request.authenticated(), request.id());
 
         return new UserRegisterResponse(userRepository.save(request.toUser()).getId());
+    }
+
+    @Transactional
+    public void logout(Long userId) {
+        var existUser = getUser(userId);
+        redisService.deleteData(String.valueOf(existUser.getId()));
+        securityService.clearSecurityContext();
     }
 
 

@@ -90,6 +90,11 @@ public class UserController {
         return userService.register(request);
     }
 
+    @PostMapping("/logouts")
+    @ResponseStatus(HttpStatus.OK)
+    public void logout() {
+        userService.logout(getCurrentUserId());
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
