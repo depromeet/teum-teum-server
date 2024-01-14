@@ -2,6 +2,8 @@ package net.teumteum.integration;
 
 
 import jakarta.persistence.EntityManager;
+import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.config.AppConfig;
 import net.teumteum.meeting.domain.Meeting;
@@ -14,16 +16,11 @@ import net.teumteum.user.domain.UserRepository;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.annotation.Import;
 
-import java.util.List;
-import java.util.stream.Stream;
-
-import java.util.List;
-import java.util.stream.Stream;
-
 @TestComponent
 @Import(AppConfig.class)
 @RequiredArgsConstructor
 class Repository {
+
     private final UserRepository userRepository;
 
     private final MeetingRepository meetingRepository;
@@ -36,6 +33,10 @@ class Repository {
 
     List<User> getAllUser() {
         return userRepository.findAll();
+    }
+
+    void clearUserRepository() {
+        userRepository.deleteAll();
     }
 
 
@@ -56,65 +57,65 @@ class Repository {
 
     List<Meeting> saveAndGetOpenMeetingsByTopic(int size, Topic topic) {
         var meetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithTopic(topic))
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
     List<Meeting> saveAndGetCloseMeetingsTopic(int size, Topic topic) {
         var meetings = Stream.generate(() -> MeetingFixture.getCloseMeetingWithTopic(topic))
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
     List<Meeting> saveAndGetOpenMeetingsByTitle(int size, String title) {
         var meetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithTitle(title))
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
     List<Meeting> saveAndGetCloseMeetingsByTitle(int size, String title) {
         var meetings = Stream.generate(() -> MeetingFixture.getCloseMeetingWithTitle(title))
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
     List<Meeting> saveAndGetOpenMeetingsByIntroduction(int size, String introduction) {
         var meetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithIntroduction(introduction))
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
     List<Meeting> saveAndGetCloseMeetingsByIntroduction(int size, String introduction) {
         var meetings = Stream.generate(() -> MeetingFixture.getCloseMeetingWithIntroduction(introduction))
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
     List<Meeting> saveAndGetOpenMeetingsByParticipantUserId(int size, Long participantUserId) {
         var meetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithParticipantUserId(participantUserId))
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
     List<Meeting> saveAndGetCloseMeetingsByParticipantUserId(int size, Long participantUserId) {
         var meetings = Stream.generate(() -> MeetingFixture.getCloseMeetingWithParticipantUserId(participantUserId))
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
 
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
     List<Meeting> saveAndGetOpenMeetings(int size) {
         var meetings = Stream.generate(MeetingFixture::getOpenMeeting)
-                .limit(size)
-                .toList();
+            .limit(size)
+            .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
