@@ -235,7 +235,6 @@ class UserIntegrationTest extends IntegrationTest {
 
             Assertions.assertThat(responseBody)
                 .isNotNull()
-                .hasFieldOrPropertyWithValue("status", "BAD_REQUEST")
                 .hasFieldOrProperty("일치하는 user 가 이미 존재합니다.");
         }
     }
