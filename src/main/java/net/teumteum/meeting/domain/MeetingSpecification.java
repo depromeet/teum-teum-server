@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 public class MeetingSpecification {
 
     public static Specification<Meeting> withIsOpen(boolean isOpen) {
-        if (isOpen) return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("promiseDateTime"), LocalDateTime.now());
+        if (isOpen) {
+            return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("promiseDateTime"), LocalDateTime.now());
+        }
         return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("promiseDateTime"), LocalDateTime.now());
     }
 
@@ -18,7 +20,7 @@ public class MeetingSpecification {
     }
 
     public static Specification<Meeting> withAreaStreet(String meetingAreaStreet) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("meetingArea").get("street"), meetingAreaStreet);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("meetingArea").get("mainStreet"), meetingAreaStreet);
     }
 
     public static Specification<Meeting> withSearchWordInTitle(String searchWord) {
