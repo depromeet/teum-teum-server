@@ -33,7 +33,7 @@ public class MeetingController {
             @RequestPart @Valid CreateMeetingRequest meetingRequest,
             @RequestPart List<MultipartFile> images) {
         Long userId = securityService.getCurrentUserId();
-        return meetingService.createMeeting(meetingRequest, userId);
+        return meetingService.createMeeting(images, meetingRequest, userId);
     }
 
     @GetMapping("/{meetingId}")
@@ -44,12 +44,13 @@ public class MeetingController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageDto<MeetingsResponse> getMeetingsOrderByDate(Pageable pageable,
-                                                            @RequestParam(value = "isOpen") boolean isOpen,
-                                                            @RequestParam(value = "topic", required = false) Topic topic,
-                                                            @RequestParam(value = "meetingAreaStreet", required = false) String meetingAreaStreet,
-                                                            @RequestParam(value = "participantUserId", required = false) Long participantUserId,
-                                                            @RequestParam(value = "searchWord", required = false) String searchWord) {
+    public PageDto<MeetingsResponse> getMeetingsOrderByDate(
+            Pageable pageable,
+            @RequestParam(value = "isOpen") boolean isOpen,
+            @RequestParam(value = "topic", required = false) Topic topic,
+            @RequestParam(value = "meetingAreaStreet", required = false) String meetingAreaStreet,
+            @RequestParam(value = "participantUserId", required = false) Long participantUserId,
+            @RequestParam(value = "searchWord", required = false) String searchWord) {
 
         return meetingService.getMeetingsBySpecification(pageable, topic, meetingAreaStreet, participantUserId, searchWord, isOpen);
     }

@@ -10,7 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -18,24 +21,39 @@ import java.util.Set;
 public class MeetingService {
 
     private final MeetingRepository meetingRepository;
+    private final ImageUpload imageUpload;
 
     @Transactional
-    public MeetingResponse createMeeting(CreateMeetingRequest meetingRequest, Long userId) {
-        Meeting meeting = Meeting.builder()
-                .hostUserId(userId)
-                .title(meetingRequest.title())
-                .topic(meetingRequest.topic())
-                .introduction(meetingRequest.introduction())
-                .meetingArea(MeetingArea.of(
-                        meetingRequest.meetingArea().address(),
-                        meetingRequest.meetingArea().addressDetail())
-                )
-                .numberOfRecruits(meetingRequest.numberOfRecruits())
-                .promiseDateTime(meetingRequest.promiseDateTime())
-                .participantUserIds(Set.of(userId))
-                .build();
+    public MeetingResponse createMeeting(List<MultipartFile> images, CreateMeetingRequest meetingRequest, Long userId) {
+        Assert.isTrue(!images.isEmpty() && images.size() <= 5, "이미지는 1개 이상 5개 이하로 업로드해야 합니다.");
 
-        return MeetingResponse.of(meetingRepository.save(meeting));
+        Meeting meeting = meetingRepository.save(
+                Meeting.builder()
+                        .hostUserId(userId)
+                        .title(meetingRequest.title())
+                        .topic(meetingRequest.topic())
+                        .introduction(meetingRequest.introduction())
+                        .meetingArea(MeetingArea.of(
+                                meetingRequest.meetingArea().address(),
+                                meetingRequest.meetingArea().addressDetail())
+                        )
+                        .numberOfRecruits(meetingRequest.numberOfRecruits())
+                        .promiseDateTime(meetingRequest.promiseDateTime())
+                        .participantUserIds(Set.of(userId))
+                        .build()
+        );
+
+        uploadMeetingImages(images, meeting);
+
+        return MeetingResponse.of(meeting);
+    }
+
+    private void uploadMeetingImages(List<MultipartFile> images, Meeting meeting) {
+        images.forEach(
+                image -> meeting.getImageUrls().add(
+                        imageUpload.upload(image, meeting.getId().toString()).filePath()
+                )
+        );
     }
 
     @Transactional(readOnly = true)
