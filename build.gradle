@@ -16,6 +16,10 @@ apply from: "gradle/sentry.gradle"
 
 allprojects {
 
+    jar {
+        enabled = false
+    }
+
     group = "${projectGroup}"
     version = "${projectVersion}"
 
