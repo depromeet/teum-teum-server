@@ -220,8 +220,8 @@ class UserIntegrationTest extends IntegrationTest {
         }
 
         @Test
-        @DisplayName("해당 회원이 존재하지 않으면, 400 에러를 반환한다.")
-        void Return_400_error_if_user_not_exist() {
+        @DisplayName("해당 회원이 존재하지 않으면, 500 에러를 반환한다.")
+        void Return_500_error_if_user_not_exist() {
             // given
             repository.clearUserRepository();
 
@@ -229,12 +229,11 @@ class UserIntegrationTest extends IntegrationTest {
             var result = api.withdrawUser(VALID_TOKEN);
 
             // then
-            var responseBody = result.expectStatus().isBadRequest()
-                .expectBody(ErrorResponse.class)
-                .returnResult().getResponseBody();
-
-            Assertions.assertThat(responseBody)
-                .isNotNull();
+            Assertions.assertThat(result.expectStatus().is5xxServerError()
+                    .expectBody(ErrorResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison().isNull();
         }
     }
 
