@@ -11,6 +11,7 @@ apply from: "gradle/devtool.gradle"
 apply from: "gradle/test.gradle"
 apply from: "gradle/sonar.gradle"
 apply from: "gradle/db.gradle"
+apply from: "gradle/aws.gradle"
 
 allprojects {
 
