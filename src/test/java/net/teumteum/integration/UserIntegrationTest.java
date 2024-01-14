@@ -229,7 +229,8 @@ class UserIntegrationTest extends IntegrationTest {
             var result = api.registerUserCard(VALID_TOKEN, userRegister);
 
             // then
-            Assertions.assertThat(result.expectStatus().isBadRequest());
+            Assertions.assertThat(result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class));
         }
     }
 }
