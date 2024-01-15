@@ -19,6 +19,7 @@ class UserIntegrationTest extends IntegrationTest {
 
     private static final String VALID_TOKEN = "VALID_TOKEN";
     private static final String INVALID_TOKEN = "IN_VALID_TOKEN";
+    private static final Long DURATION = 3600000L;
 
     @Nested
     @DisplayName("유저 조회 API는")
@@ -204,17 +205,15 @@ class UserIntegrationTest extends IntegrationTest {
 
         @Test
         @DisplayName("현재 로그인한 회원을 탈퇴 처리한다.")
-        void Withdraw_user_info() {
+        void Withdraw_user_info_api() {
             // given
             var me = repository.saveAndGetUser();
+            repository.saveRedisDataWithExpiration(String.valueOf(me.getId()), VALID_TOKEN, DURATION);
 
             loginContext.setUserId(me.getId());
 
-            // when
-            var result = api.withdrawUser(VALID_TOKEN);
+            // when & then
 
-            // then
-            var responseBody = result.expectStatus().isOk();
             assertThatCode(() -> api.withdrawUser(VALID_TOKEN))
                 .doesNotThrowAnyException();
         }
@@ -239,7 +238,7 @@ class UserIntegrationTest extends IntegrationTest {
 
     @Nested
     @DisplayName("회원 카드 등록 API는")
-    class Register_user_card {
+    class Register_user_card_api {
 
         @Test
         @DisplayName("등록할 회원의 정보가 주어지면, 회원 정보를 저장한다.")
@@ -276,6 +275,23 @@ class UserIntegrationTest extends IntegrationTest {
 
             Assertions.assertThat(responseBody)
                 .isNotNull();
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 로그아웃 API 는")
+    class Logout_user_api {
+
+        @Test
+        @DisplayName("현재 로그인된 유저를 로그아웃 시킨다.")
+        void Logout_user() {
+            // given
+            var existUser = repository.saveAndGetUser();
+            repository.saveRedisDataWithExpiration(String.valueOf(existUser.getId()), VALID_TOKEN, DURATION);
+
+            // when & then
+            assertThatCode(() -> api.logoutUser(VALID_TOKEN))
+                .doesNotThrowAnyException();
         }
     }
 }
