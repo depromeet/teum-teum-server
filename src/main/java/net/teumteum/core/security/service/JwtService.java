@@ -46,7 +46,7 @@ public class JwtService {
 
     public String getUserIdFromToken(String token) {
         try {
-            return Jwts.parser().setSigningKey(jwtProperty.getSecret())
+            return Jwts.parser().setSigningKey(jwtProperty.getSecret().getBytes())
                 .parseClaimsJws(token).getBody().getSubject();
         } catch (Exception exception) {
             throw new JwtException("Access Token is not valid");
@@ -79,13 +79,14 @@ public class JwtService {
             .setClaims(claims)
             .setIssuedAt(new Date())
             .setExpiration(tokenExpiresIn)
-            .signWith(SignatureAlgorithm.HS512, jwtProperty.getSecret())
+            .signWith(SignatureAlgorithm.HS512, jwtProperty.getSecret().getBytes())
             .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(jwtProperty.getSecret()).parseClaimsJws(token);
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(jwtProperty.getSecret().getBytes())
+                .parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException exception) {
             log.warn("만료된 jwt 입니다.");
