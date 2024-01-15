@@ -2,7 +2,14 @@ allprojects {
     dependencies {
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok"
-        implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+        implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
+
+        // com.sun.xml.bind
+        implementation "com.sun.xml.bind:jaxb-impl:${jwtBindingVersion}"
+        implementation "com.sun.xml.bind:jaxb-core:${jwtBindingVersion}"
+        // javax.xml.bind
+        implementation "javax.xml.bind:jaxb-api:${jwtJaxbApiVersion}"
 
         testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
         testAnnotationProcessor "org.projectlombok:lombok"
