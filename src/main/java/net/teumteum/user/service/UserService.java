@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.security.Authenticated;
 import net.teumteum.core.security.service.RedisService;
+import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.user.domain.BalanceGameType;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
@@ -13,6 +14,7 @@ import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,10 @@ public class UserService {
         var existUser = getUser(userId);
 
         return UserGetResponse.of(existUser);
+    }
+
+    public UserMeGetResponse getMe(Long userId) {
+        return UserMeGetResponse.of(getUser(userId));
     }
 
     public UsersGetByIdResponse getUsersById(List<Long> userIds) {
@@ -75,6 +81,13 @@ public class UserService {
         checkUserExistence(request.authenticated(), request.id());
 
         return new UserRegisterResponse(userRepository.save(request.toUser()).getId());
+    }
+
+    @Transactional
+    public void logout(Long userId) {
+        getUser(userId);
+        redisService.deleteData(String.valueOf(userId));
+        SecurityService.clearSecurityContext();
     }
 
 
