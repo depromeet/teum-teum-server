@@ -20,7 +20,9 @@ import org.springframework.context.annotation.Import;
 @TestComponent
 @Import(AppConfig.class)
 @RequiredArgsConstructor
-class Repository {
+
+public class Repository {
+
     private final UserRepository userRepository;
 
     private final MeetingRepository meetingRepository;

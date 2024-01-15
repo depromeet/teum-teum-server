@@ -213,6 +213,7 @@ class UserIntegrationTest extends IntegrationTest {
             loginContext.setUserId(me.getId());
 
             // when & then
+
             assertThatCode(() -> api.withdrawUser(VALID_TOKEN))
                 .doesNotThrowAnyException();
         }
