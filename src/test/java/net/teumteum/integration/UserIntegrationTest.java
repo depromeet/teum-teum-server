@@ -2,10 +2,8 @@ package net.teumteum.integration;
 
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
-import net.teumteum.user.domain.response.FriendsResponse;
-import net.teumteum.user.domain.response.UserGetResponse;
-import net.teumteum.user.domain.response.UserRegisterResponse;
-import net.teumteum.user.domain.response.UsersGetByIdResponse;
+import net.teumteum.user.domain.response.UserMeGetResponse;
+import net.teumteum.user.domain.response.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -117,14 +115,14 @@ class UserIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             loginContext.setUserId(me.getId());
 
-            var expected = UserGetResponse.of(me);
+            var expected = UserMeGetResponse.of(me);
 
             // when
             var result = api.getUser(VALID_TOKEN, me.getId());
 
             // then
             Assertions.assertThat(result.expectStatus().isOk()
-                            .expectBody(UserGetResponse.class)
+                            .expectBody(UserMeGetResponse.class)
                             .returnResult()
                             .getResponseBody())
                     .usingRecursiveComparison().isEqualTo(expected);

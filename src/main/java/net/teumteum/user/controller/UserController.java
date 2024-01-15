@@ -4,6 +4,7 @@ import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
+import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.*;
@@ -42,8 +43,8 @@ public class UserController {
 
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public UserGetResponse getMe() {
-        return userService.getUserById(getCurrentUserId());
+    public UserMeGetResponse getMe() {
+        return userService.getMe(getCurrentUserId());
     }
 
     @PutMapping
