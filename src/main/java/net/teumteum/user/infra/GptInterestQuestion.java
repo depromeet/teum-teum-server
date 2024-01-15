@@ -40,7 +40,7 @@ public class GptInterestQuestion implements InterestQuestion {
         return webClient.post()
             .uri("/v1/chat/completions")
             .bodyValue(request)
-            .header(HttpHeaders.AUTHORIZATION, gptToken)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + gptToken)
             .exchangeToMono(response -> {
                 if (response.statusCode().is2xxSuccessful()) {
                     return response.bodyToMono(BalanceQuestionResponse.class);
@@ -60,7 +60,7 @@ public class GptInterestQuestion implements InterestQuestion {
         return webClient.post()
             .uri("/v1/chat/completions")
             .bodyValue(request)
-            .header(HttpHeaders.AUTHORIZATION, gptToken)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + gptToken)
             .exchangeToMono(response -> {
                 if (response.statusCode().is2xxSuccessful()) {
                     return response.bodyToMono(StoryQuestionResponse.class);
