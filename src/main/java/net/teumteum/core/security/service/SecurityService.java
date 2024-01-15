@@ -16,11 +16,6 @@ public class SecurityService {
         SecurityContextHolder.clearContext();
     }
 
-    private UserAuthentication getUserAuthentication() {
-        return (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
-    }
-
-
     public Long getCurrentUserId() {
         return getUserAuthentication() == null ? userConnector.findAllUser().get(0).getId()
             : getUserAuthentication().getId();
@@ -35,5 +30,9 @@ public class SecurityService {
     public void setUserId(Long userId) {
         UserAuthentication userAuthentication = getUserAuthentication();
         userAuthentication.setUserId(userId);
+    }
+
+    private UserAuthentication getUserAuthentication() {
+        return (UserAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 }

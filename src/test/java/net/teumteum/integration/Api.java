@@ -143,4 +143,12 @@ class Api {
             .bodyValue(userRegisterRequest)
             .exchange();
     }
+
+    ResponseSpec logoutUser(String accessToken) {
+        return webTestClient
+            .post()
+            .uri("/users/logouts")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
 }
