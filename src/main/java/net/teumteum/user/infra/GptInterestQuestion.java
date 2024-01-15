@@ -38,6 +38,7 @@ public class GptInterestQuestion implements InterestQuestion {
         var request = GptQuestionRequest.balanceGame(interests);
 
         return webClient.post()
+            .uri("/v1/chat/completions")
             .bodyValue(request)
             .header(HttpHeaders.AUTHORIZATION, gptToken)
             .exchangeToMono(response -> {
@@ -56,7 +57,10 @@ public class GptInterestQuestion implements InterestQuestion {
         var interests = parseInterests(users);
         var request = GptQuestionRequest.story(interests);
 
-        return webClient.post().bodyValue(request).header(HttpHeaders.AUTHORIZATION, gptToken)
+        return webClient.post()
+            .uri("/v1/chat/completions")
+            .bodyValue(request)
+            .header(HttpHeaders.AUTHORIZATION, gptToken)
             .exchangeToMono(response -> {
                 if (response.statusCode().is2xxSuccessful()) {
                     return response.bodyToMono(StoryQuestionResponse.class);
