@@ -7,9 +7,9 @@ allprojects {
 
     dependencies {
         // test container for redis
-        testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
-        testImplementation "org.testcontainers:testcontainers:1.17.6"
-        testImplementation "org.testcontainers:junit-jupiter:1.17.6"
+        testImplementation "org.junit.jupiter:junit-jupiter:${junitTestContainer}"
+        testImplementation "org.testcontainers:testcontainers:${testContainer}"
+        testImplementation "org.testcontainers:junit-jupiter:${testContainer}"
 
         testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
         testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
