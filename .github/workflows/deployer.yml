@@ -67,7 +67,7 @@ jobs:
             "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}"
             "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}"
             "NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }}"
-            "JWT_SECRET_KEY=${{ secrets.NAVER_REDIRECT_URI }}"
+            "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}"
             "DB_URL=${{ secrets.DB_URL }}"
             "DB_USERNAME=${{ secrets.DB_USERNAME }}"
             "DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
