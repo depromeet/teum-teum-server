@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.config.AppConfig;
+import net.teumteum.core.security.service.RedisService;
 import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.MeetingFixture;
 import net.teumteum.meeting.domain.MeetingRepository;
@@ -19,12 +20,12 @@ import org.springframework.context.annotation.Import;
 @TestComponent
 @Import(AppConfig.class)
 @RequiredArgsConstructor
-public class Repository {
-
+class Repository {
     private final UserRepository userRepository;
 
     private final MeetingRepository meetingRepository;
-    private final EntityManager entityManager;
+
+    private final RedisService redisService;
 
     public User saveAndGetUser() {
         var user = UserFixture.getNullIdUser();
@@ -33,6 +34,10 @@ public class Repository {
 
     List<User> getAllUser() {
         return userRepository.findAll();
+    }
+
+    void clearUserRepository() {
+        userRepository.deleteAll();
     }
 
 
@@ -113,6 +118,18 @@ public class Repository {
             .limit(size)
             .toList();
         return meetingRepository.saveAllAndFlush(meetings);
+    }
+
+    void saveRedisDataWithExpiration(String key, String value, Long duration) {
+        redisService.setDataWithExpiration(key, value, duration);
+    }
+
+    void deleteRedisData(String key) {
+        redisService.deleteData(key);
+    }
+
+    void getRedisData(String key) {
+        redisService.getData(key);
     }
 
     void clear() {
