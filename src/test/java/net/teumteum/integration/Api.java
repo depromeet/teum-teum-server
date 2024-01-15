@@ -130,7 +130,7 @@ class Api {
 
     ResponseSpec withdrawUser(String accessToken) {
         return webTestClient.delete()
-            .uri("/users/withdraws")
+            .uri("/users")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .exchange();
     }
@@ -138,7 +138,7 @@ class Api {
     ResponseSpec registerUserCard(String accessToken, UserRegisterRequest userRegisterRequest) {
         return webTestClient
             .post()
-            .uri("/users/registers")
+            .uri("/users")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .bodyValue(userRegisterRequest)
             .exchange();

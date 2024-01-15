@@ -20,8 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
     Repository.class,
     Application.class,
     GptTestServer.class,
-    TestLoginContext.class,
-    SecurityContextSetting.class})
+    TestLoginContext.class
+})
 abstract public class IntegrationTest {
 
     @Autowired
@@ -30,20 +30,14 @@ abstract public class IntegrationTest {
     @Autowired
     protected Repository repository;
 
-    @Autowired
-    protected SecurityContextSetting securityContextSetting;
 
     @Autowired
     protected TestLoginContext loginContext;
+
 
     @AfterEach
     @BeforeEach
     void clearAll() {
         repository.clear();
-    }
-
-    @BeforeEach
-    void setSecurityContextSetting() {
-        securityContextSetting.set();
     }
 }

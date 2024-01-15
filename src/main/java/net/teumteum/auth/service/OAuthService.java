@@ -67,11 +67,10 @@ public class OAuthService {
 
     private TokenResponse checkUserAndMakeResponse(OAuthUserInfo oAuthUserInfo, Authenticated authenticated) {
         String oauthId = oAuthUserInfo.getOAuthId();
-        Optional<User> user = getUser(oauthId, authenticated);
-        if (user.isEmpty()) {
-            return new TokenResponse(oAuthUserInfo.getOAuthId());
-        }
-        return jwtService.createServiceToken(user.get());
+
+        return getUser(oauthId, authenticated)
+            .map(jwtService::createServiceToken)
+            .orElseGet(() -> new TokenResponse(oauthId));
     }
 
     private Map<String, Object> getOAuthAttribute(ClientRegistration clientRegistration, OAuthToken oAuthToken) {

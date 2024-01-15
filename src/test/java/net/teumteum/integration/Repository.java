@@ -1,6 +1,7 @@
 package net.teumteum.integration;
 
 
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +21,13 @@ import org.springframework.context.annotation.Import;
 @Import(AppConfig.class)
 @RequiredArgsConstructor
 class Repository {
-
     private final UserRepository userRepository;
 
     private final MeetingRepository meetingRepository;
 
     private final RedisService redisService;
 
-    User saveAndGetUser() {
+    public User saveAndGetUser() {
         var user = UserFixture.getNullIdUser();
         return userRepository.saveAndFlush(user);
     }
