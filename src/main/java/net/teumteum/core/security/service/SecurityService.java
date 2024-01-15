@@ -12,7 +12,7 @@ public class SecurityService {
 
     private final UserConnector userConnector;
 
-    public void clearSecurityContext() {
+    public static void clearSecurityContext() {
         SecurityContextHolder.clearContext();
     }
 

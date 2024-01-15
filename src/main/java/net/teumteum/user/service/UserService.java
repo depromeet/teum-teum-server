@@ -28,7 +28,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final InterestQuestion interestQuestion;
     private final RedisService redisService;
-    private final SecurityService securityService;
 
     public UserGetResponse getUserById(Long userId) {
         var existUser = getUser(userId);
@@ -81,9 +80,9 @@ public class UserService {
 
     @Transactional
     public void logout(Long userId) {
-        var existUser = getUser(userId);
-        redisService.deleteData(String.valueOf(existUser.getId()));
-        securityService.clearSecurityContext();
+        getUser(userId);
+        redisService.deleteData(String.valueOf(userId));
+        SecurityService.clearSecurityContext();
     }
 
 
