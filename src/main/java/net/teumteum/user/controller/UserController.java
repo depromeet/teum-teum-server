@@ -78,13 +78,13 @@ public class UserController {
         return userService.getInterestQuestionByUserIds(userIds, balance);
     }
 
-    @DeleteMapping("/withdraws")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public void withdraw() {
         userService.withdraw(getCurrentUserId());
     }
 
-    @PostMapping("/registers")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserRegisterResponse register(@RequestBody UserRegisterRequest request) {
         return userService.register(request);

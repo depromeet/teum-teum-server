@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -15,5 +14,9 @@ public class ErrorResponse {
 
     public static ErrorResponse of(Throwable exception) {
         return new ErrorResponse(exception.getMessage());
+    }
+
+    public static ErrorResponse of(String message) {
+        return new ErrorResponse(message);
     }
 }
