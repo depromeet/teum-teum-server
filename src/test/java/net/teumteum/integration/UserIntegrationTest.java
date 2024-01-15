@@ -1,5 +1,8 @@
 package net.teumteum.integration;
 
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.response.UserMeGetResponse;
@@ -16,6 +19,7 @@ class UserIntegrationTest extends IntegrationTest {
 
     private static final String VALID_TOKEN = "VALID_TOKEN";
     private static final String INVALID_TOKEN = "IN_VALID_TOKEN";
+    private static final Long DURATION = 3600000L;
 
     @Nested
     @DisplayName("유저 조회 API는")
@@ -222,8 +226,45 @@ class UserIntegrationTest extends IntegrationTest {
     }
 
     @Nested
+    @DisplayName("회원 탈퇴 API는")
+    class Withdraw_user {
+
+        @Test
+        @DisplayName("현재 로그인한 회원을 탈퇴 처리한다.")
+        void Withdraw_user_info_api() {
+            // given
+            var me = repository.saveAndGetUser();
+            repository.saveRedisDataWithExpiration(String.valueOf(me.getId()), VALID_TOKEN, DURATION);
+
+            loginContext.setUserId(me.getId());
+
+            // when & then
+
+            assertThatCode(() -> api.withdrawUser(VALID_TOKEN))
+                .doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("해당 회원이 존재하지 않으면, 500 에러를 반환한다.")
+        void Return_500_error_if_user_not_exist() {
+            // given
+            repository.clearUserRepository();
+
+            // when
+            var result = api.withdrawUser(VALID_TOKEN);
+
+            // then
+            Assertions.assertThat(result.expectStatus().is5xxServerError()
+                    .expectBody(ErrorResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison().isNull();
+        }
+    }
+
+    @Nested
     @DisplayName("회원 카드 등록 API는")
-    class Register_user_card {
+    class Register_user_card_api {
 
         @Test
         @DisplayName("등록할 회원의 정보가 주어지면, 회원 정보를 저장한다.")
@@ -260,6 +301,23 @@ class UserIntegrationTest extends IntegrationTest {
 
             Assertions.assertThat(responseBody)
                 .isNotNull();
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 로그아웃 API 는")
+    class Logout_user_api {
+
+        @Test
+        @DisplayName("현재 로그인된 유저를 로그아웃 시킨다.")
+        void Logout_user() {
+            // given
+            var existUser = repository.saveAndGetUser();
+            repository.saveRedisDataWithExpiration(String.valueOf(existUser.getId()), VALID_TOKEN, DURATION);
+
+            // when & then
+            assertThatCode(() -> api.logoutUser(VALID_TOKEN))
+                .doesNotThrowAnyException();
         }
     }
 }
