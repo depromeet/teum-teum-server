@@ -14,6 +14,7 @@ import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,10 @@ public class UserService {
         var existUser = getUser(userId);
 
         return UserGetResponse.of(existUser);
+    }
+
+    public UserMeGetResponse getMe(Long userId) {
+        return UserMeGetResponse.of(getUser(userId));
     }
 
     public UsersGetByIdResponse getUsersById(List<Long> userIds) {

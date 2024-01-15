@@ -2,17 +2,16 @@ package net.teumteum.integration;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
-import net.teumteum.user.domain.response.FriendsResponse;
-import net.teumteum.user.domain.response.UserGetResponse;
-import net.teumteum.user.domain.response.UserRegisterResponse;
-import net.teumteum.user.domain.response.UsersGetByIdResponse;
+import net.teumteum.user.domain.response.UserMeGetResponse;
+import net.teumteum.user.domain.response.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {
@@ -106,6 +105,32 @@ class UserIntegrationTest extends IntegrationTest {
             // then
             result.expectStatus().isBadRequest();
         }
+    }
+
+    @Nested
+    @DisplayName("내 정보 조회 API는")
+    class Find_my_info_api {
+
+        @Test
+        @DisplayName("유효한 토큰이 주어지면, 내 정보를 응답한다.")
+        void Return_my_info_if_valid_token_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            loginContext.setUserId(me.getId());
+
+            var expected = UserMeGetResponse.of(me);
+
+            // when
+            var result = api.getUser(VALID_TOKEN, me.getId());
+
+            // then
+            Assertions.assertThat(result.expectStatus().isOk()
+                            .expectBody(UserMeGetResponse.class)
+                            .returnResult()
+                            .getResponseBody())
+                    .usingRecursiveComparison().isEqualTo(expected);
+        }
+
     }
 
     @Nested
