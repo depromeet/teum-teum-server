@@ -1,7 +1,6 @@
 package net.teumteum.integration;
 
 
-import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ import org.springframework.context.annotation.Import;
 @TestComponent
 @Import(AppConfig.class)
 @RequiredArgsConstructor
-class Repository {
+public class Repository {
 
     private final UserRepository userRepository;
 
