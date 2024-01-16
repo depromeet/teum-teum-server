@@ -1,7 +1,6 @@
 package net.teumteum.integration;
 
 
-import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +49,16 @@ public class Repository {
 
     Meeting saveAndGetCloseMeeting() {
         var meeting = MeetingFixture.getCloseMeeting();
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
+    Meeting saveAndGetOpenMeetingWithHostId(Long hostId) {
+        var meeting = MeetingFixture.getOpenMeetingWithHostId(hostId);
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
+    Meeting saveAndGetCloseMeetingWithHostId(Long hostId) {
+        var meeting = MeetingFixture.getCloseMeetingWithHostId(hostId);
         return meetingRepository.saveAndFlush(meeting);
     }
 

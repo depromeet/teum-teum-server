@@ -64,24 +64,49 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result)
-                    .isPresent()
-                    .usingRecursiveComparison()
-                    .ignoringFields("value.createdAt", "value.updatedAt")
-                    .isEqualTo(Optional.of(existsMeeting));
+                .isPresent()
+                .usingRecursiveComparison()
+                .ignoringFields("value.createdAt", "value.updatedAt")
+                .isEqualTo(Optional.of(existsMeeting));
+        }
+    }
+
+    @Nested
+    @DisplayName("delete 메소드는")
+    class Delete_method {
+
+        @Test
+        @DisplayName("모임을 삭제한 유저가 모임의 주최자이면 (hostId = userId), 모임 삭제에 성공한다.")
+        void Delete_success_if_exists_meeting_input() {
+            // given
+            var existsMeeting = MeetingFixture.getDefaultMeeting();
+
+            meetingRepository.saveAndFlush(existsMeeting);
+            entityManager.clear();
+
+            // when
+            meetingRepository.delete(existsMeeting);
+            entityManager.flush();
+            entityManager.clear();
+
+            // then
+            var result = meetingRepository.findById(existsMeeting.getId());
+            Assertions.assertThat(result).isEmpty();
         }
     }
 
     @Nested
     @DisplayName("JPA Specification을 이용한 findAll 메소드 중")
     class FindAllWithSpecificationAndPageNation_method {
+
         @Test
         @DisplayName("저장된 모임들을 주어진 topic을 가진 모임을 페이지 네이션을 적용해 최신순으로 조회하면, 모임들을 반환한다.")
         void Find_success_if_exists_meetings_topic_and_page_nation_input() {
             // given
             var createSize = 3;
             var expectedMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithTopic(Topic.스터디))
-                    .limit(createSize)
-                    .toList();
+                .limit(createSize)
+                .toList();
 
             meetingRepository.saveAllAndFlush(expectedMeetings);
             entityManager.clear();
@@ -95,13 +120,13 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveComparison()
-                    .ignoringFields("createdAt", "updatedAt")
-                    .isEqualTo(
-                            expectedMeetings.stream()
-                                    .sorted(Comparator.comparing(Meeting::getId).reversed())
-                                    .toList()
-                    );
+                .usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
+                .isEqualTo(
+                    expectedMeetings.stream()
+                        .sorted(Comparator.comparing(Meeting::getId).reversed())
+                        .toList()
+                );
         }
 
         @Test
@@ -110,8 +135,8 @@ class MeetingRepositoryTest {
             // given
             var createSize = 3;
             var expectedMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithParticipantUserId(2L))
-                    .limit(createSize)
-                    .toList();
+                .limit(createSize)
+                .toList();
 
             meetingRepository.saveAllAndFlush(expectedMeetings);
             entityManager.clear();
@@ -120,18 +145,19 @@ class MeetingRepositoryTest {
             var requestParticipantUserId = 2L;
 
             // when
-            var spec = MeetingSpecification.withIsOpen(true).and(MeetingSpecification.withParticipantUserId(requestParticipantUserId));
+            var spec = MeetingSpecification.withIsOpen(true)
+                .and(MeetingSpecification.withParticipantUserId(requestParticipantUserId));
             var result = meetingRepository.findAll(spec, requestPageable);
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveComparison()
-                    .ignoringFields("createdAt", "updatedAt")
-                    .isEqualTo(
-                            expectedMeetings.stream()
-                                    .sorted(Comparator.comparing(Meeting::getId).reversed())
-                                    .toList()
-                    );
+                .usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
+                .isEqualTo(
+                    expectedMeetings.stream()
+                        .sorted(Comparator.comparing(Meeting::getId).reversed())
+                        .toList()
+                );
         }
 
         @Test
@@ -141,12 +167,12 @@ class MeetingRepositoryTest {
             var createSize = 3;
 
             var expectedMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithMainStreet("강남"))
-                    .limit(createSize)
-                    .toList();
+                .limit(createSize)
+                .toList();
 
             var existsWrongMeetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithMainStreet("판교"))
-                    .limit(createSize)
-                    .toList();
+                .limit(createSize)
+                .toList();
 
             meetingRepository.saveAll(expectedMeetings);
             meetingRepository.saveAllAndFlush(existsWrongMeetings);
@@ -161,13 +187,13 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveComparison()
-                    .ignoringFields("createdAt", "updatedAt")
-                    .isEqualTo(
-                            expectedMeetings.stream()
-                                    .sorted(Comparator.comparing(Meeting::getId).reversed())
-                                    .toList()
-                    );
+                .usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
+                .isEqualTo(
+                    expectedMeetings.stream()
+                        .sorted(Comparator.comparing(Meeting::getId).reversed())
+                        .toList()
+                );
         }
 
         @Test
@@ -176,18 +202,18 @@ class MeetingRepositoryTest {
             // given
             var createSize = 3;
 
-
             var existsCloseMeetings = Stream.generate(() -> MeetingFixture.getCloseMeetingWithTitle("공부팟 모집"))
-                    .limit(createSize)
-                    .toList();
+                .limit(createSize)
+                .toList();
 
             var existsMeetingsWithTitle = Stream.generate(() -> MeetingFixture.getOpenMeetingWithTitle("공부팟 모집"))
-                    .limit(createSize)
-                    .toList();
+                .limit(createSize)
+                .toList();
 
-            var existsMeetingsWithIntroduction = Stream.generate(() -> MeetingFixture.getOpenMeetingWithIntroduction("공부하는 모임입니다."))
-                    .limit(createSize)
-                    .toList();
+            var existsMeetingsWithIntroduction = Stream.generate(
+                    () -> MeetingFixture.getOpenMeetingWithIntroduction("공부하는 모임입니다."))
+                .limit(createSize)
+                .toList();
 
             meetingRepository.saveAll(existsCloseMeetings);
             meetingRepository.saveAll(existsMeetingsWithTitle);
@@ -199,21 +225,21 @@ class MeetingRepositoryTest {
 
             // when
             var spec = MeetingSpecification.withSearchWordInTitle(requestSearchWord)
-                    .or(MeetingSpecification.withSearchWordInIntroduction(requestSearchWord))
-                    .and(MeetingSpecification.withIsOpen(true));
+                .or(MeetingSpecification.withSearchWordInIntroduction(requestSearchWord))
+                .and(MeetingSpecification.withIsOpen(true));
 
             var result = meetingRepository.findAll(spec, requestPageable);
 
             // then
             Assertions.assertThat(result.getContent())
-                    .usingRecursiveComparison()
-                    .ignoringFields("createdAt", "updatedAt")
-                    .isEqualTo(
-                            Stream.of(existsMeetingsWithTitle, existsMeetingsWithIntroduction)
-                                    .flatMap(Collection::stream)
-                                    .sorted(Comparator.comparing(Meeting::getId).reversed())
-                                    .toList()
-                    );
+                .usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt")
+                .isEqualTo(
+                    Stream.of(existsMeetingsWithTitle, existsMeetingsWithIntroduction)
+                        .flatMap(Collection::stream)
+                        .sorted(Comparator.comparing(Meeting::getId).reversed())
+                        .toList()
+                );
         }
     }
 }
