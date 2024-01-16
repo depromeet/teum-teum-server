@@ -110,7 +110,7 @@ public class MeetingFixture {
 
     public static Meeting getOpenMeetingWithHostId(Long hostId) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
             .hostUserId(hostId)
             .build()
         );

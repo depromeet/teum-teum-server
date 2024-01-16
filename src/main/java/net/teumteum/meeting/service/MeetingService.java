@@ -66,6 +66,9 @@ public class MeetingService {
         if (!existMeeting.isHost(userId)) {
             throw new IllegalArgumentException("모임을 삭제할 권한이 없습니다.");
         }
+        if (!existMeeting.isOpen()) {
+            throw new IllegalArgumentException("종료된 모임은 삭제할 수 없습니다.");
+        }
 
         meetingRepository.delete(existMeeting);
     }
