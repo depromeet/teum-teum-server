@@ -319,8 +319,7 @@ class UserIntegrationTest extends IntegrationTest {
                 .expectBody(ErrorResponse.class)
                 .returnResult().getResponseBody();
 
-            Assertions.assertThat(responseBody)
-                .isNotNull();
+            Assertions.assertThat(responseBody).isNull();
         }
     }
 

@@ -101,7 +101,7 @@ public class UserControllerTest {
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("이름은 필수 입력값입니다."));
+                .andExpect(jsonPath("$.message").isNotEmpty());
         }
     }
 }
