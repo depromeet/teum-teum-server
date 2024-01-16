@@ -3,9 +3,12 @@ package net.teumteum.user.domain.request;
 import static net.teumteum.user.domain.RoleType.ROLE_USER;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
-import net.teumteum.user.domain.ActivityArea;
 import net.teumteum.user.domain.Job;
 import net.teumteum.user.domain.JobStatus;
 import net.teumteum.user.domain.OAuth;
@@ -13,15 +16,27 @@ import net.teumteum.user.domain.Terms;
 import net.teumteum.user.domain.User;
 
 public record UserUpdateRequest(
+    @NotNull(message = "id 값은 필수 입력값입니다.")
     Long id,
+    @NotBlank(message = "이름은 필수 입력값입니다.")
     String newName,
+    @NotBlank(message = "생년월일은 필수 입력값입니다.")
     String newBirth,
+    @NotNull(message = "캐릭터 아이디는 필수 입력값입니다.")
     Long newCharacterId,
-    NewActivityArea newActivityArea,
+    @NotBlank(message = "관심 지역은 필수 입력값입니다.")
+    String newActivityArea,
+    @NotBlank(message = "mbti 는 필수 입력값입니다.")
     String newMbti,
+    @NotNull(message = "현재 상태는 필수 입력값입니다.")
     String newStatus,
+    @Size(max = 50)
+    @NotBlank(message = "목표는 필수 입력값입니다.")
     String newGoal,
+    @NotNull(message = "직업 관련 값은 필수 입력값입니다.")
     NewJob newJob,
+    @Size(max = 3, message = "관심 항목은 최대 3개까지 입력가능합니다.")
+    @NotEmpty(message = "관심 항목은 최소 1개을 입력해야합니다.")
     List<String> newInterests
 ) {
 
@@ -41,10 +56,7 @@ public record UserUpdateRequest(
             IGNORE_MANNER_TEMPERATURE,
             IGNORE_O_AUTH,
             ROLE_USER,
-            new ActivityArea(
-                newActivityArea.city,
-                newActivityArea.streets
-            ),
+            newActivityArea,
             newMbti,
             JobStatus.valueOf(newStatus),
             newGoal,
@@ -60,17 +72,13 @@ public record UserUpdateRequest(
         );
     }
 
-    public record NewActivityArea(
-        String city,
-        List<String> streets
-    ) {
-
-    }
-
     public record NewJob(
+
         String name,
         @JsonProperty("class")
+        @NotBlank(message = "직군은 필수 입력값입니다.")
         String jobClass,
+        @NotBlank(message = "직무는 필수 입력값입니다.")
         String detailClass
     ) {
 
