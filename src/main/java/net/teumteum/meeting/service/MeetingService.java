@@ -1,7 +1,14 @@
 package net.teumteum.meeting.service;
 
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import net.teumteum.meeting.domain.*;
+import net.teumteum.meeting.domain.ImageUpload;
+import net.teumteum.meeting.domain.Meeting;
+import net.teumteum.meeting.domain.MeetingArea;
+import net.teumteum.meeting.domain.MeetingRepository;
+import net.teumteum.meeting.domain.MeetingSpecification;
+import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.request.CreateMeetingRequest;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
@@ -12,9 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -28,32 +32,24 @@ public class MeetingService {
         Assert.isTrue(!images.isEmpty() && images.size() <= 5, "이미지는 1개 이상 5개 이하로 업로드해야 합니다.");
 
         Meeting meeting = meetingRepository.save(
-                Meeting.builder()
-                        .hostUserId(userId)
-                        .title(meetingRequest.title())
-                        .topic(meetingRequest.topic())
-                        .introduction(meetingRequest.introduction())
-                        .meetingArea(MeetingArea.of(
-                                meetingRequest.meetingArea().address(),
-                                meetingRequest.meetingArea().addressDetail())
-                        )
-                        .numberOfRecruits(meetingRequest.numberOfRecruits())
-                        .promiseDateTime(meetingRequest.promiseDateTime())
-                        .participantUserIds(Set.of(userId))
-                        .build()
+            Meeting.builder()
+                .hostUserId(userId)
+                .title(meetingRequest.title())
+                .topic(meetingRequest.topic())
+                .introduction(meetingRequest.introduction())
+                .meetingArea(MeetingArea.of(
+                    meetingRequest.meetingArea().address(),
+                    meetingRequest.meetingArea().addressDetail())
+                )
+                .numberOfRecruits(meetingRequest.numberOfRecruits())
+                .promiseDateTime(meetingRequest.promiseDateTime())
+                .participantUserIds(Set.of(userId))
+                .build()
         );
 
         uploadMeetingImages(images, meeting);
 
         return MeetingResponse.of(meeting);
-    }
-
-    private void uploadMeetingImages(List<MultipartFile> images, Meeting meeting) {
-        images.forEach(
-                image -> meeting.getImageUrls().add(
-                        imageUpload.upload(image, meeting.getId().toString()).filePath()
-                )
-        );
     }
 
     @Transactional(readOnly = true)
@@ -63,9 +59,21 @@ public class MeetingService {
         return MeetingResponse.of(existMeeting);
     }
 
+    @Transactional
+    public void deleteMeeting(Long meetingId, Long userId) {
+        var existMeeting = getMeeting(meetingId);
+
+        if (!existMeeting.isHost(userId)) {
+            throw new IllegalArgumentException("모임을 삭제할 권한이 없습니다.");
+        }
+
+        meetingRepository.delete(existMeeting);
+    }
+
     @Transactional(readOnly = true)
-    public PageDto<MeetingsResponse> getMeetingsBySpecification(Pageable pageable, Topic topic, String meetingAreaStreet,
-                                                                Long participantUserId, String searchWord, boolean isOpen) {
+    public PageDto<MeetingsResponse> getMeetingsBySpecification(Pageable pageable, Topic topic,
+        String meetingAreaStreet,
+        Long participantUserId, String searchWord, boolean isOpen) {
 
         Specification<Meeting> spec = MeetingSpecification.withIsOpen(isOpen);
 
@@ -76,8 +84,9 @@ public class MeetingService {
         } else if (participantUserId != null) {
             spec = spec.and(MeetingSpecification.withParticipantUserId(participantUserId));
         } else if (searchWord != null) {
-            spec = MeetingSpecification.withSearchWordInTitle(searchWord).or(MeetingSpecification.withSearchWordInIntroduction(searchWord))
-                    .and(MeetingSpecification.withIsOpen(isOpen));
+            spec = MeetingSpecification.withSearchWordInTitle(searchWord)
+                .or(MeetingSpecification.withSearchWordInIntroduction(searchWord))
+                .and(MeetingSpecification.withIsOpen(isOpen));
         }
 
         var meetings = meetingRepository.findAll(spec, pageable);
@@ -116,8 +125,16 @@ public class MeetingService {
         existMeeting.cancelParticipant(userId);
     }
 
+    private void uploadMeetingImages(List<MultipartFile> images, Meeting meeting) {
+        images.forEach(
+            image -> meeting.getImageUrls().add(
+                imageUpload.upload(image, meeting.getId().toString()).filePath()
+            )
+        );
+    }
+
     private Meeting getMeeting(Long meetingId) {
         return meetingRepository.findById(meetingId)
-                .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
+            .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
     }
 }

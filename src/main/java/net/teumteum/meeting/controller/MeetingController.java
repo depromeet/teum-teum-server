@@ -2,6 +2,7 @@ package net.teumteum.meeting.controller;
 
 import io.sentry.Sentry;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
@@ -13,10 +14,17 @@ import net.teumteum.meeting.model.PageDto;
 import net.teumteum.meeting.service.MeetingService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,8 +38,8 @@ public class MeetingController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public MeetingResponse createMeeting(
-            @RequestPart @Valid CreateMeetingRequest meetingRequest,
-            @RequestPart List<MultipartFile> images) {
+        @RequestPart @Valid CreateMeetingRequest meetingRequest,
+        @RequestPart List<MultipartFile> images) {
         Long userId = securityService.getCurrentUserId();
         return meetingService.createMeeting(images, meetingRequest, userId);
     }
@@ -45,14 +53,22 @@ public class MeetingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public PageDto<MeetingsResponse> getMeetingsOrderByDate(
-            Pageable pageable,
-            @RequestParam(value = "isOpen") boolean isOpen,
-            @RequestParam(value = "topic", required = false) Topic topic,
-            @RequestParam(value = "meetingAreaStreet", required = false) String meetingAreaStreet,
-            @RequestParam(value = "participantUserId", required = false) Long participantUserId,
-            @RequestParam(value = "searchWord", required = false) String searchWord) {
+        Pageable pageable,
+        @RequestParam(value = "isOpen") boolean isOpen,
+        @RequestParam(value = "topic", required = false) Topic topic,
+        @RequestParam(value = "meetingAreaStreet", required = false) String meetingAreaStreet,
+        @RequestParam(value = "participantUserId", required = false) Long participantUserId,
+        @RequestParam(value = "searchWord", required = false) String searchWord) {
 
-        return meetingService.getMeetingsBySpecification(pageable, topic, meetingAreaStreet, participantUserId, searchWord, isOpen);
+        return meetingService.getMeetingsBySpecification(pageable, topic, meetingAreaStreet, participantUserId,
+            searchWord, isOpen);
+    }
+
+    @DeleteMapping("/{meetingId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteMeeting(@PathVariable("meetingId") Long meetingId) {
+        Long userId = securityService.getCurrentUserId();
+        meetingService.deleteMeeting(meetingId, userId);
     }
 
     @PostMapping("/{meetingId}/participants")
