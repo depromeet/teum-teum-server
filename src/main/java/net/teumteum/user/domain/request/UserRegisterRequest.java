@@ -85,7 +85,7 @@ public record UserRegisterRequest(
 
     }
 
-
+    @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
     public record Job(
         String name,
         @JsonProperty("class")

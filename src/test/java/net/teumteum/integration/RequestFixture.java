@@ -47,7 +47,9 @@ public class RequestFixture {
     }
 
     private static Job job(User user) {
-        return new Job(user.getJob().getName(), user.getJob().getJobClass(), user.getJob().getDetailJobClass());
+        return new Job(user.getJob().getName(),
+            user.getJob().getJobClass(),
+            user.getJob().getDetailJobClass());
     }
 
     private static Terms terms(User user) {
