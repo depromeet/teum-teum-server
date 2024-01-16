@@ -34,7 +34,7 @@ public class AuthService {
     }
 
     public Optional<User> findUserByAccessToken(String accessToken) {
-        return userConnector.findUserById(Long.parseLong(jwtService.getUserIdFromToken(accessToken)));
+        return userConnector.findUserById(jwtService.getUserIdFromToken(accessToken));
     }
 
     private void checkRefreshTokenValidation(String refreshToken) {
