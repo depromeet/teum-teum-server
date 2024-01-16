@@ -3,6 +3,7 @@ package net.teumteum.user.domain.request;
 import static net.teumteum.user.domain.RoleType.ROLE_USER;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +34,7 @@ public record UserUpdateRequest(
     @Size(max = 50)
     @NotBlank(message = "목표는 필수 입력값입니다.")
     String newGoal,
+    @Valid
     @NotNull(message = "직업 관련 값은 필수 입력값입니다.")
     NewJob newJob,
     @Size(max = 3, message = "관심 항목은 최대 3개까지 입력가능합니다.")
@@ -73,7 +75,6 @@ public record UserUpdateRequest(
     }
 
     public record NewJob(
-
         String name,
         @JsonProperty("class")
         @NotBlank(message = "직군은 필수 입력값입니다.")

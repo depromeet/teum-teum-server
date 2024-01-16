@@ -4,6 +4,7 @@ import static net.teumteum.user.domain.RoleType.ROLE_USER;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -34,10 +35,11 @@ public record UserRegisterRequest(
     String mbti,
     @NotNull(message = "현재 상태는 필수 입력값입니다.")
     String status,
+    @Valid
     @NotNull(message = "직업 관련 값은 필수 입력값입니다.")
     Job job,
-    @Size(max = 3, message = "관심 항목은 최대 3개까지 입력가능합니다.")
     @NotEmpty(message = "관심 항목은 최소 1개을 입력해야합니다.")
+    @Size(max = 3, message = "관심 항목은 최대 3개까지 입력가능합니다.")
     List<String> interests,
     @Size(max = 50)
     @NotBlank(message = "목표는 필수 입력값입니다.")
@@ -77,8 +79,8 @@ public record UserRegisterRequest(
 
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
     public record Terms(
-        Boolean service,
-        Boolean privatePolicy
+        boolean service,
+        boolean privatePolicy
     ) {
 
     }
