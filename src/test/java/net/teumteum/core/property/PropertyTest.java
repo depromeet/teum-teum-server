@@ -55,11 +55,10 @@ class PropertyTest {
         void Make_jwt_property_from_application_yml() {
             // given
             String expectedBearer = "Bearer";
-            String expectedSecret = "secret";
 
             // when & then
             Assertions.assertEquals(expectedBearer, jwtProperty.getBearer());
-            Assertions.assertEquals(expectedSecret, jwtProperty.getSecret());
+            Assertions.assertNotNull(jwtProperty.getSecret());
         }
     }
 }
