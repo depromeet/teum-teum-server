@@ -59,7 +59,7 @@ public class AuthServiceTest {
 
             given(jwtService.extractRefreshToken(any(HttpServletRequest.class))).willReturn("refresh token");
 
-            given(jwtService.getUserIdFromToken(anyString())).willReturn("1");
+            given(jwtService.getUserIdFromToken(anyString())).willReturn(1L);
 
             given(jwtService.createAccessToken(anyString())).willReturn("new access token");
 
@@ -85,6 +85,7 @@ public class AuthServiceTest {
         @Test
         @DisplayName("유효하지 않은 access token 과 유효하지 않은 refresh token 이 주어지면, 500 server 에러로 응답한다. ")
         void Return_500_bad_request_if_refresh_token_is_not_valid() {
+            // given
             Optional<User> user = Optional.of(new User(1L, "oauthId", 네이버));
 
             HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
@@ -95,14 +96,14 @@ public class AuthServiceTest {
 
             given(jwtService.validateToken(anyString())).willReturn(true);
 
-            given(jwtService.getUserIdFromToken(anyString())).willReturn("1");
+            given(jwtService.getUserIdFromToken(anyString())).willReturn(1L);
 
             given(userConnector.findUserById(anyLong())).willReturn(user);
 
             given(redisService.getData(anyString())).willThrow(
                 new IllegalArgumentException("refresh token 이 일치하지 않습니다."));
 
-            // when
+            // when & then
             assertThatThrownBy(() -> authService.reissue(httpServletRequest)).isInstanceOf(
                 IllegalArgumentException.class).hasMessage("refresh token 이 일치하지 않습니다.");
 

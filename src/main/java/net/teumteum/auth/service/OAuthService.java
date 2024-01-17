@@ -46,7 +46,7 @@ public class OAuthService {
             registrationId);
         Authenticated authenticated = getAuthenticated(clientRegistration.getRegistrationId());
         OAuthUserInfo oAuthUserInfo = getOAuthUserInfo(clientRegistration, authenticated, code);
-        return checkUserAndMakeResponse(oAuthUserInfo, authenticated);
+        return makeResponse(oAuthUserInfo, authenticated);
     }
 
     private Authenticated getAuthenticated(String registrationId) {
@@ -65,7 +65,7 @@ public class OAuthService {
         return new KakaoOAuthUserInfo(oAuthAttribute);
     }
 
-    private TokenResponse checkUserAndMakeResponse(OAuthUserInfo oAuthUserInfo, Authenticated authenticated) {
+    private TokenResponse makeResponse(OAuthUserInfo oAuthUserInfo, Authenticated authenticated) {
         String oauthId = oAuthUserInfo.getOAuthId();
 
         return getUser(oauthId, authenticated)
