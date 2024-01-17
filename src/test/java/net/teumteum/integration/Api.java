@@ -158,6 +158,7 @@ class Api {
             .post()
             .uri("/teum-teum/arounds")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .bodyValue(request)
             .exchange();
     }
 }
