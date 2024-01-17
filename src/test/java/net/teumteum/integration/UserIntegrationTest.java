@@ -2,16 +2,18 @@ package net.teumteum.integration;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
+import net.teumteum.user.domain.response.FriendsResponse;
+import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
-import net.teumteum.user.domain.response.*;
+import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {
@@ -125,10 +127,10 @@ class UserIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(result.expectStatus().isOk()
-                            .expectBody(UserMeGetResponse.class)
-                            .returnResult()
-                            .getResponseBody())
-                    .usingRecursiveComparison().isEqualTo(expected);
+                    .expectBody(UserMeGetResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison().isEqualTo(expected);
         }
 
     }
@@ -300,6 +302,24 @@ class UserIntegrationTest extends IntegrationTest {
 
             Assertions.assertThat(responseBody)
                 .isNotNull();
+        }
+
+        @Test
+        @DisplayName("요청 값의 유효성 검사가 실패하면, 400 에러를 반환한다.")
+        void Return_400_badRequest_if_not_meet_request_condition() {
+            // given
+            var existUser = repository.saveAndGetUser();
+
+            var userRegister = RequestFixture.userRegisterRequestWithNoValid(existUser);
+            // when
+            var result = api.registerUserCard(VALID_TOKEN, userRegister);
+
+            // then
+            ErrorResponse responseBody = result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class)
+                .returnResult().getResponseBody();
+
+            Assertions.assertThat(responseBody).isNull();
         }
     }
 
