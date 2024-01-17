@@ -108,6 +108,22 @@ public class MeetingFixture {
         );
     }
 
+    public static Meeting getOpenMeetingWithHostId(Long hostId) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .hostUserId(hostId)
+            .build()
+        );
+    }
+
+    public static Meeting getCloseMeetingWithHostId(Long hostId) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .hostUserId(hostId)
+            .build()
+        );
+    }
+
     public static Meeting newMeetingByBuilder(MeetingBuilder meetingBuilder) {
         return new Meeting(
                 meetingBuilder.id,

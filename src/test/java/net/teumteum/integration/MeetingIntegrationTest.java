@@ -42,11 +42,11 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingById(VALID_TOKEN, meeting.getId());
             // then
             Assertions.assertThat(
-                            result.expectStatus().isOk()
-                                    .expectBody(MeetingResponse.class)
-                                    .returnResult().getResponseBody())
-                    .usingRecursiveComparison()
-                    .isEqualTo(expected);
+                    result.expectStatus().isOk()
+                        .expectBody(MeetingResponse.class)
+                        .returnResult().getResponseBody())
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
         }
 
         @Test
@@ -58,7 +58,56 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingById(VALID_TOKEN, notExistMeetingId);
             // then
             result.expectStatus().isBadRequest()
-                    .expectBody(ErrorResponse.class);
+                .expectBody(ErrorResponse.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("미팅 삭제 API는")
+    class Delete_meeting_api {
+
+        @Test
+        @DisplayName("존재하는 모임의 id가 주어지면, 모임을 삭제한다.")
+        void Delete_meeting_if_exist_meeting_id_received() {
+            // given
+            var host = repository.saveAndGetUser();
+            loginContext.setUserId(host.getId());
+
+            var meeting = repository.saveAndGetOpenMeetingWithHostId(host.getId());
+            // when
+            var result = api.deleteMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isOk();
+        }
+
+        @Test
+        @DisplayName("종료된 모임의 id가 주어지면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_closed_meeting_id_received() {
+            // given
+            var host = repository.saveAndGetUser();
+            loginContext.setUserId(host.getId());
+            var meeting = repository.saveAndGetCloseMeetingWithHostId(host.getId());
+            // when
+            var result = api.deleteMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class);
+        }
+
+        @Test
+        @DisplayName("hostId와 userId가 다르면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_hostId_and_userId_are_different() {
+            // given
+            var user = repository.saveAndGetUser();
+            loginContext.setUserId(user.getId());
+
+            var host = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeetingWithHostId(host.getId());
+            // when
+            var result = api.deleteMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class);
         }
     }
 
@@ -75,39 +124,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var closeTopicMeetingsByTopic = repository.saveAndGetOpenMeetingsByTopic(size, Topic.고민_나누기);
 
             var expectedData = MeetingsResponse.of(
-                    openMeetingsByTopic.stream()
-                            .sorted(Comparator.comparing(Meeting::getId).reversed())
-                            .toList()
-            );
-
-            var expected = PageDto.of(expectedData, false);
-
-            // when
-            var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
-            // then
-            Assertions.assertThat(
-                            result.expectStatus().isOk()
-                                    .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
-                                    })
-                                    .returnResult().getResponseBody())
-                    .usingRecursiveComparison()
-                    .isEqualTo(expected);
-        }
-
-        @Test
-        @DisplayName("제목이나 설명에 존재하는 검색어가 주어지면 페이지 네이션을 적용해 미팅 목록을 최신순으로 응답한다.")
-        void Return_meeting_list_if_search_word_and_page_nation_received() {
-            // given
-            var size = 2;
-            var openMeetingsByTitle = repository.saveAndGetOpenMeetingsByTitle(size, "개발자 스터디");
-            var closeMeetingsByTitle = repository.saveAndGetCloseMeetingsByTitle(size, "개발자 스터디");
-            var openMeetingsByIntroduction = repository.saveAndGetOpenMeetingsByIntroduction(size,
-                    "개발자 스터디에 대한 설명입니다.");
-            var closeMeetingsByIntroduction = repository.saveAndGetCloseMeetingsByIntroduction(size,
-                    "개발자 스터디에 대한 설명입니다.");
-
-            var expectedData = MeetingsResponse.of(Stream.of(openMeetingsByIntroduction, openMeetingsByTitle)
-                    .flatMap(Collection::stream)
+                openMeetingsByTopic.stream()
                     .sorted(Comparator.comparing(Meeting::getId).reversed())
                     .toList()
             );
@@ -118,12 +135,44 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
             // then
             Assertions.assertThat(
-                            result.expectStatus().isOk()
-                                    .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
-                                    })
-                                    .returnResult().getResponseBody())
-                    .usingRecursiveComparison()
-                    .isEqualTo(expected);
+                    result.expectStatus().isOk()
+                        .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
+                        })
+                        .returnResult().getResponseBody())
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("제목이나 설명에 존재하는 검색어가 주어지면 페이지 네이션을 적용해 미팅 목록을 최신순으로 응답한다.")
+        void Return_meeting_list_if_search_word_and_page_nation_received() {
+            // given
+            var size = 2;
+            var openMeetingsByTitle = repository.saveAndGetOpenMeetingsByTitle(size, "개발자 스터디");
+            var closeMeetingsByTitle = repository.saveAndGetCloseMeetingsByTitle(size, "개발자 스터디");
+            var openMeetingsByIntroduction = repository.saveAndGetOpenMeetingsByIntroduction(size,
+                "개발자 스터디에 대한 설명입니다.");
+            var closeMeetingsByIntroduction = repository.saveAndGetCloseMeetingsByIntroduction(size,
+                "개발자 스터디에 대한 설명입니다.");
+
+            var expectedData = MeetingsResponse.of(Stream.of(openMeetingsByIntroduction, openMeetingsByTitle)
+                .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(Meeting::getId).reversed())
+                .toList()
+            );
+
+            var expected = PageDto.of(expectedData, false);
+
+            // when
+            var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
+            // then
+            Assertions.assertThat(
+                    result.expectStatus().isOk()
+                        .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
+                        })
+                        .returnResult().getResponseBody())
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
         }
 
         @Test
@@ -135,9 +184,9 @@ class MeetingIntegrationTest extends IntegrationTest {
             var closeMeetingsByParticipantUserId = repository.saveAndGetCloseMeetingsByParticipantUserId(size, 2L);
 
             var expectedData = MeetingsResponse.of(
-                    openMeetingsByParticipantUserId.stream()
-                            .sorted(Comparator.comparing(Meeting::getId).reversed())
-                            .toList()
+                openMeetingsByParticipantUserId.stream()
+                    .sorted(Comparator.comparing(Meeting::getId).reversed())
+                    .toList()
             );
 
             var expected = PageDto.of(expectedData, false);
@@ -146,12 +195,12 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
             // then
             Assertions.assertThat(
-                            result.expectStatus().isOk()
-                                    .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
-                                    })
-                                    .returnResult().getResponseBody())
-                    .usingRecursiveComparison()
-                    .isEqualTo(expected);
+                    result.expectStatus().isOk()
+                        .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
+                        })
+                        .returnResult().getResponseBody())
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
         }
 
         @Test
@@ -162,10 +211,10 @@ class MeetingIntegrationTest extends IntegrationTest {
             var openMeetingsByTopic = repository.saveAndGetOpenMeetingsByTopic(size, Topic.스터디);
 
             var expectedData = MeetingsResponse.of(
-                    openMeetingsByTopic.stream()
-                            .sorted(Comparator.comparing(Meeting::getId).reversed())
-                            .toList()
-                            .subList(0, DEFAULT_QUERY_SIZE)
+                openMeetingsByTopic.stream()
+                    .sorted(Comparator.comparing(Meeting::getId).reversed())
+                    .toList()
+                    .subList(0, DEFAULT_QUERY_SIZE)
             );
 
             var expected = PageDto.of(expectedData, true);
@@ -174,12 +223,12 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.getMeetingsByTopic(VALID_TOKEN, FIRST_PAGE_NATION, true, Topic.스터디);
             // then
             Assertions.assertThat(
-                            result.expectStatus().isOk()
-                                    .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
-                                    })
-                                    .returnResult().getResponseBody())
-                    .usingRecursiveComparison()
-                    .isEqualTo(expected);
+                    result.expectStatus().isOk()
+                        .expectBody(new ParameterizedTypeReference<PageDto<MeetingsResponse>>() {
+                        })
+                        .returnResult().getResponseBody())
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
         }
     }
 
@@ -199,13 +248,13 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.joinMeeting(VALID_TOKEN, existMeeting.getId());
             // then
             Assertions.assertThat(
-                            result.expectStatus().isCreated()
-                                    .expectBody(MeetingResponse.class)
-                                    .returnResult()
-                                    .getResponseBody())
-                    .extracting(MeetingResponse::participantIds)
-                    .has(new Condition<>(ids -> ids.contains(me.getId()), "참여자 목록에 나를 포함한다.")
-                    );
+                    result.expectStatus().isCreated()
+                        .expectBody(MeetingResponse.class)
+                        .returnResult()
+                        .getResponseBody())
+                .extracting(MeetingResponse::participantIds)
+                .has(new Condition<>(ids -> ids.contains(me.getId()), "참여자 목록에 나를 포함한다.")
+                );
         }
 
         @Test
@@ -221,7 +270,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
             // then
             result.expectStatus().isBadRequest()
-                    .expectBody(ErrorResponse.class);
+                .expectBody(ErrorResponse.class);
         }
 
         @Test
@@ -236,7 +285,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
             // then
             result.expectStatus().isBadRequest()
-                    .expectBody(ErrorResponse.class);
+                .expectBody(ErrorResponse.class);
         }
 
         @Test
@@ -249,7 +298,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
             // then
             result.expectStatus().isBadRequest()
-                    .expectBody(ErrorResponse.class);
+                .expectBody(ErrorResponse.class);
         }
     }
 
@@ -284,12 +333,12 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
             // then
             Assertions.assertThat(result.expectStatus().isBadRequest()
-                            .expectBody(ErrorResponse.class)
-                            .returnResult()
-                            .getResponseBody()
-                    )
-                    .extracting(ErrorResponse::getMessage)
-                    .isEqualTo("참여하지 않은 모임입니다.");
+                    .expectBody(ErrorResponse.class)
+                    .returnResult()
+                    .getResponseBody()
+                )
+                .extracting(ErrorResponse::getMessage)
+                .isEqualTo("참여하지 않은 모임입니다.");
         }
 
         @Test
@@ -304,12 +353,12 @@ class MeetingIntegrationTest extends IntegrationTest {
             var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
             // then
             Assertions.assertThat(result.expectStatus().isBadRequest()
-                            .expectBody(ErrorResponse.class)
-                            .returnResult()
-                            .getResponseBody()
-                    )
-                    .extracting(ErrorResponse::getMessage)
-                    .isEqualTo("종료된 모임에서 참여를 취소할 수 없습니다.");
+                    .expectBody(ErrorResponse.class)
+                    .returnResult()
+                    .getResponseBody()
+                )
+                .extracting(ErrorResponse::getMessage)
+                .isEqualTo("종료된 모임에서 참여를 취소할 수 없습니다.");
         }
     }
 }

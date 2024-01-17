@@ -54,6 +54,16 @@ public class Repository {
         return meetingRepository.saveAndFlush(meeting);
     }
 
+    Meeting saveAndGetOpenMeetingWithHostId(Long hostId) {
+        var meeting = MeetingFixture.getOpenMeetingWithHostId(hostId);
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
+    Meeting saveAndGetCloseMeetingWithHostId(Long hostId) {
+        var meeting = MeetingFixture.getCloseMeetingWithHostId(hostId);
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
     Meeting saveAndGetOpenFullMeeting() {
         var meeting = MeetingFixture.getOpenFullMeeting();
         return meetingRepository.saveAndFlush(meeting);

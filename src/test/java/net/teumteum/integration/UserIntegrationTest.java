@@ -303,6 +303,24 @@ class UserIntegrationTest extends IntegrationTest {
             Assertions.assertThat(responseBody)
                 .isNotNull();
         }
+
+        @Test
+        @DisplayName("요청 값의 유효성 검사가 실패하면, 400 에러를 반환한다.")
+        void Return_400_badRequest_if_not_meet_request_condition() {
+            // given
+            var existUser = repository.saveAndGetUser();
+
+            var userRegister = RequestFixture.userRegisterRequestWithNoValid(existUser);
+            // when
+            var result = api.registerUserCard(VALID_TOKEN, userRegister);
+
+            // then
+            ErrorResponse responseBody = result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class)
+                .returnResult().getResponseBody();
+
+            Assertions.assertThat(responseBody).isNull();
+        }
     }
 
     @Nested

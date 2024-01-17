@@ -72,6 +72,10 @@ public class Meeting extends TimeBaseEntity {
         return promiseDateTime.isAfter(LocalDateTime.now());
     }
 
+    public boolean isHost(Long userId) {
+        return hostUserId.equals(userId);
+    }
+
     @PrePersist
     private void assertField() {
         assertTitle();
@@ -81,21 +85,22 @@ public class Meeting extends TimeBaseEntity {
 
     private void assertIntroduction() {
         Assert.isTrue(introduction.length() >= 10 && introduction.length() <= 200,
-                "모임 소개는 10자 ~ 200자 사이가 되어야 합니다. [현재 입력된 모임 소개] : " + introduction);
+            "모임 소개는 10자 ~ 200자 사이가 되어야 합니다. [현재 입력된 모임 소개] : " + introduction);
     }
 
     private void assertNumberOfRecruits() {
-        Assert.isTrue(numberOfRecruits >= 3 && numberOfRecruits <= 6, "참여자 수는 3명 ~ 6명 사이가 되어야 합니다. [현재 입력된 참여자 수] : " + numberOfRecruits);
+        Assert.isTrue(numberOfRecruits >= 3 && numberOfRecruits <= 6,
+            "참여자 수는 3명 ~ 6명 사이가 되어야 합니다. [현재 입력된 참여자 수] : " + numberOfRecruits);
     }
 
     private void assertTitle() {
         Assert.isTrue(title.length() >= 2 && title.length() <= 32,
-                "모임 제목은 2자 ~ 32자 사이가 되어야 합니다. [현재 입력된 모임 제목] : " + title);
+            "모임 제목은 2자 ~ 32자 사이가 되어야 합니다. [현재 입력된 모임 제목] : " + title);
     }
 
     private void assertParticipantUserIds() {
         Assert.isTrue(participantUserIds.size() + 1 <= numberOfRecruits,
-                "최대 참여자 수에 도달한 모임에 참여할 수 없습니다." + "[최대 참여자 수] : " + numberOfRecruits + "[현재 참여자 수] : "
-                        + participantUserIds.size());
+            "최대 참여자 수에 도달한 모임에 참여할 수 없습니다." + "[최대 참여자 수] : " + numberOfRecruits + "[현재 참여자 수] : "
+                + participantUserIds.size());
     }
 }

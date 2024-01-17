@@ -161,4 +161,12 @@ class Api {
             .bodyValue(request)
             .exchange();
     }
+
+    ResponseSpec deleteMeeting(String accessToken, Long meetingId) {
+        return webTestClient
+            .delete()
+            .uri("/meetings/" + meetingId)
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
 }
