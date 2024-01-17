@@ -40,16 +40,24 @@ public class GptInterestQuestion implements InterestQuestion {
         return webClient.post()
             .uri("/v1/chat/completions")
             .bodyValue(request)
-            .header(HttpHeaders.AUTHORIZATION, gptToken)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + gptToken)
             .exchangeToMono(response -> {
                 if (response.statusCode().is2xxSuccessful()) {
-                    return response.bodyToMono(BalanceQuestionResponse.class);
+                    return response.bodyToMono(ChatCompletionResponse.class);
                 }
                 return response.createError();
             })
+            .map(response -> {
+                try {
+                    return objectMapper.readValue(response.choices().get(0).message().content(),
+                        BalanceQuestionResponse.class);
+                } catch (JsonProcessingException e) {
+                    throw new IllegalStateException(e);
+                }
+            })
             .retry(MAX_RETRY_COUNT)
             .subscribeOn(Schedulers.fromExecutor(executorService))
-            .block(Duration.ofSeconds(5));
+            .block(Duration.ofSeconds(20));
     }
 
     @Override
@@ -60,16 +68,24 @@ public class GptInterestQuestion implements InterestQuestion {
         return webClient.post()
             .uri("/v1/chat/completions")
             .bodyValue(request)
-            .header(HttpHeaders.AUTHORIZATION, gptToken)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + gptToken)
             .exchangeToMono(response -> {
                 if (response.statusCode().is2xxSuccessful()) {
-                    return response.bodyToMono(StoryQuestionResponse.class);
+                    return response.bodyToMono(ChatCompletionResponse.class);
                 }
                 return response.createError();
             })
+            .map(response -> {
+                try {
+                    return objectMapper.readValue(response.choices().get(0).message().content(),
+                        StoryQuestionResponse.class);
+                } catch (JsonProcessingException e) {
+                    throw new IllegalStateException(e);
+                }
+            })
             .retry(MAX_RETRY_COUNT)
             .subscribeOn(Schedulers.fromExecutor(executorService))
-            .block(Duration.ofSeconds(5));
+            .block(Duration.ofSeconds(20));
     }
 
     private String parseInterests(List<User> users) {

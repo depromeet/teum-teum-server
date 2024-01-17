@@ -158,6 +158,14 @@ class Api {
             .post()
             .uri("/teum-teum/arounds")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchage();
+    }
+
+    ResponseSpec deleteMeeting(String accessToken, Long meetingId) {
+        return webTestClient
+            .delete()
+            .uri("/meetings/" + meetingId)
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
             .exchange();
     }
 }

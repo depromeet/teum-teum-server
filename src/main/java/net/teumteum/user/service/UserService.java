@@ -85,7 +85,6 @@ public class UserService {
 
     @Transactional
     public void logout(Long userId) {
-        getUser(userId);
         redisService.deleteData(String.valueOf(userId));
         SecurityService.clearSecurityContext();
     }
