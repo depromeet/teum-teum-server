@@ -3,6 +3,7 @@ package net.teumteum.integration;
 import java.util.List;
 import net.teumteum.meeting.config.PageableHandlerMethodArgumentResolver;
 import net.teumteum.meeting.domain.Topic;
+import net.teumteum.teum_teum.domain.UserLocationRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import org.springframework.boot.test.context.TestComponent;
@@ -148,6 +149,14 @@ class Api {
         return webTestClient
             .post()
             .uri("/users/logouts")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
+
+    ResponseSpec getTeumteumAround(String accessToken, UserLocationRequest request) {
+        return webTestClient
+            .post()
+            .uri("/teum-teum/arounds")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .exchange();
     }
