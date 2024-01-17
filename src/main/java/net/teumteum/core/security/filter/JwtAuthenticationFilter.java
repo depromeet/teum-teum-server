@@ -14,7 +14,6 @@ import net.teumteum.core.security.service.JwtService;
 import net.teumteum.user.domain.User;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -52,8 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private User getUser(String token) {
-        return this.authService.findUserByAccessToken(token)
-            .orElseThrow(() -> new UsernameNotFoundException("일치하는 회원 정보가 존재하지 않습니다."));
+        return this.authService.findUserByAccessToken(token);
     }
 
     private boolean checkTokenExistenceAndValidation(HttpServletRequest request, String token) {

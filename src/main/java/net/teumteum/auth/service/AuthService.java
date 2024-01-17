@@ -1,7 +1,6 @@
 package net.teumteum.auth.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.teumteum.auth.domain.response.TokenResponse;
@@ -25,16 +24,15 @@ public class AuthService {
         String accessToken = jwtService.extractAccessToken(request);
 
         checkRefreshTokenValidation(refreshToken);
-
-        User user = findUserByAccessToken(accessToken).orElseThrow(
-            () -> new IllegalArgumentException("access token 에 해당하는 user를 찾을 수 없습니다."));
+        User user = findUserByAccessToken(accessToken);
 
         checkRefreshTokenMatch(user, refreshToken);
         return issueNewToken(user);
     }
 
-    public Optional<User> findUserByAccessToken(String accessToken) {
-        return userConnector.findUserById(jwtService.getUserIdFromToken(accessToken));
+    public User findUserByAccessToken(String accessToken) {
+        return userConnector.findUserById(jwtService.getUserIdFromToken(accessToken))
+            .orElseThrow(() -> new IllegalArgumentException("access token 에 해당하는 user를 찾을 수 없습니다."));
     }
 
     private void checkRefreshTokenValidation(String refreshToken) {
