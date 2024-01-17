@@ -52,8 +52,10 @@ public class TeumTeumIntegrationTest extends IntegrationTest {
 
             // then
             Assertions.assertThat(
-                result.expectBody(UserAroundLocationsResponse.class).returnResult()
-                    .getResponseBody());
+                    result.expectBody(UserAroundLocationsResponse.class).returnResult()
+                        .getResponseBody())
+                .usingRecursiveComparison()
+                .isNull();
         }
     }
 }
