@@ -28,8 +28,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String[] PATTERNS = {"/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**",
-        "/logins/**"};
+    private static final String[] PATTERNS = {"/css/**", "/images/**", "/js/**", "/favicon.ico/**", "/h2-console/**",
+        "/logins/**", "/auth/**"};
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
@@ -38,14 +38,18 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-            .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/error");
+            .requestMatchers("/css/**", "/js/**",
+                "/favicon.ico", "/resources/**"
+
+            );
     }
+
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/logins/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/users/registers").permitAll().requestMatchers(PATTERNS).permitAll()
+            .authorizeHttpRequests(request -> request.requestMatchers(PATTERNS).permitAll()
+                .requestMatchers(HttpMethod.POST, "/users/registers").permitAll()
                 .anyRequest().authenticated()).httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS))
