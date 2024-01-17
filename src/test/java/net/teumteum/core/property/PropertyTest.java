@@ -38,7 +38,7 @@ class PropertyTest {
         void Make_redis_property_from_application_yml() {
             // given
             String expectedHost = "localhost";
-            int expectedPort = 6378;
+            int expectedPort = 6379;
 
             // when & then
             Assertions.assertEquals(expectedHost, redisProperty.getHost());
