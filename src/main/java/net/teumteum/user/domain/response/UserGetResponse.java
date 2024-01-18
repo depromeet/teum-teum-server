@@ -2,7 +2,6 @@ package net.teumteum.user.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-
 import net.teumteum.core.security.Authenticated;
 import net.teumteum.user.domain.User;
 
@@ -13,7 +12,7 @@ public record UserGetResponse(
     Long characterId,
     int mannerTemperature,
     Authenticated authenticated,
-    ActivityArea activityArea,
+    String activityArea,
     String mbti,
     String status,
     String goal,
@@ -29,7 +28,7 @@ public record UserGetResponse(
             user.getCharacterId(),
             user.getMannerTemperature(),
             user.getOauth().getAuthenticated(),
-            ActivityArea.of(user),
+            user.getActivityArea(),
             user.getMbti(),
             user.getStatus().name(),
             user.getGoal(),
@@ -38,19 +37,6 @@ public record UserGetResponse(
         );
     }
 
-    public record ActivityArea(
-        String city,
-        List<String> streets
-    ) {
-
-        public static ActivityArea of(User user) {
-            return new ActivityArea(
-                user.getActivityArea().getCity(),
-                user.getActivityArea().getStreet()
-            );
-        }
-
-    }
 
     public record Job(
         String name,

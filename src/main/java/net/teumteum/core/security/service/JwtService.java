@@ -1,12 +1,15 @@
 package net.teumteum.core.security.service;
 
+import static io.jsonwebtoken.SignatureAlgorithm.HS512;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import java.security.Key;
 import java.util.Date;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.teumteum.auth.domain.response.TokenResponse;
 import net.teumteum.core.property.JwtProperty;
 import net.teumteum.user.domain.User;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -22,10 +26,20 @@ import org.springframework.util.ObjectUtils;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JwtService {
+public class JwtService implements InitializingBean {
+
+    private static final String TOKEN_SUBJECT = "ACCESSTOKEN";
 
     private final JwtProperty jwtProperty;
     private final RedisService redisService;
+    private Key key;
+
+    @Override
+    public void afterPropertiesSet() {
+        byte[] secretKey = Decoders.BASE64.decode(jwtProperty.getSecret());
+        key = Keys.hmacShaKeyFor(secretKey);
+    }
+
 
     public String extractAccessToken(HttpServletRequest request) {
         String accessToken = request.getHeader(jwtProperty.getAccess().getHeader());
@@ -44,17 +58,16 @@ public class JwtService {
         return null;
     }
 
-    public String getUserIdFromToken(String token) {
+    public Long getUserIdFromToken(String token) {
         try {
-            return Jwts.parser().setSigningKey(jwtProperty.getSecret().getBytes())
-                .parseClaimsJws(token).getBody().getSubject();
+            return Long.valueOf(getClaims(token).get("id", String.class));
         } catch (Exception exception) {
             throw new JwtException("Access Token is not valid");
         }
     }
 
     public TokenResponse createServiceToken(User users) {
-        String accessToken = createAccessToken(String.valueOf(users.getId()));
+        String accessToken = createAccessToken(users.getId().toString());
         String refreshToken = createRefreshToken();
 
         this.redisService.setDataWithExpiration(String.valueOf(users.getId()), refreshToken,
@@ -63,38 +76,44 @@ public class JwtService {
         return new TokenResponse(jwtProperty.getBearer() + " " + accessToken, refreshToken);
     }
 
-    public String createAccessToken(String payload) {
-        return this.createToken(payload, jwtProperty.getAccess().getExpiration());
+    public String createAccessToken(String userId) {
+        return this.createToken(userId, jwtProperty.getAccess().getExpiration());
     }
 
     public String createRefreshToken() {
         return this.createToken(UUID.randomUUID().toString(), jwtProperty.getRefresh().getExpiration());
     }
 
-    private String createToken(String payload, Long tokenExpiration) {
-        Claims claims = Jwts.claims().setSubject(payload);
-        Date tokenExpiresIn = new Date(new Date().getTime() + tokenExpiration);
+    private String createToken(String payLoad, Long tokenExpiration) {
 
+        Date tokenExpiresIn = new Date(new Date().getTime() + tokenExpiration);
         return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(new Date())
+            .setSubject(TOKEN_SUBJECT)
+            .claim("id", payLoad)
+            .signWith(key, HS512)
             .setExpiration(tokenExpiresIn)
-            .signWith(SignatureAlgorithm.HS512, jwtProperty.getSecret().getBytes())
             .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(jwtProperty.getSecret().getBytes())
-                .parseClaimsJws(token);
-            return !claimsJws.getBody().getExpiration().before(new Date());
-        } catch (ExpiredJwtException exception) {
-            log.warn("만료된 jwt 입니다.");
-        } catch (UnsupportedJwtException exception) {
-            log.warn("지원되지 않는 jwt 입니다.");
-        } catch (IllegalArgumentException exception) {
-            log.warn("jwt 에 오류가 존재합니다.");
+            Claims claims = getClaims(token);
+            return !claims.getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            log.error("JWT 가 만료되었습니다.");
+        } catch (UnsupportedJwtException e) {
+            log.error("지원되지 않는 JWT 입니다.");
+        } catch (IllegalArgumentException e) {
+            log.error("JWT 가 잘못되었습니다.");
         }
         return false;
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
     }
 }
