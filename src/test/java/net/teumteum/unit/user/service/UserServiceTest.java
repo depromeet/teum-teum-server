@@ -1,10 +1,14 @@
 package net.teumteum.unit.user.service;
 
+import static net.teumteum.unit.auth.common.SecurityValue.VALID_ACCESS_TOKEN;
+import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import net.teumteum.auth.domain.response.TokenResponse;
+import net.teumteum.core.security.service.JwtService;
 import net.teumteum.core.security.service.RedisService;
 import net.teumteum.integration.RequestFixture;
 import net.teumteum.user.domain.User;
@@ -35,6 +39,9 @@ public class UserServiceTest {
     @Mock
     RedisService redisService;
 
+    @Mock
+    JwtService jwtService;
+
     private User user;
 
     @BeforeEach
@@ -51,14 +58,21 @@ public class UserServiceTest {
         void If_valid_user_request_register_user_card() {
             // given
             UserRegisterRequest request = RequestFixture.userRegisterRequest(user);
+            TokenResponse tokenResponse = new TokenResponse(VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN);
+
+            UserRegisterResponse response = UserRegisterResponse.of(1L, tokenResponse);
 
             given(userRepository.save(any(User.class))).willReturn(user);
 
+            given(jwtService.createServiceToken(any(User.class))).willReturn(tokenResponse);
+
             // when
-            UserRegisterResponse response = userService.register(request);
+            UserRegisterResponse result = userService.register(request);
 
             // then
             assertThat(response.id()).isEqualTo(1);
+            assertThat(response.accessToken()).isNotNull();
+            assertThat(response.refreshToken()).isNotNull();
         }
 
         @Test
