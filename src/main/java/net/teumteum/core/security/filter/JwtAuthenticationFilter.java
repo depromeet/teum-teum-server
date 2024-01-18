@@ -14,7 +14,6 @@ import net.teumteum.core.security.service.JwtService;
 import net.teumteum.user.domain.User;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -24,6 +23,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final String ATTRIBUTE_NAME = "exception";
 
     private final JwtService jwtService;
     private final AuthService authService;
@@ -39,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             String token = this.resolveTokenFromRequest(request);
-            if (checkTokenExistenceAndValidation(token)) {
+            if (checkTokenExistenceAndValidation(request, token)) {
                 User user = getUser(token);
                 saveUserAuthentication(user);
             }
@@ -50,12 +51,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private User getUser(String token) {
-        return this.authService.findUserByAccessToken(token)
-            .orElseThrow(() -> new UsernameNotFoundException("일치하는 회원 정보가 존재하지 않습니다."));
+        return this.authService.findUserByAccessToken(token);
     }
 
-    private boolean checkTokenExistenceAndValidation(String token) {
-        return StringUtils.hasText(token) && this.jwtService.validateToken(token);
+    private boolean checkTokenExistenceAndValidation(HttpServletRequest request, String token) {
+        if (!StringUtils.hasText(token)) {
+            setRequestAttribute(request, "요청에 대한 JWT 정보가 존재하지 않습니다.");
+            return false;
+        }
+        if (!jwtService.validateToken(token)) {
+            setRequestAttribute(request, "요청에 대한 JWT 가 유효하지 않습니다.");
+            return false;
+        }
+        return true;
     }
 
     private void saveUserAuthentication(User user) {
@@ -66,8 +74,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String resolveTokenFromRequest(HttpServletRequest request) {
         String token = request.getHeader(jwtProperty.getAccess().getHeader());
         if (!ObjectUtils.isEmpty(token) && token.toLowerCase().startsWith(jwtProperty.getBearer().toLowerCase())) {
-            return token.substring(jwtProperty.getBearer().length()).trim();
+            return token.substring(7);
         }
+        setRequestAttribute(request, "요청에 대한 JWT 파싱 과정에서 문제가 발생했습니다.");
         return null;
+    }
+
+    private void setRequestAttribute(HttpServletRequest request, String name) {
+        request.setAttribute(ATTRIBUTE_NAME, name);
     }
 }

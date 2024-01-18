@@ -1,27 +1,42 @@
 package net.teumteum.user.controller;
 
 import io.sentry.Sentry;
+import jakarta.validation.Valid;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
-import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
-import net.teumteum.user.domain.response.*;
+import net.teumteum.user.domain.response.FriendsResponse;
+import net.teumteum.user.domain.response.InterestQuestionResponse;
+import net.teumteum.user.domain.response.UserGetResponse;
+import net.teumteum.user.domain.response.UserMeGetResponse;
+import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
-    private final ApplicationContext applicationContext;
     private final UserService userService;
     private final SecurityService securityService;
 
@@ -49,7 +64,7 @@ public class UserController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public void updateUser(@RequestBody UserUpdateRequest request) {
+    public void updateUser(@Valid @RequestBody UserUpdateRequest request) {
         userService.updateUser(getCurrentUserId(), request);
     }
 
@@ -80,7 +95,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserRegisterResponse register(@RequestBody UserRegisterRequest request) {
+    public UserRegisterResponse register(@Valid @RequestBody UserRegisterRequest request) {
         return userService.register(request);
     }
 
@@ -95,6 +110,18 @@ public class UserController {
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
         Sentry.captureException(illegalArgumentException);
         return ErrorResponse.of(illegalArgumentException);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ErrorResponse handleMethodArgumentNotValidException(
+        MethodArgumentNotValidException methodArgumentNotValidException) {
+        Sentry.captureException(methodArgumentNotValidException);
+
+        BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
+        List<ObjectError> errors = bindingResult.getAllErrors();
+
+        return ErrorResponse.of(errors.get(0).getDefaultMessage());
     }
 
     private Long getCurrentUserId() {

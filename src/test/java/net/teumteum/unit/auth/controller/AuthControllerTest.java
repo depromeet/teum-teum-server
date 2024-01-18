@@ -1,6 +1,10 @@
 package net.teumteum.unit.auth.controller;
 
 
+import static net.teumteum.unit.auth.common.SecurityValue.INVALID_ACCESS_TOKEN;
+import static net.teumteum.unit.auth.common.SecurityValue.INVALID_REFRESH_TOKEN;
+import static net.teumteum.unit.auth.common.SecurityValue.VALID_ACCESS_TOKEN;
+import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -39,11 +43,6 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("인증 컨트롤러 단위 테스트의")
 public class AuthControllerTest {
 
-    private static final String VALID_ACCESS_TOKEN = "VALID_ACCESS_TOKEN";
-    private static final String INVALID_ACCESS_TOKEN = "INVALID_ACCESS_TOKEN";
-    private static final String VALID_REFRESH_TOKEN = "VALID_REFRESH_TOKEN";
-    private static final String INVALID_REFRESH_TOKEN = "INVALID_REFRESH_TOKEN";
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -58,7 +57,7 @@ public class AuthControllerTest {
         @DisplayName("유효하지 않은 access token 과 유효한 refresh token 이 주어지면, 새로운 토큰을 발급한다.")
         void Return_new_jwt_if_access_and_refresh_is_exist() throws Exception {
             // given
-            TokenResponse tokenResponse = new TokenResponse(INVALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN);
+            TokenResponse tokenResponse = new TokenResponse(VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN);
 
             given(authService.reissue(any(HttpServletRequest.class))).willReturn(tokenResponse);
             // when & then

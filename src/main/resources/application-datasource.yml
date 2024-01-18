@@ -6,7 +6,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url:
+    url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     hikari:
@@ -14,7 +14,7 @@ spring:
       maximum-pool-size: 80
 
   flyway:
-    url:
+    url: ${DATABASE_URL}
     user: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     baseline-on-migrate: true

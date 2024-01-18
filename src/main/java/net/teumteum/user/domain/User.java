@@ -54,8 +54,8 @@ public class User extends TimeBaseEntity {
     @Column(name = "role_type")
     private RoleType roleType;
 
-    @Embedded
-    private ActivityArea activityArea;
+    @Column(name = "activity_area")
+    private String activityArea;
 
     @Column(name = "mbti", length = 4)
     private String mbti;

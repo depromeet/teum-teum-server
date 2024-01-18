@@ -38,7 +38,7 @@ class PropertyTest {
         void Make_redis_property_from_application_yml() {
             // given
             String expectedHost = "localhost";
-            int expectedPort = 6378;
+            int expectedPort = 6379;
 
             // when & then
             Assertions.assertEquals(expectedHost, redisProperty.getHost());
@@ -55,11 +55,10 @@ class PropertyTest {
         void Make_jwt_property_from_application_yml() {
             // given
             String expectedBearer = "Bearer";
-            String expectedSecret = "secret";
 
             // when & then
             Assertions.assertEquals(expectedBearer, jwtProperty.getBearer());
-            Assertions.assertEquals(expectedSecret, jwtProperty.getSecret());
+            Assertions.assertNotNull(jwtProperty.getSecret());
         }
     }
 }

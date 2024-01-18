@@ -3,13 +3,9 @@ allprojects {
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok"
 
-        implementation "io.jsonwebtoken:jjwt:${jwtVersion}"
-
-        // com.sun.xml.bind
-        implementation "com.sun.xml.bind:jaxb-impl:${jwtBindingVersion}"
-        implementation "com.sun.xml.bind:jaxb-core:${jwtBindingVersion}"
-        // javax.xml.bind
-        implementation "javax.xml.bind:jaxb-api:${jwtJaxbApiVersion}"
+        implementation "io.jsonwebtoken:jjwt-api:${jwtVersion}"
+        runtimeOnly "io.jsonwebtoken:jjwt-impl:${jwtVersion}"
+        runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jwtVersion}"
 
         testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
         testAnnotationProcessor "org.projectlombok:lombok"
