@@ -5,6 +5,7 @@ import static net.teumteum.core.security.Authenticated.네이버;
 import static net.teumteum.core.security.Authenticated.카카오;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -41,11 +42,11 @@ public class OAuthService {
     private final UserConnector userConnector;
 
 
-    public TokenResponse oAuthLogin(String registrationId, String code) {
+    public TokenResponse oAuthLogin(String registrationId, String code, String state) {
         ClientRegistration clientRegistration = inMemoryClientRegistrationRepository.findByRegistrationId(
             registrationId);
         Authenticated authenticated = getAuthenticated(clientRegistration.getRegistrationId());
-        OAuthUserInfo oAuthUserInfo = getOAuthUserInfo(clientRegistration, authenticated, code);
+        OAuthUserInfo oAuthUserInfo = getOAuthUserInfo(clientRegistration, authenticated, code, state);
         return makeResponse(oAuthUserInfo, authenticated);
     }
 
@@ -57,8 +58,9 @@ public class OAuthService {
     }
 
     private OAuthUserInfo getOAuthUserInfo(ClientRegistration clientRegistration, Authenticated authenticated,
-        String code) {
-        Map<String, Object> oAuthAttribute = getOAuthAttribute(clientRegistration, getToken(clientRegistration, code));
+        String code, String state) {
+        Map<String, Object> oAuthAttribute = getOAuthAttribute(clientRegistration,
+            getToken(clientRegistration, code, state));
         if (authenticated == 네이버) {
             return new NaverOAuthUserInfo(oAuthAttribute);
         }
@@ -73,31 +75,39 @@ public class OAuthService {
             .orElseGet(() -> new TokenResponse(oauthId));
     }
 
+    private OAuthToken getToken(ClientRegistration clientRegistration, String code, String state) {
+        return WebClient.create().post()
+            .uri(clientRegistration.getProviderDetails().getTokenUri())
+            .headers(header -> {
+                header.setContentType(APPLICATION_FORM_URLENCODED);
+                header.setAcceptCharset(Collections.singletonList(UTF_8));
+            }).bodyValue(tokenRequest(clientRegistration, code, state))
+            .retrieve()
+            .bodyToMono(OAuthToken.class).block();
+    }
+
     private Map<String, Object> getOAuthAttribute(ClientRegistration clientRegistration, OAuthToken oAuthToken) {
-        return WebClient.create().get().uri(clientRegistration.getProviderDetails().getUserInfoEndpoint().getUri())
-            .headers(header -> header.setBearerAuth(oAuthToken.getAccessToken())).retrieve()
+        return WebClient.create().get()
+            .uri(clientRegistration.getProviderDetails().getUserInfoEndpoint().getUri())
+            .headers(header -> header.setBearerAuth(oAuthToken.accessToken())).retrieve()
             .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
             }).block();
     }
 
-    private OAuthToken getToken(ClientRegistration clientRegistration, String code) {
-        return WebClient.create().post().uri(clientRegistration.getProviderDetails().getTokenUri()).headers(header -> {
-            header.setContentType(APPLICATION_FORM_URLENCODED);
-            header.setAcceptCharset(Collections.singletonList(UTF_8));
-        }).bodyValue(tokenRequest(clientRegistration, code)).retrieve().bodyToMono(OAuthToken.class).block();
-    }
 
     private Optional<User> getUser(String oauthId, Authenticated authenticated) {
         return this.userConnector.findByAuthenticatedAndOAuthId(authenticated, oauthId);
     }
 
-    private MultiValueMap<String, String> tokenRequest(ClientRegistration clientRegistration, String code) {
+    private MultiValueMap<String, String> tokenRequest(ClientRegistration clientRegistration, String code,
+        String state) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("code", code);
-        formData.add("grant_type", "authorization_code");
+        formData.add("grant_type", clientRegistration.getAuthorizationGrantType().getValue());
         formData.add("redirect_uri", clientRegistration.getRedirectUri());
         formData.add("client_secret", clientRegistration.getClientSecret());
         formData.add("client_id", clientRegistration.getClientId());
+        formData.add("state", URLEncoder.encode(state, UTF_8));
         return formData;
     }
 }
