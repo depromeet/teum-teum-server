@@ -124,7 +124,7 @@ class UserIntegrationTest extends IntegrationTest {
             var expected = UserMeGetResponse.of(me);
 
             // when
-            var result = api.getUser(VALID_TOKEN, me.getId());
+            var result = api.getMe(VALID_TOKEN);
 
             // then
             Assertions.assertThat(result.expectStatus().isOk()
