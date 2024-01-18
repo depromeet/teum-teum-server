@@ -1,6 +1,7 @@
 package net.teumteum.unit.user.controller;
 
 import static net.teumteum.unit.auth.common.SecurityValue.VALID_ACCESS_TOKEN;
+import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -72,7 +73,7 @@ public class UserControllerTest {
             // given
             UserRegisterRequest request = RequestFixture.userRegisterRequest(user);
 
-            UserRegisterResponse response = new UserRegisterResponse(1L);
+            UserRegisterResponse response = new UserRegisterResponse(1L, VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN);
 
             given(userService.register(any(UserRegisterRequest.class))).willReturn(response);
 
@@ -84,7 +85,9 @@ public class UserControllerTest {
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.accessToken").value(VALID_ACCESS_TOKEN))
+                .andExpect(jsonPath("$.refreshToken").value(VALID_REFRESH_TOKEN));
         }
 
         @Test

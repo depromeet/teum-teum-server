@@ -59,7 +59,7 @@ public class UserFixture {
         @Builder.Default
         private String name = "Jennifer";
         @Builder.Default
-        private String birth = "2000.02.05";
+        private String birth = "20000205";
         @Builder.Default
         private Long characterId = 1L;
         @Builder.Default

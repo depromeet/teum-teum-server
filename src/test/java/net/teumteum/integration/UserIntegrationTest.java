@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
+import net.teumteum.user.domain.UserFixture;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
@@ -271,9 +272,7 @@ class UserIntegrationTest extends IntegrationTest {
         @DisplayName("등록할 회원의 정보가 주어지면, 회원 정보를 저장한다.")
         void Register_user_info() {
             // given
-            var additionalUser = repository.saveAndGetUser();
-
-            var UserRegister = RequestFixture.userRegisterRequest(additionalUser);
+            var UserRegister = RequestFixture.userRegisterRequest(UserFixture.getIdUser());
             // when
             var result = api.registerUserCard(VALID_TOKEN, UserRegister);
 
