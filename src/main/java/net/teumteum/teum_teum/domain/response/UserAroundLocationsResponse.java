@@ -1,6 +1,7 @@
-package net.teumteum.teum_teum.domain;
+package net.teumteum.teum_teum.domain.response;
 
 import java.util.List;
+import net.teumteum.teum_teum.domain.UserData;
 
 public record UserAroundLocationsResponse(
     List<UserAroundLocationResponse> userLocations

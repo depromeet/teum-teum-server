@@ -1,7 +1,8 @@
-package net.teumteum.teum_teum.domain;
+package net.teumteum.teum_teum.domain.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import net.teumteum.teum_teum.domain.UserData;
 
 public record UserLocationRequest(
     @NotNull(message = "경도는 필수 입력값입니다.")

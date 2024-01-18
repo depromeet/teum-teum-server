@@ -10,10 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import net.teumteum.teum_teum.domain.UserAroundLocationsResponse;
-import net.teumteum.teum_teum.domain.UserAroundLocationsResponse.UserAroundLocationResponse;
+import lombok.extern.slf4j.Slf4j;
 import net.teumteum.teum_teum.domain.UserData;
-import net.teumteum.teum_teum.domain.UserLocationRequest;
+import net.teumteum.teum_teum.domain.request.UserLocationRequest;
+import net.teumteum.teum_teum.domain.response.UserAroundLocationsResponse;
+import net.teumteum.teum_teum.domain.response.UserAroundLocationsResponse.UserAroundLocationResponse;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResult;
@@ -25,6 +26,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.domain.geo.Metrics;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TeumTeumService {
@@ -37,12 +39,16 @@ public class TeumTeumService {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public UserAroundLocationsResponse processingUserAroundLocations(UserLocationRequest request)
-        throws JsonProcessingException {
+    public UserAroundLocationsResponse processingUserAroundLocations(UserLocationRequest request) {
         GeoOperations<String, Object> geoValueOperations = redisTemplate.opsForGeo();
 
-        String userDataJson
-            = objectMapper.writeValueAsString(request.toUserData()) + ":" + currentTimeMillis();
+        String userDataJson = null;
+        try {
+            userDataJson = objectMapper.writeValueAsString(
+                request.toUserData()) + ":" + currentTimeMillis();
+        } catch (JsonProcessingException e) {
+            log.error("JsonProcessingException Occurred!");
+        }
 
         geoValueOperations.add(KEY, new Point(request.longitude(), request.latitude()), userDataJson);
 
@@ -50,8 +56,7 @@ public class TeumTeumService {
     }
 
     private UserAroundLocationsResponse getUserAroundLocations(GeoOperations<String, Object> geoValueOperations,
-        Double longitude, Double latitude)
-        throws JsonProcessingException {
+        Double longitude, Double latitude) {
 
         GeoResults<GeoLocation<Object>> geoResults
             = geoValueOperations.radius(KEY,
@@ -60,8 +65,7 @@ public class TeumTeumService {
         return getUserAroundLocationsResponse(geoResults);
     }
 
-    private UserAroundLocationsResponse getUserAroundLocationsResponse(GeoResults<GeoLocation<Object>> geoResults)
-        throws JsonProcessingException {
+    private UserAroundLocationsResponse getUserAroundLocationsResponse(GeoResults<GeoLocation<Object>> geoResults) {
 
         List<UserAroundLocationResponse> userAroundLocationResponses = new ArrayList<>();
 
@@ -74,10 +78,15 @@ public class TeumTeumService {
 
             if (currentTime - timestamp < LOCATION_EXPIRATION.toMillis()) {
                 String userDataJson = String.valueOf(geoResult.getContent().getName()).split(":")[0];
-                UserData userData = objectMapper.readValue(userDataJson, UserData.class);
+                UserData userData = null;
+                try {
+                    userData = objectMapper.readValue(userDataJson, UserData.class);
+                } catch (JsonProcessingException e) {
+                    log.error("JsonProcessingException Occurred!");
+                }
 
                 UserAroundLocationResponse userAroundLocationResponse
-                    = UserAroundLocationResponse.of(userData);
+                    = UserAroundLocationResponse.of(Objects.requireNonNull(userData));
 
                 userAroundLocationResponses.add(userAroundLocationResponse);
                 count++;

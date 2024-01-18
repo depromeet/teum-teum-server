@@ -1,13 +1,12 @@
 package net.teumteum.teum_teum.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.sentry.Sentry;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
-import net.teumteum.teum_teum.domain.UserAroundLocationsResponse;
-import net.teumteum.teum_teum.domain.UserLocationRequest;
+import net.teumteum.teum_teum.domain.request.UserLocationRequest;
+import net.teumteum.teum_teum.domain.response.UserAroundLocationsResponse;
 import net.teumteum.teum_teum.service.TeumTeumService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -29,9 +28,8 @@ public class TeumTeumController {
 
     @PostMapping("/arounds")
     @ResponseStatus(HttpStatus.OK)
-    public UserAroundLocationsResponse getUserLocation(
-        @Valid @RequestBody UserLocationRequest request
-    ) throws JsonProcessingException {
+    public UserAroundLocationsResponse getUserAroundLocations(
+        @Valid @RequestBody UserLocationRequest request) {
         return teumTeumService.processingUserAroundLocations(request);
     }
 
@@ -46,5 +44,4 @@ public class TeumTeumController {
 
         return ErrorResponse.of(errors.get(0).getDefaultMessage());
     }
-
 }

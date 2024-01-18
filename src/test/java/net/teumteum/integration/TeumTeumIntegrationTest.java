@@ -2,8 +2,8 @@ package net.teumteum.integration;
 
 import java.util.List;
 import net.teumteum.teum_teum.UserLocationFixture;
-import net.teumteum.teum_teum.domain.UserAroundLocationsResponse;
 import net.teumteum.teum_teum.domain.UserData;
+import net.teumteum.teum_teum.domain.response.UserAroundLocationsResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

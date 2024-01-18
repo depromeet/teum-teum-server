@@ -1,8 +1,8 @@
 package net.teumteum.teum_teum;
 
 import lombok.Builder;
-import net.teumteum.teum_teum.domain.UserAroundLocationsResponse.UserAroundLocationResponse;
-import net.teumteum.teum_teum.domain.UserLocationRequest;
+import net.teumteum.teum_teum.domain.request.UserLocationRequest;
+import net.teumteum.teum_teum.domain.response.UserAroundLocationsResponse.UserAroundLocationResponse;
 
 public class UserLocationFixture {
 
