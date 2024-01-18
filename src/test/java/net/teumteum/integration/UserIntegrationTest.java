@@ -236,7 +236,7 @@ class UserIntegrationTest extends IntegrationTest {
         void Withdraw_user_info_api() {
             // given
             var me = repository.saveAndGetUser();
-            repository.saveRedisDataWithExpiration(String.valueOf(me.getId()), VALID_TOKEN, DURATION);
+            redisRepository.saveRedisDataWithExpiration(String.valueOf(me.getId()), VALID_TOKEN, DURATION);
 
             loginContext.setUserId(me.getId());
 
@@ -331,7 +331,7 @@ class UserIntegrationTest extends IntegrationTest {
         void Logout_user() {
             // given
             var existUser = repository.saveAndGetUser();
-            repository.saveRedisDataWithExpiration(String.valueOf(existUser.getId()), VALID_TOKEN, DURATION);
+            redisRepository.saveRedisDataWithExpiration(String.valueOf(existUser.getId()), VALID_TOKEN, DURATION);
 
             // when & then
             assertThatCode(() -> api.logoutUser(VALID_TOKEN))

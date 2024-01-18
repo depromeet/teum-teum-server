@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(classes = {
     Api.class,
     Repository.class,
+    RedisRepository.class,
     Application.class,
     GptTestServer.class,
     TestLoginContext.class
@@ -30,10 +31,11 @@ abstract public class IntegrationTest {
     @Autowired
     protected Repository repository;
 
-
     @Autowired
     protected TestLoginContext loginContext;
 
+    @Autowired
+    protected RedisRepository redisRepository;
 
     @AfterEach
     @BeforeEach
