@@ -11,7 +11,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import protocol.Protocol;
 
-public class GetUserSimulation extends Simulation {
+public class SimulationSample extends Simulation {
 
     private final ScenarioBuilder scn = scenario(this.getClass().getSimpleName())
         .exec(http("get user")
