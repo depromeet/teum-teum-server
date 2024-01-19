@@ -1,0 +1,12 @@
+gatling {
+    simulations = {
+        include "**/*Simulation.java"
+    }
+    jvmArgs = ["-server", "-Xms512M", "-Xmx2G"]
+    systemProperties = ['file.encoding': 'UTF-8']
+    includeTestOutput = false
+}
+
+dependencies {
+    gatlingImplementation "net.datafaker:datafaker:${datafakerVersion}"
+}

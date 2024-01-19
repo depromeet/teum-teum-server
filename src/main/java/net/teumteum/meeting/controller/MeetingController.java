@@ -52,7 +52,7 @@ public class MeetingController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageDto<MeetingsResponse> getMeetingsOrderByDate(
+    public PageDto<MeetingsResponse> getMeetingsByCondition(
         Pageable pageable,
         @RequestParam(value = "isOpen") boolean isOpen,
         @RequestParam(value = "topic", required = false) Topic topic,

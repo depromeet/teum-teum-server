@@ -83,7 +83,7 @@ public class MeetingService {
         if (topic != null) {
             spec = spec.and(MeetingSpecification.withTopic(topic));
         } else if (meetingAreaStreet != null) {
-            spec.and(MeetingSpecification.withAreaStreet(meetingAreaStreet));
+            spec = spec.and(MeetingSpecification.withAreaStreet(meetingAreaStreet));
         } else if (participantUserId != null) {
             spec = spec.and(MeetingSpecification.withParticipantUserId(participantUserId));
         } else if (searchWord != null) {

@@ -18,21 +18,37 @@ public record UserMeGetResponse(
     String status,
     String goal,
     Job job,
+    String oauthType,
     List<String> interests
 ) {
 
     public static UserMeGetResponse of(User user) {
-        return new UserMeGetResponse(user.getId(), user.getName(), user.getBirth(), user.getCharacterId(),
-            user.getMannerTemperature(), user.getOauth().getAuthenticated(), user.getActivityArea(), user.getMbti(),
-            user.getStatus().name(), user.getGoal(), Job.of(user), user.getInterests());
+        return new UserMeGetResponse(
+            user.getId(),
+            user.getName(),
+            user.getBirth(),
+            user.getCharacterId(),
+            user.getMannerTemperature(),
+            user.getOauth().getAuthenticated(),
+            user.getActivityArea(),
+            user.getMbti(),
+            user.getStatus().name(),
+            user.getGoal(),
+            Job.of(user),
+            user.getOauth().getAuthenticated().name(),
+            user.getInterests()
+        );
     }
-
 
     public record Job(String name, boolean certificated, @JsonProperty("class") String jobClass, String detailClass) {
 
         public static Job of(User user) {
-            return new Job(user.getJob().getName(), user.getJob().isCertificated(), user.getJob().getJobClass(),
-                user.getJob().getDetailJobClass());
+            return new Job(
+                user.getJob().getName(),
+                user.getJob().isCertificated(),
+                user.getJob().getJobClass(),
+                user.getJob().getDetailJobClass()
+            );
         }
     }
 }
