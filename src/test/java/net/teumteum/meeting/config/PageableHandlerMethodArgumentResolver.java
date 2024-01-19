@@ -1,6 +1,7 @@
 package net.teumteum.meeting.config;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +26,12 @@ public class PageableHandlerMethodArgumentResolver implements HandlerMethodArgum
     }
 
     @Override
-    public Mono<Object> resolveArgument(MethodParameter methodParameter, BindingContext bindingContext, ServerWebExchange serverWebExchange) {
-        List<String> pageValues = serverWebExchange.getRequest().getQueryParams().getOrDefault("page", List.of(DEFAULT_PAGE));
-        List<String> sizeValues = serverWebExchange.getRequest().getQueryParams().getOrDefault("size", List.of(DEFAULT_SIZE));
+    public @NotNull Mono<Object> resolveArgument(@NotNull MethodParameter methodParameter, @NotNull BindingContext bindingContext,
+        ServerWebExchange serverWebExchange) {
+        List<String> pageValues = serverWebExchange.getRequest().getQueryParams()
+            .getOrDefault("page", List.of(DEFAULT_PAGE));
+        List<String> sizeValues = serverWebExchange.getRequest().getQueryParams()
+            .getOrDefault("size", List.of(DEFAULT_SIZE));
 
         String page = pageValues.get(0);
 
@@ -44,11 +48,11 @@ public class PageableHandlerMethodArgumentResolver implements HandlerMethodArgum
         }
 
         return Mono.just(
-                PageRequest.of(
-                        Integer.parseInt(page),
-                        Math.min(Integer.parseInt(sizeValues.get(0)),
-                                MAX_SIZE), sort
-                )
+            PageRequest.of(
+                Integer.parseInt(page),
+                Math.min(Integer.parseInt(sizeValues.get(0)),
+                    MAX_SIZE), sort
+            )
         );
     }
 }

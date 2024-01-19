@@ -26,15 +26,15 @@ public class ImageUploadService implements ImageUpload {
     @Override
     public ImageUploadResponse upload(MultipartFile file, String path) {
         String originalFilename = Optional.ofNullable(file.getOriginalFilename())
-                .orElseThrow(() -> new IllegalArgumentException("파일 이름이 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("파일 이름이 없습니다."));
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String fileName = UUID.randomUUID().toString();
         String destination = path + "/" + fileName + fileExtension;
 
         PutObjectRequest request = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(destination)
-                .build();
+            .bucket(bucketName)
+            .key(destination)
+            .build();
 
         try (var inputStream = file.getInputStream()) {
             s3Client.putObject(request, RequestBody.fromInputStream(inputStream, file.getSize()));
@@ -43,10 +43,10 @@ public class ImageUploadService implements ImageUpload {
         }
 
         return ImageUploadResponse.builder()
-                .fileName(fileName)
-                .originalFileName(originalFilename)
-                .contentType(file.getContentType())
-                .filePath(destination)
-                .build();
+            .fileName(fileName)
+            .originalFileName(originalFilename)
+            .contentType(file.getContentType())
+            .filePath(destination)
+            .build();
     }
 }
