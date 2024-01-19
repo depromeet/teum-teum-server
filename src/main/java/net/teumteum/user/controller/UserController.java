@@ -9,6 +9,7 @@ import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
+import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
@@ -20,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -87,10 +87,10 @@ public class UserController {
         return userService.getInterestQuestionByUserIds(userIds, balance);
     }
 
-    @DeleteMapping
+    @PostMapping("/withdraw")
     @ResponseStatus(HttpStatus.OK)
-    public void withdraw() {
-        userService.withdraw(getCurrentUserId());
+    public void withdraw(@Valid @RequestBody UserWithdrawRequest request) {
+        userService.withdraw(request, getCurrentUserId());
     }
 
     @PostMapping

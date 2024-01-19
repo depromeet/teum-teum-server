@@ -240,9 +240,10 @@ class UserIntegrationTest extends IntegrationTest {
 
             loginContext.setUserId(me.getId());
 
-            // when & then
+            var request = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
 
-            assertThatCode(() -> api.withdrawUser(VALID_TOKEN))
+            // when & then
+            assertThatCode(() -> api.withdrawUser(VALID_TOKEN, request))
                 .doesNotThrowAnyException();
         }
 
@@ -252,8 +253,10 @@ class UserIntegrationTest extends IntegrationTest {
             // given
             repository.clearUserRepository();
 
+            var request = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
+
             // when
-            var result = api.withdrawUser(VALID_TOKEN);
+            var result = api.withdrawUser(VALID_TOKEN, request);
 
             // then
             Assertions.assertThat(result.expectStatus().is5xxServerError()

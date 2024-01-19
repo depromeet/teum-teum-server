@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import net.teumteum.core.security.SecurityConfig;
 import net.teumteum.core.security.filter.JwtAuthenticationFilter;
 import net.teumteum.core.security.service.JwtService;
@@ -22,6 +24,7 @@ import net.teumteum.user.controller.UserController;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
 import net.teumteum.user.domain.request.UserRegisterRequest;
+import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +38,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(value = UserController.class,
     excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class),
@@ -48,8 +50,10 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 public class UserControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    ObjectMapper objectMapper;
 
+    @Autowired
+    private MockMvc mockMvc;
     @MockBean
     private UserService userService;
 
@@ -79,7 +83,7 @@ public class UserControllerTest {
 
             // when & then
             mockMvc.perform(post("/users")
-                    .content(new ObjectMapper().writeValueAsString(request))
+                    .content(objectMapper.writeValueAsString(request))
                     .contentType(APPLICATION_JSON)
                     .with(csrf())
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
@@ -98,13 +102,35 @@ public class UserControllerTest {
             // when
             // then
             mockMvc.perform(post("/users")
-                    .content(new ObjectMapper().writeValueAsString(request))
+                    .content(objectMapper.writeValueAsString(request))
                     .contentType(APPLICATION_JSON)
                     .with(csrf())
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").isNotEmpty());
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 탈퇴 API는")
+    class Withdraw_user_api_unit {
+
+        @Test
+        @DisplayName("회원 탈퇴 사유와 회원 탈퇴 요청이 들어오면, 탈퇴를 진행하고 200 OK을 반환한다.")
+        void Withdraw_user_with_200_ok() throws Exception {
+            // given
+            UserWithdrawRequest request
+                = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
+
+            // when & then
+            mockMvc.perform(post("/users/withdraw")
+                    .content(new ObjectMapper().writeValueAsString(request))
+                    .contentType(APPLICATION_JSON)
+                    .with(csrf())
+                    .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
+                .andDo(print())
+                .andExpect(status().isOk());
         }
     }
 }
