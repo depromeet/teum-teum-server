@@ -21,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -88,7 +87,7 @@ public class UserController {
         return userService.getInterestQuestionByUserIds(userIds, balance);
     }
 
-    @DeleteMapping
+    @PostMapping("/withdraw")
     @ResponseStatus(HttpStatus.OK)
     public void withdraw(@Valid @RequestBody UserWithdrawRequest request) {
         userService.withdraw(request, getCurrentUserId());

@@ -6,6 +6,7 @@ import net.teumteum.meeting.domain.Topic;
 import net.teumteum.teum_teum.domain.request.UserLocationRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
+import net.teumteum.user.domain.request.UserWithdrawRequest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Pageable;
@@ -129,10 +130,12 @@ class Api {
             .exchange();
     }
 
-    ResponseSpec withdrawUser(String accessToken) {
-        return webTestClient.delete()
-            .uri("/users")
+    ResponseSpec withdrawUser(String accessToken, UserWithdrawRequest request) {
+        return webTestClient
+            .post()
+            .uri("/users/withdraw")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .bodyValue(request)
             .exchange();
     }
 
