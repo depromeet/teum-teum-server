@@ -36,6 +36,14 @@ class Api {
             .exchange();
     }
 
+    ResponseSpec getMe(String token) {
+        return webTestClient
+            .get()
+            .uri("/users/me")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
     ResponseSpec getUsersById(String token, String userIds) {
         return webTestClient.get()
             .uri("/users?id=" + userIds)

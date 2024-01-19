@@ -4,6 +4,7 @@ plugins {
     id 'io.spring.dependency-management'
     id 'org.sonarqube'
     id 'io.sentry.jvm.gradle'
+    id "io.gatling.gradle" version "${gatlingVersion}"
 }
 
 apply from: "gradle/spring.gradle"
@@ -13,6 +14,7 @@ apply from: "gradle/sonar.gradle"
 apply from: "gradle/db.gradle"
 apply from: "gradle/aws.gradle"
 apply from: "gradle/sentry.gradle"
+apply from: "gradle/gatling.gradle"
 
 allprojects {
 
