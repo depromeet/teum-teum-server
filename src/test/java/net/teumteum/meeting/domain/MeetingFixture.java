@@ -160,7 +160,7 @@ public class MeetingFixture {
         private String introduction = "모임에 대한 간단한 설명입니다.";
 
         @Builder.Default
-        private MeetingArea meetingArea = new MeetingArea("강남구", "서울특별시 강남대로 390", "강남역 11번 출구");
+        private MeetingArea meetingArea = MeetingArea.of("서울 강남구 강남대로 390", "강남역 11번 출구");
 
         @Builder.Default
         private int numberOfRecruits = 3;
@@ -169,7 +169,7 @@ public class MeetingFixture {
         private LocalDateTime promiseDateTime = LocalDateTime.of(2024, 10, 10, 0, 0);
 
         @Builder.Default
-        private Set<String> imageUrls = new HashSet<>(List.of("https://www.google.com"));
+        private Set<String> imageUrls = new HashSet<>(List.of("/1/image.jpg", "/2/image.jpg"));
     }
 
 }

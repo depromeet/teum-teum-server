@@ -1,5 +1,8 @@
 package net.teumteum.integration;
 
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Stream;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.Topic;
@@ -15,10 +18,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.stream.Stream;
 
 @DisplayName("미팅 통합테스트의")
 class MeetingIntegrationTest extends IntegrationTest {
