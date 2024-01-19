@@ -9,6 +9,7 @@ import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
+import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
@@ -89,8 +90,8 @@ public class UserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public void withdraw() {
-        userService.withdraw(getCurrentUserId());
+    public void withdraw(@Valid @RequestBody UserWithdrawRequest request) {
+        userService.withdraw(request, getCurrentUserId());
     }
 
     @PostMapping
