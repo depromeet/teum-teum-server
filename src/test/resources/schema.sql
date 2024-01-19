@@ -69,7 +69,7 @@ create table if not exists users_friends
     foreign key (users_id) references users (id)
 );
 
-create table if not exists withdraw_reason
+create table if not exists withdraw_reasons
 (
     id              bigint       not null auto_increment,
     withdraw_reason varchar(30)  not null,
