@@ -1,5 +1,6 @@
 package net.teumteum.integration;
 
+import java.util.List;
 import java.util.UUID;
 import net.teumteum.core.security.Authenticated;
 import net.teumteum.user.domain.User;
@@ -8,8 +9,13 @@ import net.teumteum.user.domain.request.UserRegisterRequest.Job;
 import net.teumteum.user.domain.request.UserRegisterRequest.Terms;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest.NewJob;
+import net.teumteum.user.domain.request.UserWithdrawRequest;
 
 public class RequestFixture {
+
+    public static UserWithdrawRequest userWithdrawRequest(List<String> withdrawReasons) {
+        return new UserWithdrawRequest(withdrawReasons);
+    }
 
     public static UserUpdateRequest userUpdateRequest(User user) {
         return new UserUpdateRequest(user.getId(), "new_name", user.getBirth(), user.getCharacterId(),
