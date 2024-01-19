@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
 @Getter
 @Builder
 @AllArgsConstructor
-@Entity(name = "meetings")
+@Entity(name = "meeting")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Meeting extends TimeBaseEntity {
 
