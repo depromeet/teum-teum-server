@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 @Getter
 @Builder
@@ -24,7 +25,13 @@ public class MeetingArea {
     private String addressDetail;
 
     public static MeetingArea of(String roadName, String addressDetail) {
-        return new MeetingArea(roadName.split(" ")[1], roadName, addressDetail);
+        return new MeetingArea(toMainStreet(roadName), roadName, addressDetail);
+    }
+
+    private static String toMainStreet(String roadName) {
+        String[] roadNameSplit = roadName.split(" ");
+        Assert.isTrue(roadNameSplit.length >= 2, "잘못된 도로명 주소입니다. \"" + roadName + "\"");
+        return roadNameSplit[0] + " " + roadNameSplit[1];
     }
 
 }
