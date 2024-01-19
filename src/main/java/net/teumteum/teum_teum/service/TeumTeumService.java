@@ -73,11 +73,13 @@ public class TeumTeumService {
         int count = 0;
 
         for (GeoResult<GeoLocation<Object>> geoResult : Objects.requireNonNull(geoResults)) {
-            String userSavedTime = String.valueOf(geoResult.getContent().getName()).split(":")[1];
+            String userSavedTime = String.valueOf(geoResult.getContent().getName()).split(":")[5];
             long timestamp = Long.parseLong(userSavedTime);
 
             if (currentTime - timestamp < LOCATION_EXPIRATION.toMillis()) {
-                String userDataJson = String.valueOf(geoResult.getContent().getName()).split(":")[0];
+                String savedUserLocation = String.valueOf(geoResult.getContent().getName());
+                String userDataJson = savedUserLocation.substring(savedUserLocation.lastIndexOf(":") + 1);
+
                 UserData userData = null;
                 try {
                     userData = objectMapper.readValue(userDataJson, UserData.class);
