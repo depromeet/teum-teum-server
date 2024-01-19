@@ -5,8 +5,15 @@ import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import java.util.List;
+import java.util.Optional;
 import net.teumteum.auth.domain.response.TokenResponse;
 import net.teumteum.core.security.service.JwtService;
 import net.teumteum.core.security.service.RedisService;
@@ -14,7 +21,9 @@ import net.teumteum.integration.RequestFixture;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
 import net.teumteum.user.domain.UserRepository;
+import net.teumteum.user.domain.WithdrawReasonRepository;
 import net.teumteum.user.domain.request.UserRegisterRequest;
+import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +44,9 @@ public class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    WithdrawReasonRepository withdrawReasonRepository;
 
     @Mock
     RedisService redisService;
@@ -87,6 +99,32 @@ public class UserServiceTest {
             assertThatThrownBy(() -> userService.register(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("일치하는 user 가 이미 존재합니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("유저 탈퇴 API는")
+    class Withdraw_user_api_unit {
+
+        @Test
+        @DisplayName("유효한 유저 회원 탈퇴 요청이 들어오는 경우, 회원을 탈퇴하고 탈퇴 사유 데이터를 저장한다.")
+        void If_valid_user_withdraw_request_withdraw_user() {
+            // given
+            UserWithdrawRequest request
+                = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
+
+            given(userRepository.findById(anyLong()))
+                .willReturn(Optional.ofNullable(user));
+
+            doNothing().when(userRepository).delete(any());
+
+            doNothing().when(redisService).deleteData(anyString());
+            // when
+            userService.withdraw(request, user.getId());
+            // then
+            verify(userRepository, times(1)).findById(anyLong());
+            verify(redisService, times(1)).deleteData(anyString());
+            verify(withdrawReasonRepository, times(1)).saveAll(any());
         }
     }
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.Assert;
 
 @Getter
-@Entity(name = "users")
-@NoArgsConstructor
 @AllArgsConstructor
+@Entity(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends TimeBaseEntity {
 
     @Id

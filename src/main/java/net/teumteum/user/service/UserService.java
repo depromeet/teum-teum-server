@@ -10,8 +10,10 @@ import net.teumteum.user.domain.BalanceGameType;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
+import net.teumteum.user.domain.WithdrawReasonRepository;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
+import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
@@ -28,6 +30,7 @@ import org.springframework.util.Assert;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final WithdrawReasonRepository withdrawReasonRepository;
     private final InterestQuestion interestQuestion;
     private final RedisService redisService;
     private final JwtService jwtService;
@@ -71,11 +74,13 @@ public class UserService {
     }
 
     @Transactional
-    public void withdraw(Long userId) {
+    public void withdraw(UserWithdrawRequest request, Long userId) {
         var existUser = getUser(userId);
 
         userRepository.delete(existUser);
         redisService.deleteData(String.valueOf(userId));
+
+        withdrawReasonRepository.saveAll(request.toEntity());
     }
 
     @Transactional
