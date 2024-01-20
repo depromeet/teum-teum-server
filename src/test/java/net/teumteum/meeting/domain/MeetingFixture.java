@@ -15,96 +15,96 @@ public class MeetingFixture {
 
     public static Meeting getOpenMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .build()
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .build()
         );
     }
 
     public static Meeting getCloseMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
-                .build()
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .build()
         );
     }
 
     public static Meeting getOpenFullMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .numberOfRecruits(3)
-                .participantUserIds(new HashSet<>(List.of(0L, 1L, 2L)))
-                .build()
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .numberOfRecruits(3)
+            .participantUserIds(new HashSet<>(List.of(0L, 1L, 2L)))
+            .build()
         );
     }
 
     public static Meeting getOpenMeetingWithTopic(Topic topic) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .topic(topic)
-                .build()
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .topic(topic)
+            .build()
         );
     }
 
     public static Meeting getCloseMeetingWithTopic(Topic topic) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
-                .topic(topic)
-                .build()
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .topic(topic)
+            .build()
         );
     }
 
     public static Meeting getOpenMeetingWithMainStreet(String mainStreet) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .meetingArea(new MeetingArea(mainStreet, "서울특별시", "강남대로 390"))
-                .build()
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .meetingArea(new MeetingArea(mainStreet, "서울특별시", "강남대로 390"))
+            .build()
         );
     }
 
     public static Meeting getOpenMeetingWithParticipantUserId(Long participantUserId) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .participantUserIds(new HashSet<>(List.of(participantUserId)))
-                .build()
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .participantUserIds(new HashSet<>(List.of(participantUserId)))
+            .build()
         );
     }
 
     public static Meeting getCloseMeetingWithParticipantUserId(Long participantUserId) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
-                .participantUserIds(new HashSet<>(List.of(participantUserId)))
-                .build()
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .participantUserIds(new HashSet<>(List.of(participantUserId)))
+            .build()
         );
     }
 
     public static Meeting getOpenMeetingWithTitle(String title) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .title(title)
-                .build()
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .title(title)
+            .build()
         );
     }
 
     public static Meeting getCloseMeetingWithTitle(String title) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .title(title)
-                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
-                .build()
+            .title(title)
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .build()
         );
     }
 
     public static Meeting getOpenMeetingWithIntroduction(String introduction) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
-                .introduction(introduction)
-                .build()
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .introduction(introduction)
+            .build()
         );
     }
 
     public static Meeting getCloseMeetingWithIntroduction(String introduction) {
         return newMeetingByBuilder(MeetingBuilder.builder()
-                .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
-                .introduction(introduction)
-                .build()
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .introduction(introduction)
+            .build()
         );
     }
 
@@ -126,21 +126,22 @@ public class MeetingFixture {
 
     public static Meeting newMeetingByBuilder(MeetingBuilder meetingBuilder) {
         return new Meeting(
-                meetingBuilder.id,
-                meetingBuilder.title,
-                meetingBuilder.hostUserId,
-                meetingBuilder.participantUserIds,
-                meetingBuilder.topic,
-                meetingBuilder.introduction,
-                meetingBuilder.meetingArea,
-                meetingBuilder.numberOfRecruits,
-                meetingBuilder.promiseDateTime,
-                meetingBuilder.imageUrls
+            meetingBuilder.id,
+            meetingBuilder.title,
+            meetingBuilder.hostUserId,
+            meetingBuilder.participantUserIds,
+            meetingBuilder.topic,
+            meetingBuilder.introduction,
+            meetingBuilder.meetingArea,
+            meetingBuilder.numberOfRecruits,
+            meetingBuilder.promiseDateTime,
+            meetingBuilder.imageUrls
         );
     }
 
     @Builder
     public static class MeetingBuilder {
+
         @Builder.Default
         private Long id = null;
 
@@ -160,7 +161,7 @@ public class MeetingFixture {
         private String introduction = "모임에 대한 간단한 설명입니다.";
 
         @Builder.Default
-        private MeetingArea meetingArea = new MeetingArea("강남구", "서울특별시 강남대로 390", "강남역 11번 출구");
+        private MeetingArea meetingArea = MeetingArea.of("서울 강남구 강남대로 390", "강남역 11번 출구");
 
         @Builder.Default
         private int numberOfRecruits = 3;
@@ -169,7 +170,7 @@ public class MeetingFixture {
         private LocalDateTime promiseDateTime = LocalDateTime.of(2024, 10, 10, 0, 0);
 
         @Builder.Default
-        private Set<String> imageUrls = new HashSet<>(List.of("https://www.google.com"));
+        private Set<String> imageUrls = new HashSet<>(List.of("/1/image.jpg", "/2/image.jpg"));
     }
 
 }

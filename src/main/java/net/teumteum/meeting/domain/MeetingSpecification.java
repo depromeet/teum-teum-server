@@ -10,9 +10,11 @@ public class MeetingSpecification {
 
     public static Specification<Meeting> withIsOpen(boolean isOpen) {
         if (isOpen) {
-            return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("promiseDateTime"), LocalDateTime.now());
+            return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("promiseDateTime"),
+                LocalDateTime.now());
         }
-        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("promiseDateTime"), LocalDateTime.now());
+        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("promiseDateTime"),
+            LocalDateTime.now());
     }
 
     public static Specification<Meeting> withTopic(Topic topic) {
@@ -20,7 +22,8 @@ public class MeetingSpecification {
     }
 
     public static Specification<Meeting> withAreaStreet(String meetingAreaStreet) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("meetingArea").get("mainStreet"), meetingAreaStreet);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("meetingArea").get("mainStreet"),
+            meetingAreaStreet);
     }
 
     public static Specification<Meeting> withSearchWordInTitle(String searchWord) {
@@ -32,7 +35,8 @@ public class MeetingSpecification {
     }
 
     public static Specification<Meeting> withParticipantUserId(Long participantUserId) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("participantUserIds"), participantUserId);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("participantUserIds"),
+            participantUserId);
     }
 
 }
