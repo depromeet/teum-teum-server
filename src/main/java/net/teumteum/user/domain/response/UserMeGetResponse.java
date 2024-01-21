@@ -40,6 +40,7 @@ public record UserMeGetResponse(
         );
     }
 
+
     public record Job(String name, boolean certificated, @JsonProperty("class") String jobClass, String detailClass) {
 
         public static Job of(User user) {
