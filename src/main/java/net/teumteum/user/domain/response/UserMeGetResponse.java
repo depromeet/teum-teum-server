@@ -19,7 +19,8 @@ public record UserMeGetResponse(
     String goal,
     Job job,
     String oauthType,
-    List<String> interests
+    List<String> interests,
+    int friends
 ) {
 
     public static UserMeGetResponse of(User user) {
@@ -36,7 +37,8 @@ public record UserMeGetResponse(
             user.getGoal(),
             Job.of(user),
             user.getOauth().getAuthenticated().name(),
-            user.getInterests()
+            user.getInterests(),
+            user.getFriends().size()
         );
     }
 
