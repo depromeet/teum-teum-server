@@ -16,9 +16,9 @@ public class UserLocationFixture {
 
     public static UserLocationRequest newUserLocationRequest(UserLocationBuilder userLocationBuilder) {
         return new UserLocationRequest(
+            userLocationBuilder.id,
             userLocationBuilder.longitude,
             userLocationBuilder.latitude,
-            userLocationBuilder.id,
             userLocationBuilder.name,
             userLocationBuilder.jobDetailClass,
             userLocationBuilder.characterId
@@ -39,10 +39,10 @@ public class UserLocationFixture {
     public static class UserLocationBuilder {
 
         @Builder.Default
-        private Double longitude = 120.5;
+        private Double longitude = 20.2;
 
         @Builder.Default
-        private Double latitude = -22.3;
+        private Double latitude = 20.2;
 
         @Builder.Default
         private Long id = 1L;
