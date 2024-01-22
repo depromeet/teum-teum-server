@@ -1,6 +1,6 @@
 package net.teumteum.teum_teum.domain;
 
-`public record UserLocation(
+public record UserLocation(
     Long id,
     Double latitude,
     Double longitude,
