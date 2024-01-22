@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public String getData(String key) {
-        return (String) redisTemplate.opsForValue().get(key);
+        return redisTemplate.opsForValue().get(key);
     }
 
     public void setData(String key, String value) {
