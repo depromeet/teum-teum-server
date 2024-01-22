@@ -30,7 +30,14 @@ public class TeumTeumController {
     @ResponseStatus(HttpStatus.OK)
     public UserAroundLocationsResponse getUserAroundLocations(
         @Valid @RequestBody UserLocationRequest request) {
-        return teumTeumService.processingUserAroundLocations(request);
+        return teumTeumService.saveAndGetUserAroundLocations(request);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+        Sentry.captureException(illegalArgumentException);
+        return ErrorResponse.of(illegalArgumentException);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
