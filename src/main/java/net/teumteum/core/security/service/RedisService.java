@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class RedisService {
 
 
-    private static final String HASH_KEY = "userLocation";
+    private static final String HASH_KEY = "userLocation:";
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
     private ValueOperations<String, String> valueOperations;
@@ -55,11 +55,11 @@ public class RedisService {
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }
-        valueOperations.set(key, value, duration);
+        setDataWithExpiration(key,value,duration);
     }
 
     public Set<UserLocation> getAllUserLocations() {
-        Set<String> keys = redisTemplate.keys(HASH_KEY + ":*");
+        Set<String> keys = redisTemplate.keys(HASH_KEY + "*");
         return requireNonNull(keys).stream().map(key -> {
             String value = valueOperations.get(key);
             try {
