@@ -28,7 +28,8 @@ public record UsersGetByIdResponse(
         String status,
         String goal,
         Job job,
-        List<String> interests
+        List<String> interests,
+        int friends
     ) {
 
         public static UserGetResponse of(User user) {
@@ -44,7 +45,8 @@ public record UsersGetByIdResponse(
                 user.getStatus().name(),
                 user.getGoal(),
                 Job.of(user),
-                user.getInterests()
+                user.getInterests(),
+                user.getFriends().size()
             );
         }
 
