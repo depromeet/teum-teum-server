@@ -60,7 +60,7 @@ public class JwtService implements InitializingBean {
     public Long getUserIdFromToken(String token) {
         try {
             Claims claims = getClaims(token);
-            return claims.get("id", Long.class);
+            return Long.valueOf(claims.get("id", String.class));
         } catch (ExpiredJwtException exception) {
             return Long.valueOf(exception.getClaims().get("id").toString());
         }
