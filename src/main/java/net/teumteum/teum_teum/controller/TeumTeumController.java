@@ -34,21 +34,15 @@ public class TeumTeumController {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
-        Sentry.captureException(illegalArgumentException);
-        return ErrorResponse.of(illegalArgumentException);
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleMethodArgumentNotValidException(
-        MethodArgumentNotValidException methodArgumentNotValidException) {
-        Sentry.captureException(methodArgumentNotValidException);
-
-        BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
-        List<ObjectError> errors = bindingResult.getAllErrors();
-
-        return ErrorResponse.of(errors.get(0).getDefaultMessage());
+    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class})
+    public ErrorResponse handleException(Exception exception) {
+        Sentry.captureException(exception);
+        if (exception instanceof MethodArgumentNotValidException methodArgumentNotValidException) {
+            BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
+            List<ObjectError> errors = bindingResult.getAllErrors();
+            return ErrorResponse.of(errors.get(0).getDefaultMessage());
+        } else {
+            return ErrorResponse.of(exception);
+        }
     }
 }
