@@ -28,7 +28,7 @@ public class Repository {
 
     private final RedisService redisService;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public User saveAndGetUser() {
         var user = UserFixture.getNullIdUser();
