@@ -1,4 +1,4 @@
-package net.teumteum.alert.domain;
+package net.teumteum.alert.app;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
