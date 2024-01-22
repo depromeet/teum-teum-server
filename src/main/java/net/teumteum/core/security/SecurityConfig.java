@@ -49,7 +49,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(request -> request.requestMatchers(PATTERNS).permitAll()
-                .requestMatchers(HttpMethod.POST, "/users", "/auth/reissues").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .anyRequest().authenticated()).httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
             .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS))
