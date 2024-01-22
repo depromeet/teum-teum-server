@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RedisService {
 
+
     private static final String HASH_KEY = "userLocation";
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
@@ -28,7 +29,6 @@ public class RedisService {
     void init() {
         valueOperations = redisTemplate.opsForValue();
     }
-
 
     public String getData(String key) {
         return valueOperations.get(key);
