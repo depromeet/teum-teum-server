@@ -1,6 +1,7 @@
 package net.teumteum.user.domain;
 
 import static net.teumteum.core.security.Authenticated.네이버;
+import static net.teumteum.user.domain.Review.*;
 
 import java.util.List;
 import java.util.Set;
@@ -47,7 +48,8 @@ public class UserFixture {
             userBuilder.job,
             userBuilder.interests,
             userBuilder.terms,
-            Set.of()
+            Set.of(),
+            userBuilder.reviews
         );
     }
 
@@ -84,6 +86,8 @@ public class UserFixture {
         );
         @Builder.Default
         private Terms terms = new Terms(true, true);
+        @Builder.Default
+        private List<Review> reviews = List.of(최고에요);
     }
 
 }
