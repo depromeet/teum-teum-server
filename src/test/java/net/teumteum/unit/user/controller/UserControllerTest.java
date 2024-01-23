@@ -23,6 +23,7 @@ import net.teumteum.integration.RequestFixture;
 import net.teumteum.user.controller.UserController;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
+import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.UserRegisterResponse;
@@ -125,8 +126,29 @@ public class UserControllerTest {
 
             // when & then
             mockMvc.perform(post("/users/withdraw")
-                    .content(new ObjectMapper().writeValueAsString(request))
+                    .content(objectMapper.writeValueAsString(request))
                     .contentType(APPLICATION_JSON)
+                    .with(csrf())
+                    .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
+                .andDo(print())
+                .andExpect(status().isOk());
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 리뷰 등록 API는")
+    class Register_user_review_api_unit {
+
+        @Test
+        @DisplayName("회원 id 와 리뷰 정보 요청이 들어오면, 회원 리뷰를 등록하고 200 OK을 반환한다.")
+        void Register_user_review_with_200_ok() throws Exception {
+            // given
+            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+
+            // when & then
+            mockMvc.perform(post("/users/{meetingId}/reviews", 1L)
+                    .contentType(APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(reviewRegisterRequest))
                     .with(csrf())
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
                 .andDo(print())
