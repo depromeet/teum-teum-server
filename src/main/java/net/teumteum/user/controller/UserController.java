@@ -106,10 +106,10 @@ public class UserController {
         userService.logout(getCurrentUserId());
     }
 
-    @PostMapping("/{meetingId}/reviews")
+    @PostMapping("/reviews")
     @ResponseStatus(HttpStatus.OK)
     public void registerReview(
-        @PathVariable Long meetingId,
+        @RequestParam Long meetingId,
         @Valid @RequestBody ReviewRegisterRequest request
     ) {
         userService.registerReview(meetingId, request);

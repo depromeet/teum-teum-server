@@ -146,7 +146,8 @@ public class UserControllerTest {
             ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
 
             // when & then
-            mockMvc.perform(post("/users/{meetingId}/reviews", 1L)
+            mockMvc.perform(post("/users/reviews")
+                    .param("meetingId", String.valueOf(1L))
                     .contentType(APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(reviewRegisterRequest))
                     .with(csrf())

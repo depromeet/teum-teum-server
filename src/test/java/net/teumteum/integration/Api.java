@@ -181,13 +181,4 @@ class Api {
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .exchange();
     }
-
-    ResponseSpec registerReview(String accessToken, Long meetingId, ReviewRegisterRequest request) {
-        return webTestClient
-            .post()
-            .uri("/users/" + meetingId + "/reviews")
-            .header(HttpHeaders.AUTHORIZATION, accessToken)
-            .bodyValue(request)
-            .exchange();
-    }
 }
