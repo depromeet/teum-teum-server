@@ -34,6 +34,8 @@ class UserIntegrationTest extends IntegrationTest {
             var user = repository.saveAndGetUser();
             var expected = UserGetResponse.of(user);
 
+            securityContextSetting.set(user.getId());
+
             // when
             var result = api.getUser(VALID_TOKEN, user.getId());
 
@@ -119,8 +121,7 @@ class UserIntegrationTest extends IntegrationTest {
         void Return_my_info_if_valid_token_received() {
             // given
             var me = repository.saveAndGetUser();
-            loginContext.setUserId(me.getId());
-
+            securityContextSetting.set(me.getId());
             var expected = UserMeGetResponse.of(me);
 
             // when
@@ -145,6 +146,8 @@ class UserIntegrationTest extends IntegrationTest {
         void Update_user_info() {
             // given
             var existUser = repository.saveAndGetUser();
+            securityContextSetting.set(existUser.getId());
+
             List<User> allUser = repository.getAllUser();
             var updateUser = RequestFixture.userUpdateRequest(existUser);
 
@@ -168,6 +171,8 @@ class UserIntegrationTest extends IntegrationTest {
             var myToken = "JWT MY_TOKEN";
             var friend = repository.saveAndGetUser();
 
+            securityContextSetting.set(me.getId());
+
             // when
             var result = api.addFriends(myToken, friend.getId());
 
@@ -188,7 +193,8 @@ class UserIntegrationTest extends IntegrationTest {
             var friend1 = repository.saveAndGetUser();
             var friend2 = repository.saveAndGetUser();
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
+
             api.addFriends(VALID_TOKEN, friend1.getId());
             api.addFriends(VALID_TOKEN, friend2.getId());
 
@@ -211,7 +217,7 @@ class UserIntegrationTest extends IntegrationTest {
             // given
             var me = repository.saveAndGetUser();
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
 
             var expected = FriendsResponse.of(List.of());
 
@@ -238,7 +244,7 @@ class UserIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             redisRepository.saveRedisDataWithExpiration(String.valueOf(me.getId()), VALID_TOKEN, DURATION);
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
 
             var request = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
 
