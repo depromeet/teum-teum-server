@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
+import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
@@ -103,6 +104,15 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void logout() {
         userService.logout(getCurrentUserId());
+    }
+
+    @PostMapping("/reviews")
+    @ResponseStatus(HttpStatus.OK)
+    public void registerReview(
+        @RequestParam Long meetingId,
+        @Valid @RequestBody ReviewRegisterRequest request
+    ) {
+        userService.registerReview(meetingId, request);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

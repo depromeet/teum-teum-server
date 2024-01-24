@@ -6,11 +6,13 @@ import net.teumteum.core.security.Authenticated;
 import net.teumteum.core.security.service.JwtService;
 import net.teumteum.core.security.service.RedisService;
 import net.teumteum.core.security.service.SecurityService;
+import net.teumteum.meeting.domain.MeetingConnector;
 import net.teumteum.user.domain.BalanceGameType;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserRepository;
 import net.teumteum.user.domain.WithdrawReasonRepository;
+import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
@@ -34,6 +36,7 @@ public class UserService {
     private final InterestQuestion interestQuestion;
     private final RedisService redisService;
     private final JwtService jwtService;
+    private final MeetingConnector meetingConnector;
 
     public UserGetResponse getUserById(Long userId) {
         var existUser = getUser(userId);
@@ -98,6 +101,18 @@ public class UserService {
     }
 
 
+    @Transactional
+    public void registerReview(Long meetingId, ReviewRegisterRequest request) {
+        checkMeetingExistence(meetingId);
+
+        request.reviews()
+            .forEach(userReview -> {
+                User user = getUser(userReview.id());
+                user.addReview(userReview.review());
+            });
+    }
+
+
     public FriendsResponse findFriendsByUserId(Long userId) {
         var user = getUser(userId);
         var friends = userRepository.findAllById(user.getFriends());
@@ -126,5 +141,11 @@ public class UserService {
             .ifPresent(user -> {
                 throw new IllegalArgumentException("일치하는 user 가 이미 존재합니다.");
             });
+    }
+
+    private void checkMeetingExistence(Long meetingId) {
+        if (!meetingConnector.existById(meetingId)) {
+            throw new IllegalArgumentException("meetingId에 해당하는 meeting을 찾을 수 없습니다. \"" + meetingId + "\"");
+        }
     }
 }

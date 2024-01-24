@@ -80,6 +80,10 @@ public class User extends TimeBaseEntity {
     @ElementCollection(fetch = FetchType.LAZY)
     private Set<Long> friends = new HashSet<>();
 
+    @Enumerated(EnumType.STRING)
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
+
     public User(Long id, String oauthId, Authenticated authenticated) {
         this.id = id;
         this.oauth = new OAuth(oauthId, authenticated);
@@ -118,4 +122,9 @@ public class User extends TimeBaseEntity {
         friends.add(user.id);
     }
 
+    public void addReview(Review review) {
+        List<Review> newReviews = new ArrayList<>(reviews);
+        newReviews.add(review);
+        reviews = newReviews;
+    }
 }
