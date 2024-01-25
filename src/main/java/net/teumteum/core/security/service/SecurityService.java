@@ -17,8 +17,7 @@ public class SecurityService {
     }
 
     public Long getCurrentUserId() {
-        return getUserAuthentication() == null ? userConnector.findAllUser().get(0).getId()
-            : getUserAuthentication().getId();
+        return getUserAuthentication().getId();
     }
 
 
