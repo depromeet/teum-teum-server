@@ -148,7 +148,9 @@ public class UserServiceTest {
 
             Long meetingId = 1L;
 
-            Long userId = 1L;
+            Long userId = 10L;
+
+            Long currentUserId = 20L;
 
             given(meetingConnector.existById(anyLong()))
                 .willReturn(true);
@@ -157,11 +159,30 @@ public class UserServiceTest {
                 .willReturn(Optional.of(UserFixture.getUserWithId(userId++)));
 
             // when
-            userService.registerReview(meetingId, reviewRegisterRequest);
+            userService.registerReview(meetingId, currentUserId, reviewRegisterRequest);
 
             // then
             verify(meetingConnector, times(1)).existById(anyLong());
             verify(userRepository, times(3)).findById(anyLong());
+        }
+
+        @Test
+        @DisplayName("회원 id 가 리뷰 정보 요청에 포함되면, 400 Bad Request 와 함께 리뷰 등록을 실패한다.")
+        void Return_400_bad_request_if_current_user_id_in_request() {
+            // given
+            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+
+            Long meetingId = 1L;
+
+            Long currentUserId = reviewRegisterRequest.reviews().get(0).id();
+
+            given(meetingConnector.existById(anyLong()))
+                .willReturn(true);
+
+            // when & then
+            assertThatThrownBy(() -> userService.registerReview(meetingId, currentUserId, reviewRegisterRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("나의 리뷰에 대한 리뷰를 작성할 수 없습니다.");
         }
 
         @Test
@@ -171,11 +192,12 @@ public class UserServiceTest {
             ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
 
             Long meetingId = 1L;
+            Long currentUserId = 1L;
 
             given(meetingConnector.existById(anyLong()))
                 .willReturn(false);
             // when & then
-            assertThatThrownBy(() -> userService.registerReview(meetingId, reviewRegisterRequest))
+            assertThatThrownBy(() -> userService.registerReview(meetingId, currentUserId, reviewRegisterRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("meetingId에 해당하는 meeting을 찾을 수 없습니다. \"" + meetingId + "\"");
         }

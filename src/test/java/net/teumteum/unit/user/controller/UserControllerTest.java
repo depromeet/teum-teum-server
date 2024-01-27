@@ -7,9 +7,11 @@ import static net.teumteum.user.domain.Review.최고에요;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -162,6 +164,30 @@ public class UserControllerTest {
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
                 .andDo(print())
                 .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("현재 로그인한 회원의 id 가 리뷰 등록 요청에 포함된다면, 회원 리뷰 등록을 실패하고 400 bad request을 반환한다.")
+        void Register_reviews_with_400_bad_request() throws Exception {
+            // given
+            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+
+            String errorMessage = "나의 리뷰에 대한 리뷰를 작성할 수 없습니다.";
+
+            doThrow(new IllegalArgumentException(errorMessage))
+                .when(userService)
+                .registerReview(anyLong(), anyLong(), any(ReviewRegisterRequest.class));
+
+            // when & then
+            mockMvc.perform(post("/users/reviews")
+                    .param("meetingId", String.valueOf(1L))
+                    .contentType(APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(reviewRegisterRequest))
+                    .with(csrf())
+                    .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertEquals(errorMessage, result.getResolvedException().getMessage()));
         }
     }
 
