@@ -65,6 +65,18 @@ public class Meeting extends TimeBaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> imageUrls = new LinkedHashSet<>();
 
+    public void update(Meeting updateMeeting) {
+        this.title = updateMeeting.title;
+        this.topic = updateMeeting.topic;
+        this.introduction = updateMeeting.introduction;
+        this.meetingArea = updateMeeting.meetingArea;
+        this.numberOfRecruits = updateMeeting.numberOfRecruits;
+        this.promiseDateTime = updateMeeting.promiseDateTime;
+        assertTitle();
+        assertNumberOfRecruits();
+        assertIntroduction();
+    }
+
     public void addParticipant(Long userId) {
         assertParticipantUserIds();
         participantUserIds.add(userId);
