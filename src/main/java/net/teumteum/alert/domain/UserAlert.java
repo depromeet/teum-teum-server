@@ -7,13 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "alert")
-@Entity(name = "alert")
-public class Alert {
+@Table(name = "user_alert")
+@Entity(name = "user_alert")
+public class UserAlert {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

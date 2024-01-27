@@ -16,11 +16,11 @@ public class AlertService {
 
     @Transactional
     public void registerAlert(Long userId, RegisterAlertRequest registerAlertRequest) {
-        var alert = new Alert(null, userId, registerAlertRequest.token());
+        var alert = new UserAlert(null, userId, registerAlertRequest.token());
         alertRepository.save(alert);
     }
 
-    public List<Alert> findAllByUserId(Set<Long> userIds) {
+    public List<UserAlert> findAllByUserId(Set<Long> userIds) {
         return alertRepository.findAllByUserId(userIds);
     }
 }

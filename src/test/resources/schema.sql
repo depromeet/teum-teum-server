@@ -77,3 +77,11 @@ create table if not exists withdraw_reasons
     updated_at      timestamp(6) not null,
     primary key (id)
 );
+
+create table if not exists user_alert(
+  id bigint primary key,
+  user_id bigint unique not null,
+  token text not null
+);
+
+create index if not exists user_alert_idx_user_id on user_alert(user_id);

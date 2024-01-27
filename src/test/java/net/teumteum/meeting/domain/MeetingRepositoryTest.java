@@ -246,7 +246,7 @@ class MeetingRepositoryTest {
 
     @Nested
     @DisplayName("findAlertMeetings 메소드는")
-    class FindAlertMeetings_method {
+    class FindUserAlertMeetings_method {
 
         @Test
         @DisplayName("startTime과 endTime 사이에 있는 Meeting 들을 반환한다.")
