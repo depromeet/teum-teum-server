@@ -6,17 +6,16 @@ import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
-import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 @DisplayName("유저 통합테스트의")
 class UserIntegrationTest extends IntegrationTest {
@@ -347,6 +346,31 @@ class UserIntegrationTest extends IntegrationTest {
             // when & then
             assertThatCode(() -> api.logoutUser(VALID_TOKEN))
                 .doesNotThrowAnyException();
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 리뷰 조회 API는")
+    class Get_user_review_api {
+
+        @Test
+        @DisplayName("userId 유저의 리뷰 정보를 가져온다.")
+        void Get_user_review() {
+            // given
+            var existUser = repository.saveAndGetUser();
+
+            securityContextSetting.set(existUser.getId());
+
+            // when
+            var expected = api.getUserReviews(VALID_TOKEN);
+
+            // then
+            Assertions.assertThat(expected.expectStatus().isOk()
+                    .expectBodyList(UserReviewsResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison()
+                .isNotNull();
         }
     }
 }
