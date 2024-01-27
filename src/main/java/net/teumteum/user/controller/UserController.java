@@ -16,6 +16,7 @@ import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -113,6 +114,12 @@ public class UserController {
         @Valid @RequestBody ReviewRegisterRequest request
     ) {
         userService.registerReview(meetingId, request);
+    }
+
+    @GetMapping("/reviews")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserReviewsResponse> getUserReviews() {
+        return userService.getUserReviews(getCurrentUserId());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

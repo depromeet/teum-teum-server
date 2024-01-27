@@ -21,6 +21,7 @@ import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -112,6 +113,9 @@ public class UserService {
             });
     }
 
+    public List<UserReviewsResponse> getUserReviews(Long userId) {
+        return userRepository.countUserReviewsByUserId(userId);
+    }
 
     public FriendsResponse findFriendsByUserId(Long userId) {
         var user = getUser(userId);
