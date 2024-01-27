@@ -10,6 +10,7 @@ import net.teumteum.meeting.domain.MeetingRepository;
 import net.teumteum.meeting.domain.MeetingSpecification;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.request.CreateMeetingRequest;
+import net.teumteum.meeting.domain.request.UpdateMeetingRequest;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
@@ -29,8 +30,6 @@ public class MeetingService {
 
     @Transactional
     public MeetingResponse createMeeting(List<MultipartFile> images, CreateMeetingRequest meetingRequest, Long userId) {
-        Assert.isTrue(!images.isEmpty() && images.size() <= 5, "이미지는 1개 이상 5개 이하로 업로드해야 합니다.");
-
         Meeting meeting = meetingRepository.save(
             Meeting.builder()
                 .hostUserId(userId)
@@ -56,6 +55,23 @@ public class MeetingService {
     public MeetingResponse getMeetingById(Long meetingId) {
         var existMeeting = getMeeting(meetingId);
 
+        return MeetingResponse.of(existMeeting);
+    }
+
+    @Transactional
+    public MeetingResponse updateMeeting(Long meetingId, List<MultipartFile> images,
+        UpdateMeetingRequest updateMeetingRequest, Long userId) {
+        var existMeeting = getMeeting(meetingId);
+
+        if (!existMeeting.isHost(userId)) {
+            throw new IllegalArgumentException("모임을 수정할 권한이 없습니다.");
+        }
+        if (!existMeeting.isOpen()) {
+            throw new IllegalArgumentException("종료된 모임은 수정할 수 없습니다.");
+        }
+
+        existMeeting.update(updateMeetingRequest.toMeeting());
+        uploadMeetingImages(images, existMeeting);
         return MeetingResponse.of(existMeeting);
     }
 
@@ -125,10 +141,15 @@ public class MeetingService {
             throw new IllegalArgumentException("참여하지 않은 모임입니다.");
         }
 
+        if (existMeeting.isHost(userId)) {
+            throw new IllegalArgumentException("모임 개설자는 참여를 취소할 수 없습니다.");
+        }
+
         existMeeting.cancelParticipant(userId);
     }
 
     private void uploadMeetingImages(List<MultipartFile> images, Meeting meeting) {
+        Assert.isTrue(!images.isEmpty() && images.size() <= 5, "이미지는 1개 이상 5개 이하로 업로드해야 합니다.");
         images.forEach(
             image -> meeting.getImageUrls().add(
                 imageUpload.upload(image, meeting.getId().toString()).filePath()

@@ -304,6 +304,21 @@ class MeetingIntegrationTest extends IntegrationTest {
             result.expectStatus().isBadRequest()
                 .expectBody(ErrorResponse.class);
         }
+
+        @Test
+        @DisplayName("모임 주최자가 모임 참여 취소를 한다면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_host_cancel_meeting() {
+            // given
+            var host = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeetingWithHostId(host.getId());
+            securityContextSetting.set(host.getId());
+
+            // when
+            var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class);
+        }
     }
 
     @Nested
