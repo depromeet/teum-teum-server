@@ -1,7 +1,9 @@
 package net.teumteum.user.domain;
 
 import static net.teumteum.core.security.Authenticated.네이버;
-import static net.teumteum.user.domain.Review.*;
+import static net.teumteum.user.domain.Review.별로에요;
+import static net.teumteum.user.domain.Review.좋아요;
+import static net.teumteum.user.domain.Review.최고에요;
 
 import java.util.List;
 import java.util.Set;
@@ -87,7 +89,7 @@ public class UserFixture {
         @Builder.Default
         private Terms terms = new Terms(true, true);
         @Builder.Default
-        private List<Review> reviews = List.of(최고에요);
+        private List<Review> reviews = List.of(최고에요, 최고에요, 최고에요, 별로에요, 좋아요, 좋아요);
     }
 
 }

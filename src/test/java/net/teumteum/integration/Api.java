@@ -4,7 +4,6 @@ import java.util.List;
 import net.teumteum.meeting.config.PageableHandlerMethodArgumentResolver;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.teum_teum.domain.request.UserLocationRequest;
-import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
@@ -178,6 +177,14 @@ class Api {
         return webTestClient
             .delete()
             .uri("/meetings/" + meetingId)
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
+
+    ResponseSpec getUserReviews(String accessToken) {
+        return webTestClient
+            .get()
+            .uri("/users/reviews")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .exchange();
     }
