@@ -5,8 +5,10 @@ import static net.teumteum.user.domain.Review.좋아요;
 import static net.teumteum.user.domain.Review.최고에요;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import net.teumteum.core.security.Authenticated;
+import net.teumteum.user.domain.Review;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.ReviewRegisterRequest.UserReviewRegisterRequest;
@@ -62,9 +64,22 @@ public class RequestFixture {
         return new ReviewRegisterRequest(userReviewRegisterRequests());
     }
 
+    public static ReviewRegisterRequest reviewRegisterRequest(List<User> users) {
+        return new ReviewRegisterRequest(userReviewRegisterRequests(users));
+    }
+
     private static List<UserReviewRegisterRequest> userReviewRegisterRequests() {
         return List.of(new UserReviewRegisterRequest(1L, 별로에요), new UserReviewRegisterRequest(2L, 최고에요),
             new UserReviewRegisterRequest(3L, 좋아요));
+    }
+
+    private static List<UserReviewRegisterRequest> userReviewRegisterRequests(List<User> users) {
+        Review[] reviews = Review.values();
+        int length = reviews.length;
+
+        return users.stream()
+            .map(user -> new UserReviewRegisterRequest(user.getId(), reviews[new Random().nextInt(length)]))
+            .toList();
     }
 
     private static Job job(User user) {
