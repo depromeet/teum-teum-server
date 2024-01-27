@@ -125,6 +125,10 @@ public class MeetingService {
             throw new IllegalArgumentException("참여하지 않은 모임입니다.");
         }
 
+        if (existMeeting.isHost(userId)) {
+            throw new IllegalArgumentException("모임 개설자는 참여를 취소할 수 없습니다.");
+        }
+
         existMeeting.cancelParticipant(userId);
     }
 
