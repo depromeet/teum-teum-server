@@ -85,6 +85,13 @@ public class MeetingController {
         meetingService.cancelParticipant(meetingId, userId);
     }
 
+    @PostMapping("/{meetingId}/reports")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reportMeeting(@PathVariable("meetingId") Long meetingId) {
+        Long userId = securityService.getCurrentUserId();
+        meetingService.reportMeeting(meetingId, userId);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException illegalArgumentException) {

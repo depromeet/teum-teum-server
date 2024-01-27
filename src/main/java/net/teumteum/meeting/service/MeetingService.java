@@ -140,4 +140,12 @@ public class MeetingService {
         return meetingRepository.findById(meetingId)
             .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
     }
+
+    public void reportMeeting(Long meetingId, Long userId) {
+        var existMeeting = getMeeting(meetingId);
+
+        if (existMeeting.isHost(userId)) {
+            throw new IllegalArgumentException("모임 개설자는 모임을 신고할 수 없습니다.");
+        }
+    }
 }
