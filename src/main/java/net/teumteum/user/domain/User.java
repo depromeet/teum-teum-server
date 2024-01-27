@@ -122,9 +122,13 @@ public class User extends TimeBaseEntity {
         friends.add(user.id);
     }
 
-    public void addReview(Review review) {
+    public void registerReview(Review review) {
         List<Review> newReviews = new ArrayList<>(reviews);
         newReviews.add(review);
         reviews = newReviews;
+    }
+
+    public void updateMannerTemperature(Review review) {
+        mannerTemperature += review.getScore();
     }
 }
