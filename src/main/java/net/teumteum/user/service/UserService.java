@@ -103,8 +103,9 @@ public class UserService {
 
 
     @Transactional
-    public void registerReview(Long meetingId, ReviewRegisterRequest request) {
+    public void registerReview(Long meetingId, Long currentUserId, ReviewRegisterRequest request) {
         checkMeetingExistence(meetingId);
+        checkCurrentUserIdInRequest(request, currentUserId);
 
         request.reviews()
             .forEach(userReview -> {
@@ -150,6 +151,12 @@ public class UserService {
     private void checkMeetingExistence(Long meetingId) {
         if (!meetingConnector.existById(meetingId)) {
             throw new IllegalArgumentException("meetingId에 해당하는 meeting을 찾을 수 없습니다. \"" + meetingId + "\"");
+        }
+    }
+
+    private void checkCurrentUserIdInRequest(ReviewRegisterRequest request, Long currentUserId) {
+        if (request.reviews().stream().anyMatch(review -> review.id().equals(currentUserId))) {
+            throw new IllegalArgumentException("나의 리뷰에 대한 리뷰를 작성할 수 없습니다.");
         }
     }
 }
