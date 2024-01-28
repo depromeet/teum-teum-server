@@ -1,6 +1,10 @@
 package net.teumteum.alert.domain;
 
-@FunctionalInterface
 public interface Alertable {
+
     String token();
+
+    String title();
+
+    String body();
 }

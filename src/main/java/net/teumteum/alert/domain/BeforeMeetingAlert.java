@@ -1,19 +1,20 @@
 package net.teumteum.alert.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.Instant;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class BeforeMeetingAlert implements Alertable {
-
-    private final Long userId;
-    @JsonIgnore
-    private final String token;
-    private final Instant publishedAt = Instant.now();
+public record BeforeMeetingAlert(
+    Long userId,
+    String token,
+    Instant publishedAt
+) implements Alertable {
 
     @Override
-    public String token() {
-        return null;
+    public String title() {
+        return "5분 뒤에 모임이 시작돼요!";
+    }
+
+    @Override
+    public String body() {
+        return "모임 장소로 가서 틈틈 모임을 준비해주세요.";
     }
 }
