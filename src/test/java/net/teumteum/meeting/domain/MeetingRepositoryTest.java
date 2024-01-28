@@ -267,7 +267,8 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result)
-                .usingElementComparatorOnFields("topic", "introduction")
+                .usingRecursiveComparison()
+                .ignoringFields("value.createdAt", "value.updatedAt", "value.id", "value.promiseTime")
                 .isEqualTo(expected);
         }
     }
