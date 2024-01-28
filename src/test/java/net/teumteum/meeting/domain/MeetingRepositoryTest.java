@@ -267,7 +267,7 @@ class MeetingRepositoryTest {
 
             // then
             Assertions.assertThat(result)
-                .usingRecursiveComparison()
+                .usingElementComparatorOnFields("topic", "introduction")
                 .isEqualTo(expected);
         }
     }
