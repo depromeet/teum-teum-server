@@ -49,7 +49,6 @@ public class AuthService {
 
 
     private TokenResponse issueNewToken(User user) {
-        return new TokenResponse(jwtService.createAccessToken(user.getOauth().getOauthId()),
-            jwtService.createRefreshToken());
+        return jwtService.createServiceToken(user);
     }
 }

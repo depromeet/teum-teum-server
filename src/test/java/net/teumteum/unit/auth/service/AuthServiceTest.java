@@ -1,6 +1,8 @@
 package net.teumteum.unit.auth.service;
 
 import static net.teumteum.core.security.Authenticated.네이버;
+import static net.teumteum.unit.auth.common.SecurityValue.INVALID_ACCESS_TOKEN;
+import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,17 +57,16 @@ public class AuthServiceTest {
 
             HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
 
-            given(jwtService.extractAccessToken(any(HttpServletRequest.class))).willReturn("access token");
+            given(jwtService.extractAccessToken(any(HttpServletRequest.class))).willReturn(INVALID_ACCESS_TOKEN);
 
-            given(jwtService.extractRefreshToken(any(HttpServletRequest.class))).willReturn("refresh token");
+            given(jwtService.extractRefreshToken(any(HttpServletRequest.class))).willReturn(VALID_REFRESH_TOKEN);
 
             given(jwtService.getUserIdFromToken(anyString())).willReturn(1L);
 
-            given(jwtService.createAccessToken(anyString())).willReturn("new access token");
+            given(jwtService.createServiceToken(any(User.class))).willReturn(
+                TokenResponse.builder().accessToken("access token").refreshToken("refresh token").build());
 
-            given(jwtService.createRefreshToken()).willReturn("new refresh token");
-
-            given(redisService.getData(anyString())).willReturn("refresh token");
+            given(redisService.getData(anyString())).willReturn(VALID_REFRESH_TOKEN);
 
             given(userConnector.findUserById(anyLong())).willReturn(user);
 
@@ -76,8 +77,8 @@ public class AuthServiceTest {
 
             // then
             assertThat(response).isNotNull();
-            assertThat(response.getAccessToken()).isEqualTo("new access token");
-            assertThat(response.getRefreshToken()).isEqualTo("new refresh token");
+            assertThat(response.getAccessToken()).isEqualTo("access token");
+            assertThat(response.getRefreshToken()).isEqualTo("refresh token");
             verify(userConnector, times(1)).findUserById(anyLong());
             verify(jwtService, times(1)).validateToken(any());
         }
