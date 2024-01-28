@@ -8,6 +8,7 @@ import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.request.CreateMeetingRequest;
+import net.teumteum.meeting.domain.request.UpdateMeetingRequest;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -64,6 +66,15 @@ public class MeetingController {
             searchWord, isOpen);
     }
 
+    @PutMapping("/{meetingId}")
+    @ResponseStatus(HttpStatus.OK)
+    public MeetingResponse updateMeeting(@PathVariable Long meetingId,
+        @RequestPart @Valid UpdateMeetingRequest request,
+        @RequestPart List<MultipartFile> images) {
+        Long userId = securityService.getCurrentUserId();
+        return meetingService.updateMeeting(meetingId, images, request, userId);
+    }
+
     @DeleteMapping("/{meetingId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteMeeting(@PathVariable("meetingId") Long meetingId) {
@@ -83,6 +94,13 @@ public class MeetingController {
     public void deleteParticipant(@PathVariable("meetingId") Long meetingId) {
         Long userId = securityService.getCurrentUserId();
         meetingService.cancelParticipant(meetingId, userId);
+    }
+
+    @PostMapping("/{meetingId}/reports")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reportMeeting(@PathVariable("meetingId") Long meetingId) {
+        Long userId = securityService.getCurrentUserId();
+        meetingService.reportMeeting(meetingId, userId);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

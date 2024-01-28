@@ -10,6 +10,7 @@ import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,8 @@ class UserIntegrationTest extends IntegrationTest {
             // given
             var user = repository.saveAndGetUser();
             var expected = UserGetResponse.of(user);
+
+            securityContextSetting.set(user.getId());
 
             // when
             var result = api.getUser(VALID_TOKEN, user.getId());
@@ -119,8 +122,7 @@ class UserIntegrationTest extends IntegrationTest {
         void Return_my_info_if_valid_token_received() {
             // given
             var me = repository.saveAndGetUser();
-            loginContext.setUserId(me.getId());
-
+            securityContextSetting.set(me.getId());
             var expected = UserMeGetResponse.of(me);
 
             // when
@@ -145,6 +147,8 @@ class UserIntegrationTest extends IntegrationTest {
         void Update_user_info() {
             // given
             var existUser = repository.saveAndGetUser();
+            securityContextSetting.set(existUser.getId());
+
             List<User> allUser = repository.getAllUser();
             var updateUser = RequestFixture.userUpdateRequest(existUser);
 
@@ -168,6 +172,8 @@ class UserIntegrationTest extends IntegrationTest {
             var myToken = "JWT MY_TOKEN";
             var friend = repository.saveAndGetUser();
 
+            securityContextSetting.set(me.getId());
+
             // when
             var result = api.addFriends(myToken, friend.getId());
 
@@ -188,7 +194,8 @@ class UserIntegrationTest extends IntegrationTest {
             var friend1 = repository.saveAndGetUser();
             var friend2 = repository.saveAndGetUser();
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
+
             api.addFriends(VALID_TOKEN, friend1.getId());
             api.addFriends(VALID_TOKEN, friend2.getId());
 
@@ -211,7 +218,7 @@ class UserIntegrationTest extends IntegrationTest {
             // given
             var me = repository.saveAndGetUser();
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
 
             var expected = FriendsResponse.of(List.of());
 
@@ -238,7 +245,7 @@ class UserIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             redisRepository.saveRedisDataWithExpiration(String.valueOf(me.getId()), VALID_TOKEN, DURATION);
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
 
             var request = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
 
@@ -339,6 +346,31 @@ class UserIntegrationTest extends IntegrationTest {
             // when & then
             assertThatCode(() -> api.logoutUser(VALID_TOKEN))
                 .doesNotThrowAnyException();
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 리뷰 조회 API는")
+    class Get_user_review_api {
+
+        @Test
+        @DisplayName("userId 유저의 리뷰 정보를 가져온다.")
+        void Get_user_review() {
+            // given
+            var existUser = repository.saveAndGetUser();
+
+            securityContextSetting.set(existUser.getId());
+
+            // when
+            var expected = api.getUserReviews(VALID_TOKEN);
+
+            // then
+            Assertions.assertThat(expected.expectStatus().isOk()
+                    .expectBodyList(UserReviewsResponse.class)
+                    .returnResult()
+                    .getResponseBody())
+                .usingRecursiveComparison()
+                .isNotNull();
         }
     }
 }

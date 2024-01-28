@@ -18,7 +18,6 @@ import net.teumteum.auth.domain.response.TokenResponse;
 import net.teumteum.core.property.JwtProperty;
 import net.teumteum.user.domain.User;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -60,11 +59,13 @@ public class JwtService implements InitializingBean {
 
     public Long getUserIdFromToken(String token) {
         try {
-            return Long.valueOf(getClaims(token).get("id", String.class));
-        } catch (Exception exception) {
-            throw new JwtException("Access Token is not valid");
+            Claims claims = getClaims(token);
+            return Long.valueOf(claims.get("id", String.class));
+        } catch (ExpiredJwtException exception) {
+            return Long.valueOf(exception.getClaims().get("id").toString());
         }
     }
+
 
     public TokenResponse createServiceToken(User users) {
         String accessToken = createAccessToken(users.getId().toString());

@@ -2,6 +2,8 @@ package net.teumteum.unit.user.service;
 
 import static net.teumteum.unit.auth.common.SecurityValue.VALID_ACCESS_TOKEN;
 import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
+import static net.teumteum.user.domain.Review.별로에요;
+import static net.teumteum.user.domain.Review.최고에요;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,13 +20,16 @@ import net.teumteum.auth.domain.response.TokenResponse;
 import net.teumteum.core.security.service.JwtService;
 import net.teumteum.core.security.service.RedisService;
 import net.teumteum.integration.RequestFixture;
+import net.teumteum.meeting.domain.MeetingConnector;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
 import net.teumteum.user.domain.UserRepository;
 import net.teumteum.user.domain.WithdrawReasonRepository;
+import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,6 +58,9 @@ public class UserServiceTest {
 
     @Mock
     JwtService jwtService;
+
+    @Mock
+    MeetingConnector meetingConnector;
 
     private User user;
 
@@ -125,6 +133,80 @@ public class UserServiceTest {
             verify(userRepository, times(1)).findById(anyLong());
             verify(redisService, times(1)).deleteData(anyString());
             verify(withdrawReasonRepository, times(1)).saveAll(any());
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 리뷰 등록 API는")
+    class Register_user_review_api_unit {
+
+        @Test
+        @DisplayName("회원 id 와 리뷰 정보 요청이 들어오면, 회원 리뷰를 등록하고 200 OK을 반환한다.")
+        void Register_user_review_with_200_ok() {
+            // given
+            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+
+            Long meetingId = 1L;
+
+            Long userId = 1L;
+
+            given(meetingConnector.existById(anyLong()))
+                .willReturn(true);
+
+            given(userRepository.findById(anyLong()))
+                .willReturn(Optional.of(UserFixture.getUserWithId(userId++)));
+
+            // when
+            userService.registerReview(meetingId, reviewRegisterRequest);
+
+            // then
+            verify(meetingConnector, times(1)).existById(anyLong());
+            verify(userRepository, times(3)).findById(anyLong());
+        }
+
+        @Test
+        @DisplayName("meeting id 에 해당하는 meeting 이 존재하지 않는 경우, 400 Bad Request 와 함께 리뷰 등록을 실패한다.")
+        void Return_400_bad_request_if_meeting_is_not_exist() {
+            // given
+            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+
+            Long meetingId = 1L;
+
+            given(meetingConnector.existById(anyLong()))
+                .willReturn(false);
+            // when & then
+            assertThatThrownBy(() -> userService.registerReview(meetingId, reviewRegisterRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("meetingId에 해당하는 meeting을 찾을 수 없습니다. \"" + meetingId + "\"");
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 리뷰 조회 API는")
+    class Get_user_reviews_api_unit {
+
+        @Test
+        @DisplayName("로그인한 회원의 리뷰 리스트로 200 OK 응답한다.")
+        void Return_user_reviews_with_200_ok() {
+            // given
+            var userId = 1L;
+
+            var response = List.of(new UserReviewsResponse(최고에요, 2L)
+                , new UserReviewsResponse(별로에요, 3L));
+
+            given(userRepository.countUserReviewsByUserId(anyLong())).willReturn(response);
+
+            // when
+            var result = userService.getUserReviews(userId);
+
+            // then
+            assertThat(result).hasSize(2);
+            assertThat(result.get(0).review()).isEqualTo(최고에요);
+            assertThat(result.get(0).count()).isEqualTo(2L);
+            assertThat(result.get(1).review()).isEqualTo(별로에요);
+            assertThat(result.get(1).count()).isEqualTo(3L);
+
+            verify(userRepository, times(1)).countUserReviewsByUserId(anyLong());
         }
     }
 }

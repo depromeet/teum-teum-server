@@ -1,29 +1,19 @@
 package net.teumteum.teum_teum.service;
 
-import static java.lang.System.currentTimeMillis;
-import static java.time.Duration.ofMinutes;
+import static java.lang.Math.atan2;
+import static java.lang.Math.sin;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.toRadians;
+import static java.util.Comparator.comparingDouble;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.teumteum.teum_teum.domain.UserData;
+import net.teumteum.core.security.service.RedisService;
+import net.teumteum.teum_teum.domain.UserLocation;
 import net.teumteum.teum_teum.domain.request.UserLocationRequest;
 import net.teumteum.teum_teum.domain.response.UserAroundLocationsResponse;
-import net.teumteum.teum_teum.domain.response.UserAroundLocationsResponse.UserAroundLocationResponse;
-import org.springframework.data.geo.Circle;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.GeoResult;
-import org.springframework.data.geo.GeoResults;
-import org.springframework.data.geo.Point;
-import org.springframework.data.redis.connection.RedisGeoCommands.GeoLocation;
-import org.springframework.data.redis.core.GeoOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.domain.geo.Metrics;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -31,73 +21,39 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TeumTeumService {
 
-    private static final String KEY = "userLocation";
     private static final int SEARCH_LIMIT = 6;
-    private static final Duration LOCATION_EXPIRATION = ofMinutes(1);
 
-    private final ObjectMapper objectMapper;
+    private final RedisService redisService;
 
-    private final RedisTemplate<String, Object> redisTemplate;
-
-    public UserAroundLocationsResponse processingUserAroundLocations(UserLocationRequest request) {
-        GeoOperations<String, Object> geoValueOperations = redisTemplate.opsForGeo();
-
-        String userDataJson = null;
-        try {
-            userDataJson = objectMapper.writeValueAsString(
-                request.toUserData()) + ":" + currentTimeMillis();
-        } catch (JsonProcessingException e) {
-            log.error("JsonProcessingException Occurred!");
-        }
-
-        geoValueOperations.add(KEY, new Point(request.longitude(), request.latitude()), userDataJson);
-
-        return getUserAroundLocations(geoValueOperations, request.longitude(), request.latitude());
+    public UserAroundLocationsResponse saveAndGetUserAroundLocations(UserLocationRequest request) {
+        redisService.setUserLocation(request.toUserLocation(), 60L);
+        return getUserAroundLocations(request);
     }
 
-    private UserAroundLocationsResponse getUserAroundLocations(GeoOperations<String, Object> geoValueOperations,
-        Double longitude, Double latitude) {
+    private UserAroundLocationsResponse getUserAroundLocations(UserLocationRequest request) {
+        Set<UserLocation> allUserLocations = redisService.getAllUserLocations();
 
-        GeoResults<GeoLocation<Object>> geoResults
-            = geoValueOperations.radius(KEY,
-            new Circle(new Point(longitude, latitude), new Distance(100, Metrics.METERS)));
+        List<UserLocation> aroundUserLocations = allUserLocations.stream()
+            .filter(userLocation -> !userLocation.id().equals(request.id()))
+            .filter(userLocation -> calculateDistance(request.latitude(), request.longitude(),
+                userLocation.latitude(), userLocation.longitude()) <= 100)
+            .sorted(comparingDouble(userLocation
+                -> calculateDistance(request.latitude(), request.longitude(),
+                userLocation.latitude(), userLocation.longitude()))
+            ).limit(SEARCH_LIMIT)
+            .toList();
 
-        return getUserAroundLocationsResponse(geoResults);
+        return UserAroundLocationsResponse.of(aroundUserLocations);
     }
 
-    private UserAroundLocationsResponse getUserAroundLocationsResponse(GeoResults<GeoLocation<Object>> geoResults) {
-
-        List<UserAroundLocationResponse> userAroundLocationResponses = new ArrayList<>();
-
-        long currentTime = currentTimeMillis();
-        int count = 0;
-
-        for (GeoResult<GeoLocation<Object>> geoResult : Objects.requireNonNull(geoResults)) {
-            String userSavedTime = String.valueOf(geoResult.getContent().getName()).split(":")[5];
-            long timestamp = Long.parseLong(userSavedTime);
-
-            if (currentTime - timestamp < LOCATION_EXPIRATION.toMillis()) {
-                String savedUserLocation = String.valueOf(geoResult.getContent().getName());
-                String userDataJson = savedUserLocation.substring(savedUserLocation.lastIndexOf(":") + 1);
-
-                UserData userData = null;
-                try {
-                    userData = objectMapper.readValue(userDataJson, UserData.class);
-                } catch (JsonProcessingException e) {
-                    log.error("JsonProcessingException Occurred!");
-                }
-
-                UserAroundLocationResponse userAroundLocationResponse
-                    = UserAroundLocationResponse.of(Objects.requireNonNull(userData));
-
-                userAroundLocationResponses.add(userAroundLocationResponse);
-                count++;
-
-                if (count >= SEARCH_LIMIT) {
-                    break;
-                }
-            }
-        }
-        return new UserAroundLocationsResponse(userAroundLocationResponses);
+    private double calculateDistance(double latitude1, double longitude1, double latitude2, double longitude2) {
+        final int earthRadius = 6371;
+        double latDistance = toRadians(latitude2 - latitude1);
+        double lonDistance = toRadians(longitude2 - longitude1);
+        double a = sin(latDistance / 2) * sin(latDistance / 2)
+            + Math.cos(toRadians(latitude1)) * Math.cos(toRadians(latitude2))
+            * sin(lonDistance / 2) * sin(lonDistance / 2);
+        double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+        return earthRadius * c * 1000;
     }
 }

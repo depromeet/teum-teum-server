@@ -28,10 +28,15 @@ public class Repository {
 
     private final RedisService redisService;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public User saveAndGetUser() {
         var user = UserFixture.getNullIdUser();
+        return userRepository.saveAndFlush(user);
+    }
+
+    public User saveAndGetUser(Long id) {
+        var user = UserFixture.getUserWithId(id);
         return userRepository.saveAndFlush(user);
     }
 

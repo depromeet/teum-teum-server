@@ -21,7 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
     RedisRepository.class,
     Application.class,
     GptTestServer.class,
-    TestLoginContext.class
+    TestLoginContext.class,
+    SecurityContextSetting.class
 })
 abstract public class IntegrationTest {
 
@@ -37,9 +38,17 @@ abstract public class IntegrationTest {
     @Autowired
     protected RedisRepository redisRepository;
 
+    @Autowired
+    protected SecurityContextSetting securityContextSetting;
+
     @AfterEach
     @BeforeEach
     void clearAll() {
         repository.clear();
+    }
+
+    @AfterEach
+    void setSecurityContextHolderStrategy() {
+        securityContextSetting.clearSecurityContext();
     }
 }

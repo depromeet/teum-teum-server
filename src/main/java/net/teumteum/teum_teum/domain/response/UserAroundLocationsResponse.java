@@ -1,13 +1,13 @@
 package net.teumteum.teum_teum.domain.response;
 
 import java.util.List;
-import net.teumteum.teum_teum.domain.UserData;
+import net.teumteum.teum_teum.domain.UserLocation;
 
 public record UserAroundLocationsResponse(
-    List<UserAroundLocationResponse> userLocations
+    List<UserAroundLocationResponse> aroundUserLocations
 ) {
 
-    public static UserAroundLocationsResponse of(List<UserData> userData) {
+    public static UserAroundLocationsResponse of(List<UserLocation> userData) {
         return new UserAroundLocationsResponse(
             userData.stream()
                 .map(UserAroundLocationResponse::of)
@@ -23,13 +23,13 @@ public record UserAroundLocationsResponse(
     ) {
 
         public static UserAroundLocationResponse of(
-            UserData userData
+            UserLocation userLocation
         ) {
             return new UserAroundLocationResponse(
-                userData.id(),
-                userData.name(),
-                userData.jobDetailClass(),
-                userData.characterId()
+                userLocation.id(),
+                userLocation.name(),
+                userLocation.jobDetailClass(),
+                userLocation.characterId()
             );
         }
     }
