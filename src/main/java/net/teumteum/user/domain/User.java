@@ -123,9 +123,7 @@ public class User extends TimeBaseEntity {
     }
 
     public void registerReview(Review review) {
-        List<Review> newReviews = new ArrayList<>(reviews);
-        newReviews.add(review);
-        reviews = newReviews;
+        reviews.add(review);
     }
 
     public void updateMannerTemperature(Review review) {
