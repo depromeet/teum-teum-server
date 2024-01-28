@@ -20,7 +20,7 @@ public class MeetingAlertPublisher {
     private final ApplicationEventPublisher eventPublisher;
 
     @Scheduled(cron = EVERY_ONE_MINUTES)
-    private void alertMeeting() {
+    public void alertMeeting() {
         var alertStart = LocalDateTime.now().plusMinutes(5);
         var alertEnd = alertStart.plusMinutes(1);
         var alertTargets = meetingRepository.findAlertMeetings(alertStart, alertEnd);

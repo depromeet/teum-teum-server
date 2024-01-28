@@ -9,11 +9,13 @@ import net.teumteum.alert.domain.AlertService;
 import net.teumteum.alert.domain.Alertable;
 import net.teumteum.alert.domain.BeforeMeetingAlert;
 import net.teumteum.meeting.domain.MeetingAlerted;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("prod")
 @RequiredArgsConstructor
 public class BeforeMeetingAlertHandler {
 

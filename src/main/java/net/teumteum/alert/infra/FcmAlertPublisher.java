@@ -16,16 +16,17 @@ import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import net.teumteum.alert.domain.AlertPublisher;
 import net.teumteum.alert.domain.BeforeMeetingAlert;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("prod")
 public class FcmAlertPublisher implements AlertPublisher<BeforeMeetingAlert> {
 
     private static final int MAX_RETRY_COUNT = 5;
-
     private static final String FCM_TOKEN_PATH = "teum-teum-12611-firebase-adminsdk-cjyx3-ea066f25ef.json";
 
     @Override
