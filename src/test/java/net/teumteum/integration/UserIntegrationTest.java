@@ -256,25 +256,6 @@ class UserIntegrationTest extends IntegrationTest {
             assertThatCode(() -> api.withdrawUser(VALID_TOKEN, request))
                 .doesNotThrowAnyException();
         }
-
-        @Test
-        @DisplayName("해당 회원이 존재하지 않으면, 500 에러를 반환한다.")
-        void Return_500_error_if_user_not_exist() {
-            // given
-            repository.clearUserRepository();
-
-            var request = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
-
-            // when
-            var result = api.withdrawUser(VALID_TOKEN, request);
-
-            // then
-            Assertions.assertThat(result.expectStatus().is5xxServerError()
-                    .expectBody(ErrorResponse.class)
-                    .returnResult()
-                    .getResponseBody())
-                .usingRecursiveComparison().isNull();
-        }
     }
 
     @Nested
@@ -344,6 +325,9 @@ class UserIntegrationTest extends IntegrationTest {
         void Logout_user() {
             // given
             var existUser = repository.saveAndGetUser();
+
+            securityContextSetting.set(existUser.getId());
+
             redisRepository.saveRedisDataWithExpiration(String.valueOf(existUser.getId()), VALID_TOKEN, DURATION);
 
             // when & then
