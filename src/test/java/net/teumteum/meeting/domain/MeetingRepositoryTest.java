@@ -1,6 +1,12 @@
 package net.teumteum.meeting.domain;
 
 import jakarta.persistence.EntityManager;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import net.teumteum.core.config.AppConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -11,11 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @DataJpaTest
 @Import(AppConfig.class)
@@ -240,6 +241,34 @@ class MeetingRepositoryTest {
                         .sorted(Comparator.comparing(Meeting::getId).reversed())
                         .toList()
                 );
+        }
+    }
+
+    @Nested
+    @DisplayName("findAlertMeetings 메소드는")
+    class FindUserAlertMeetings_method {
+
+        @Test
+        @DisplayName("startTime과 endTime 사이에 있는 Meeting 들을 반환한다.")
+        void Return_meetings_between_start_time_and_end_time() {
+            // given
+            var current = LocalDateTime.now();
+
+            var notAlertMeeting = MeetingFixture.getMeetingWithPromiseDate(current.minusMinutes(1));
+            var alertMeeting = MeetingFixture.getMeetingWithPromiseDate(current);
+            var notMeeting2 = MeetingFixture.getMeetingWithPromiseDate(current.plusMinutes(1));
+
+            meetingRepository.saveAllAndFlush(List.of(notAlertMeeting, alertMeeting, notMeeting2));
+
+            var expected = List.of(alertMeeting);
+
+            // when
+            var result = meetingRepository.findAlertMeetings(current, current.plusMinutes(1));
+
+            // then
+            Assertions.assertThat(result)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
         }
     }
 }

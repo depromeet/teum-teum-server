@@ -15,6 +15,7 @@ apply from: "gradle/db.gradle"
 apply from: "gradle/aws.gradle"
 apply from: "gradle/sentry.gradle"
 apply from: "gradle/gatling.gradle"
+apply from: "gradle/messaging.gradle"
 
 allprojects {
 

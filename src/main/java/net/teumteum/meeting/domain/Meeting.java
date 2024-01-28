@@ -98,6 +98,10 @@ public class Meeting extends TimeBaseEntity {
         return hostUserId.equals(userId);
     }
 
+    public Set<Long> getParticipantUserIds() {
+        return new HashSet<>(participantUserIds);
+    }
+
     @PrePersist
     private void assertField() {
         assertTitle();
