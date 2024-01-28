@@ -2,6 +2,7 @@ package net.teumteum.integration;
 
 
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.config.AppConfig;
@@ -38,6 +39,13 @@ public class Repository {
     public User saveAndGetUser(Long id) {
         var user = UserFixture.getUserWithId(id);
         return userRepository.saveAndFlush(user);
+    }
+
+    public List<User> saveAndGetUsers(int size) {
+        return Stream.generate(UserFixture::getNullIdUser)
+            .limit(size)
+            .map(userRepository::saveAndFlush)
+            .toList();
     }
 
     List<User> getAllUser() {

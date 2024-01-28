@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
+import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
+import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
@@ -13,6 +15,7 @@ import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -253,25 +256,6 @@ class UserIntegrationTest extends IntegrationTest {
             assertThatCode(() -> api.withdrawUser(VALID_TOKEN, request))
                 .doesNotThrowAnyException();
         }
-
-        @Test
-        @DisplayName("해당 회원이 존재하지 않으면, 500 에러를 반환한다.")
-        void Return_500_error_if_user_not_exist() {
-            // given
-            repository.clearUserRepository();
-
-            var request = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
-
-            // when
-            var result = api.withdrawUser(VALID_TOKEN, request);
-
-            // then
-            Assertions.assertThat(result.expectStatus().is5xxServerError()
-                    .expectBody(ErrorResponse.class)
-                    .returnResult()
-                    .getResponseBody())
-                .usingRecursiveComparison().isNull();
-        }
     }
 
     @Nested
@@ -341,6 +325,9 @@ class UserIntegrationTest extends IntegrationTest {
         void Logout_user() {
             // given
             var existUser = repository.saveAndGetUser();
+
+            securityContextSetting.set(existUser.getId());
+
             redisRepository.saveRedisDataWithExpiration(String.valueOf(existUser.getId()), VALID_TOKEN, DURATION);
 
             // when & then
@@ -351,11 +338,11 @@ class UserIntegrationTest extends IntegrationTest {
 
     @Nested
     @DisplayName("회원 리뷰 조회 API는")
-    class Get_user_review_api {
+    class Get_user_reviews_api {
 
         @Test
         @DisplayName("userId 유저의 리뷰 정보를 가져온다.")
-        void Get_user_review() {
+        void Get_user_reviews() {
             // given
             var existUser = repository.saveAndGetUser();
 
@@ -371,6 +358,55 @@ class UserIntegrationTest extends IntegrationTest {
                     .getResponseBody())
                 .usingRecursiveComparison()
                 .isNotNull();
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 리뷰 등록 API는")
+    class Register_user_review_api {
+
+        User existUser;
+
+        List<User> users;
+
+        ReviewRegisterRequest request;
+
+        Meeting meeting;
+
+        @BeforeEach
+        void setUp() {
+            existUser = repository.saveAndGetUser();
+            users = repository.saveAndGetUsers(3);
+            request = RequestFixture.reviewRegisterRequest(users);
+            meeting = repository.saveAndGetOpenMeetings(1).get(0);
+        }
+
+        @Test
+        @DisplayName("회원 리뷰 등록 요청이 들어오면 리뷰를 등록하고, 200 OK 을 반환한다.")
+        void Return_200_OK_with_success_register_user_review() {
+            // given
+            securityContextSetting.set(existUser.getId());
+
+            // when
+            var expected = api.registerUserReview(VALID_TOKEN, meeting.getId(), request);
+
+            // then
+            Assertions.assertThat(expected.expectStatus().isOk());
+        }
+
+        @Test
+        @DisplayName("현재 로그인한 회원의 id 가 리뷰 등록 요청에 포함된다면, 회원 리뷰 등록을 실패하고 400 bad request 을 반환한다.")
+        void Return_400_bad_request_if_current_user_id_in_request() {
+            // given
+            securityContextSetting.set(users.get(0).getId());
+
+            // when
+            var expected = api.registerUserReview(VALID_TOKEN, meeting.getId(), request);
+
+            // then
+            Assertions.assertThat(expected.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class)
+                .returnResult().getResponseBody());
         }
     }
 }

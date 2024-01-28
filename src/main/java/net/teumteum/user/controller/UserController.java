@@ -113,7 +113,7 @@ public class UserController {
         @RequestParam Long meetingId,
         @Valid @RequestBody ReviewRegisterRequest request
     ) {
-        userService.registerReview(meetingId, request);
+        userService.registerReview(meetingId, getCurrentUserId(), request);
     }
 
     @GetMapping("/reviews")
