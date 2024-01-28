@@ -180,4 +180,12 @@ class Api {
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .exchange();
     }
+
+    ResponseSpec getUserReviews(String accessToken) {
+        return webTestClient
+            .get()
+            .uri("/users/reviews")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
 }

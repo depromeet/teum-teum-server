@@ -2,11 +2,18 @@ package net.teumteum.unit.user.controller;
 
 import static net.teumteum.unit.auth.common.SecurityValue.VALID_ACCESS_TOKEN;
 import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
+import static net.teumteum.user.domain.Review.별로에요;
+import static net.teumteum.user.domain.Review.최고에요;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,9 +30,11 @@ import net.teumteum.integration.RequestFixture;
 import net.teumteum.user.controller.UserController;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
+import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -125,12 +134,64 @@ public class UserControllerTest {
 
             // when & then
             mockMvc.perform(post("/users/withdraw")
-                    .content(new ObjectMapper().writeValueAsString(request))
+                    .content(objectMapper.writeValueAsString(request))
                     .contentType(APPLICATION_JSON)
                     .with(csrf())
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
                 .andDo(print())
                 .andExpect(status().isOk());
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 리뷰 등록 API는")
+    class Register_user_review_api_unit {
+
+        @Test
+        @DisplayName("회원 id 와 리뷰 정보 요청이 들어오면, 회원 리뷰를 등록하고 200 OK을 반환한다.")
+        void Register_user_review_with_200_ok() throws Exception {
+            // given
+            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+
+            // when & then
+            mockMvc.perform(post("/users/reviews")
+                    .param("meetingId", String.valueOf(1L))
+                    .contentType(APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(reviewRegisterRequest))
+                    .with(csrf())
+                    .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
+                .andDo(print())
+                .andExpect(status().isOk());
+        }
+    }
+
+
+    @Nested
+    @DisplayName("회원 리뷰 조회 API는")
+    class Get_user_reviews_api_unit {
+
+        @Test
+        @DisplayName("로그인한 회원 id 에 해당하는 회원 리뷰와 200 OK을 반환한다.")
+        void Get_user_reviews_with_200_ok() throws Exception {
+            // given
+            var userId = 1L;
+
+            given(securityService.getCurrentUserId()).willReturn(userId);
+
+            given(userService.getUserReviews(anyLong()))
+                .willReturn(List.of(new UserReviewsResponse(별로에요, 2L),
+                    new UserReviewsResponse(최고에요, 3L)));
+
+            // when & then
+            mockMvc.perform(get("/users/reviews")
+                    .with(csrf())
+                    .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].count", is(2)))
+                .andExpect(jsonPath("$[0].review").value("별로에요"));
         }
     }
 }

@@ -13,6 +13,7 @@ import java.util.Set;
 import net.teumteum.user.domain.Job;
 import net.teumteum.user.domain.JobStatus;
 import net.teumteum.user.domain.OAuth;
+import net.teumteum.user.domain.Review;
 import net.teumteum.user.domain.Terms;
 import net.teumteum.user.domain.User;
 
@@ -48,6 +49,7 @@ public record UserUpdateRequest(
     private static final boolean NOT_CERTIFICATED = false;
     private static final Terms IGNORE_TERMS = null;
     private static final Set<Long> IGNORE_FRIENDS = Set.of();
+    private static final List<Review> IGNORE_REVIEWS = List.of();
 
     public User toUser() {
         return new User(
@@ -70,7 +72,8 @@ public record UserUpdateRequest(
             ),
             newInterests,
             IGNORE_TERMS,
-            IGNORE_FRIENDS
+            IGNORE_FRIENDS,
+            IGNORE_REVIEWS
         );
     }
 

@@ -1,16 +1,22 @@
 package net.teumteum.meeting.domain;
 
-import lombok.Builder;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.Builder;
 
 public class MeetingFixture {
 
     public static Meeting getDefaultMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder().build());
+    }
+
+    public static Meeting getMeetingWithPromiseDate(LocalDateTime promiseDate) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+            .promiseDateTime(promiseDate)
+            .build()
+        );
     }
 
     public static Meeting getOpenMeeting() {

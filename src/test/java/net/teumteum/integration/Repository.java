@@ -35,6 +35,11 @@ public class Repository {
         return userRepository.saveAndFlush(user);
     }
 
+    public User saveAndGetUser(Long id) {
+        var user = UserFixture.getUserWithId(id);
+        return userRepository.saveAndFlush(user);
+    }
+
     List<User> getAllUser() {
         return userRepository.findAll();
     }

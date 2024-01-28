@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.core.security.service.SecurityService;
+import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserUpdateRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
@@ -15,6 +16,7 @@ import net.teumteum.user.domain.response.InterestQuestionResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import net.teumteum.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -103,6 +105,21 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void logout() {
         userService.logout(getCurrentUserId());
+    }
+
+    @PostMapping("/reviews")
+    @ResponseStatus(HttpStatus.OK)
+    public void registerReview(
+        @RequestParam Long meetingId,
+        @Valid @RequestBody ReviewRegisterRequest request
+    ) {
+        userService.registerReview(meetingId, request);
+    }
+
+    @GetMapping("/reviews")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserReviewsResponse> getUserReviews() {
+        return userService.getUserReviews(getCurrentUserId());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

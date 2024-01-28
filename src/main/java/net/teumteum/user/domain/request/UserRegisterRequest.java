@@ -73,6 +73,7 @@ public record UserRegisterRequest(
                 terms.service,
                 terms.privatePolicy
             ),
+            null,
             null
         );
     }

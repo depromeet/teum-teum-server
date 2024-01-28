@@ -70,7 +70,8 @@ class MeetingIntegrationTest extends IntegrationTest {
         void Delete_meeting_if_exist_meeting_id_received() {
             // given
             var host = repository.saveAndGetUser();
-            loginContext.setUserId(host.getId());
+            securityContextSetting.set(host.getId());
+
 
             var meeting = repository.saveAndGetOpenMeetingWithHostId(host.getId());
             // when
@@ -84,7 +85,7 @@ class MeetingIntegrationTest extends IntegrationTest {
         void Return_400_bad_request_if_closed_meeting_id_received() {
             // given
             var host = repository.saveAndGetUser();
-            loginContext.setUserId(host.getId());
+            securityContextSetting.set(host.getId());
             var meeting = repository.saveAndGetCloseMeetingWithHostId(host.getId());
             // when
             var result = api.deleteMeeting(VALID_TOKEN, meeting.getId());
@@ -98,7 +99,7 @@ class MeetingIntegrationTest extends IntegrationTest {
         void Return_400_bad_request_if_hostId_and_userId_are_different() {
             // given
             var user = repository.saveAndGetUser();
-            loginContext.setUserId(user.getId());
+            securityContextSetting.set(user.getId());
 
             var host = repository.saveAndGetUser();
             var meeting = repository.saveAndGetOpenMeetingWithHostId(host.getId());
@@ -242,7 +243,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             var existMeeting = repository.saveAndGetOpenMeeting();
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
             // when
             var result = api.joinMeeting(VALID_TOKEN, existMeeting.getId());
             // then
@@ -263,6 +264,8 @@ class MeetingIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             var meeting = repository.saveAndGetOpenMeeting();
 
+            securityContextSetting.set(me.getId());
+
             loginContext.setUserId(me.getId());
             api.joinMeeting(VALID_TOKEN, meeting.getId());
             // when
@@ -279,7 +282,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             var meeting = repository.saveAndGetCloseMeeting();
 
-            loginContext.setUserId(0L);
+            securityContextSetting.set(me.getId());
             // when
             var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
             // then
@@ -293,8 +296,25 @@ class MeetingIntegrationTest extends IntegrationTest {
             // given
             var me = repository.saveAndGetUser();
             var meeting = repository.saveAndGetOpenFullMeeting();
+            securityContextSetting.set(me.getId());
+
             // when
             var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class);
+        }
+
+        @Test
+        @DisplayName("모임 주최자가 모임 참여 취소를 한다면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_host_cancel_meeting() {
+            // given
+            var host = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeetingWithHostId(host.getId());
+            securityContextSetting.set(host.getId());
+
+            // when
+            var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
             // then
             result.expectStatus().isBadRequest()
                 .expectBody(ErrorResponse.class);
@@ -312,7 +332,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             var meeting = repository.saveAndGetOpenMeeting();
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
             api.joinMeeting(VALID_TOKEN, meeting.getId());
             // when
             var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
@@ -327,7 +347,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             var meeting = repository.saveAndGetOpenMeeting();
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
             // when
             var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
             // then
@@ -347,7 +367,7 @@ class MeetingIntegrationTest extends IntegrationTest {
             var me = repository.saveAndGetUser();
             var meeting = repository.saveAndGetCloseMeeting();
 
-            loginContext.setUserId(me.getId());
+            securityContextSetting.set(me.getId());
             // when
             var result = api.cancelMeeting(VALID_TOKEN, meeting.getId());
             // then

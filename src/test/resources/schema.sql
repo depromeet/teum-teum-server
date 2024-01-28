@@ -77,3 +77,19 @@ create table if not exists withdraw_reasons
     updated_at      timestamp(6) not null,
     primary key (id)
 );
+
+create table if not exists user_alert(
+  id bigint primary key,
+  user_id bigint unique not null,
+  token text not null
+);
+
+create index if not exists user_alert_idx_user_id on user_alert(user_id);
+
+create table if not exists users_reviews
+(
+    users_id bigint not null auto_increment,
+    reviews  enum ('별로에요','좋아요','최고에요'),
+    foreign key (users_id) references users (id)
+    on delete cascade
+);
