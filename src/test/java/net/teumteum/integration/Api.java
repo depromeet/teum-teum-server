@@ -142,7 +142,7 @@ class Api {
     ResponseSpec withdrawUser(String accessToken, UserWithdrawRequest request) {
         return webTestClient
             .post()
-            .uri("/users/withdraw")
+            .uri("/users/withdraws")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .bodyValue(request)
             .exchange();
