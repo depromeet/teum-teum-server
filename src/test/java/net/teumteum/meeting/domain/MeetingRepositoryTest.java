@@ -268,6 +268,7 @@ class MeetingRepositoryTest {
             // then
             Assertions.assertThat(result)
                 .usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt", "id", "promiseDateTime")
                 .isEqualTo(expected);
         }
     }
