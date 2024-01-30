@@ -32,11 +32,13 @@ public class FcmAlertPublisher implements AlertPublisher<BeforeMeetingAlert> {
     @Override
     @Async(FCM_ALERT_EXECUTOR)
     public void publish(BeforeMeetingAlert beforeMeetingAlert) {
+        System.out.println(">>> publish(" + beforeMeetingAlert + ")");
         var message = buildMessage(beforeMeetingAlert);
         publishWithRetry(0, message, null);
     }
 
     private void publishWithRetry(int currentRetryCount, Message message, @Nullable ErrorCode errorCode) {
+        System.out.println(">>> publishWithRetry(" + currentRetryCount + ", " + message + ", " + errorCode + ")");
         if (MAX_RETRY_COUNT == currentRetryCount) {
             return;
         }

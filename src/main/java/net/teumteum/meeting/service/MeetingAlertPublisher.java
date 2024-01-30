@@ -21,6 +21,7 @@ public class MeetingAlertPublisher {
 
     @Scheduled(cron = EVERY_ONE_MINUTES)
     public void alertMeeting() {
+        System.out.println(">>> alertMeeting()");
         var alertStart = LocalDateTime.now().plusMinutes(5);
         var alertEnd = alertStart.plusMinutes(1);
         var alertTargets = meetingRepository.findAlertMeetings(alertStart, alertEnd);
