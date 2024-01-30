@@ -22,7 +22,7 @@ public class BeforeMeetingAlertHandler {
     private final AlertPublisher<BeforeMeetingAlert> alertPublisher;
 
     @Async(ALERT_EXECUTOR)
-    @EventListener({MeetingAlerted.class})
+    @EventListener(MeetingAlerted.class)
     public void alert(MeetingAlerted alerted) {
         System.out.println(">>> alert(" + alerted.userIds() + ")");
         alertService.findAllByUserId(alerted.userIds())

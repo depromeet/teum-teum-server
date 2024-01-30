@@ -23,8 +23,11 @@ public class MeetingAlertPublisher {
     public void alertMeeting() {
         System.out.println(">>> alertMeeting()");
         var alertStart = LocalDateTime.now().plusMinutes(5);
+        System.out.println(">>> alertStart " + alertStart);
         var alertEnd = alertStart.plusMinutes(1);
+        System.out.println(">>> alertEnd " + alertEnd);
         var alertTargets = meetingRepository.findAlertMeetings(alertStart, alertEnd);
+        alertTargets.forEach(System.out::println);
         alertTargets.forEach(meeting -> eventPublisher.publishEvent(
                 new MeetingAlerted(meeting.getParticipantUserIds())
             )
