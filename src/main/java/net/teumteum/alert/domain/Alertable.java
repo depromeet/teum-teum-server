@@ -7,4 +7,6 @@ public interface Alertable {
     String title();
 
     String body();
+
+    String type();
 }

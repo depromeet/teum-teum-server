@@ -24,7 +24,6 @@ public class BeforeMeetingAlertHandler {
     @Async(ALERT_EXECUTOR)
     @EventListener(MeetingAlerted.class)
     public void alert(MeetingAlerted alerted) {
-        System.out.println(">>> alert(" + alerted.userIds() + ")");
         alertService.findAllByUserId(alerted.userIds())
             .stream()
             .map(userAlert -> new BeforeMeetingAlert(userAlert.getUserId(), userAlert.getToken(), Instant.now()))
