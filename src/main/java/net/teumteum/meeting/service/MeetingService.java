@@ -150,6 +150,7 @@ public class MeetingService {
 
     private void uploadMeetingImages(List<MultipartFile> images, Meeting meeting) {
         Assert.isTrue(!images.isEmpty() && images.size() <= 5, "이미지는 1개 이상 5개 이하로 업로드해야 합니다.");
+        meeting.getImageUrls().clear();
         images.forEach(
             image -> meeting.getImageUrls().add(
                 imageUpload.upload(image, meeting.getId().toString()).filePath()
