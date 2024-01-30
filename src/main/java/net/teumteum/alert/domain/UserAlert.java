@@ -31,4 +31,8 @@ public class UserAlert {
     public String getToken() {
         return token;
     }
+
+    public void updateToken(String token) {
+        this.token = token;
+    }
 }
