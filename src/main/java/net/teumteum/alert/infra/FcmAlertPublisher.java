@@ -42,7 +42,8 @@ public class FcmAlertPublisher implements AlertPublisher<BeforeMeetingAlert> {
         if (MAX_RETRY_COUNT == currentRetryCount) {
             return;
         }
-        if (errorCode == ErrorCode.INTERNAL
+        if (errorCode == null
+            || errorCode == ErrorCode.INTERNAL
             || errorCode == ErrorCode.CONFLICT
             || errorCode == ErrorCode.UNKNOWN
             || errorCode == ErrorCode.DATA_LOSS) {
