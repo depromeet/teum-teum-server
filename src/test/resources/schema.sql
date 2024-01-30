@@ -79,7 +79,7 @@ create table if not exists withdraw_reasons
 );
 
 create table if not exists user_alert(
-  id bigint primary key,
+  id bigint primary key auto_increment,
   user_id bigint unique not null,
   token text not null
 );
