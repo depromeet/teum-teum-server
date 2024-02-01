@@ -107,7 +107,7 @@ public class GptInterestQuestion implements InterestQuestion {
         List<Message> messages
     ) {
 
-        private static final String LANGUAGE_MODEL = "gpt-3.5-turbo-1106";
+        private static final String LANGUAGE_MODEL = "gpt-4";
 
 
         private static GptQuestionRequest balanceGame(String interests) {
