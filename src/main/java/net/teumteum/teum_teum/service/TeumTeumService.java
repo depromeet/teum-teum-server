@@ -26,7 +26,7 @@ public class TeumTeumService {
     private final RedisService redisService;
 
     public UserAroundLocationsResponse saveAndGetUserAroundLocations(UserLocationRequest request) {
-        redisService.setUserLocation(request.toUserLocation(), 60L);
+        redisService.setUserLocation(request.toUserLocation(), 86400L);
         return getUserAroundLocations(request);
     }
 
