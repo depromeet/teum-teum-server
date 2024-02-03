@@ -135,7 +135,7 @@ public class UserControllerTest {
                 = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
 
             // when & then
-            mockMvc.perform(post("/users/withdraw")
+            mockMvc.perform(post("/users/withdraws")
                     .content(objectMapper.writeValueAsString(request))
                     .contentType(APPLICATION_JSON)
                     .with(csrf())

@@ -21,8 +21,8 @@ public class MeetingAlertPublisher {
 
     @Scheduled(cron = EVERY_ONE_MINUTES)
     public void alertMeeting() {
-        var alertStart = LocalDateTime.now().plusMinutes(5);
-        var alertEnd = alertStart.plusMinutes(1);
+        var alertStart = LocalDateTime.now().plusMinutes(5).withNano(0).withSecond(0);
+        var alertEnd = alertStart.plusMinutes(1).withNano(0).withSecond(0);
         var alertTargets = meetingRepository.findAlertMeetings(alertStart, alertEnd);
         alertTargets.forEach(meeting -> eventPublisher.publishEvent(
                 new MeetingAlerted(meeting.getParticipantUserIds())

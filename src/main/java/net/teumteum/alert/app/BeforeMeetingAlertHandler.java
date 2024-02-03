@@ -6,7 +6,6 @@ import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.alert.domain.AlertPublisher;
 import net.teumteum.alert.domain.AlertService;
-import net.teumteum.alert.domain.Alertable;
 import net.teumteum.alert.domain.BeforeMeetingAlert;
 import net.teumteum.meeting.domain.MeetingAlerted;
 import org.springframework.context.annotation.Profile;
@@ -23,7 +22,7 @@ public class BeforeMeetingAlertHandler {
     private final AlertPublisher<BeforeMeetingAlert> alertPublisher;
 
     @Async(ALERT_EXECUTOR)
-    @EventListener({MeetingAlerted.class})
+    @EventListener(MeetingAlerted.class)
     public void alert(MeetingAlerted alerted) {
         alertService.findAllByUserId(alerted.userIds())
             .stream()

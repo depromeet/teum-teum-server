@@ -89,7 +89,7 @@ public class UserController {
         return userService.getInterestQuestionByUserIds(userIds, balance);
     }
 
-    @PostMapping("/withdraw")
+    @PostMapping("/withdraws")
     @ResponseStatus(HttpStatus.OK)
     public void withdraw(@Valid @RequestBody UserWithdrawRequest request) {
         userService.withdraw(request, getCurrentUserId());

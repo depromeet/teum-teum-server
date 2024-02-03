@@ -17,4 +17,9 @@ public record BeforeMeetingAlert(
     public String body() {
         return "모임 장소로 가서 틈틈 모임을 준비해주세요.";
     }
+
+    @Override
+    public String type() {
+        return "BEFORE_MEETING";
+    }
 }
