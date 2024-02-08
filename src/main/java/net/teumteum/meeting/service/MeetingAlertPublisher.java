@@ -2,7 +2,7 @@ package net.teumteum.meeting.service;
 
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import net.teumteum.meeting.domain.MeetingAlerted;
+import net.teumteum.meeting.domain.BeforeMeetingAlerted;
 import net.teumteum.meeting.domain.MeetingRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,7 +25,7 @@ public class MeetingAlertPublisher {
         var alertEnd = alertStart.plusMinutes(1).withNano(0).withSecond(0);
         var alertTargets = meetingRepository.findAlertMeetings(alertStart, alertEnd);
         alertTargets.forEach(meeting -> eventPublisher.publishEvent(
-                new MeetingAlerted(meeting.getParticipantUserIds())
+                new BeforeMeetingAlerted(meeting.getParticipantUserIds())
             )
         );
     }

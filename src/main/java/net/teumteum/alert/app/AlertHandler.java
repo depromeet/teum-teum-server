@@ -8,7 +8,7 @@ import net.teumteum.alert.domain.AlertPublisher;
 import net.teumteum.alert.domain.AlertService;
 import net.teumteum.alert.domain.AlertType;
 import net.teumteum.alert.domain.UserAlertService;
-import net.teumteum.meeting.domain.MeetingAlerted;
+import net.teumteum.meeting.domain.BeforeMeetingAlerted;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.util.Pair;
@@ -25,8 +25,8 @@ public class AlertHandler {
     private final AlertPublisher alertPublisher;
 
     @Async(ALERT_EXECUTOR)
-    @EventListener(MeetingAlerted.class)
-    public void handleBeforeMeetingAlerts(MeetingAlerted alerted) {
+    @EventListener(BeforeMeetingAlerted.class)
+    public void handleBeforeMeetingAlerts(BeforeMeetingAlerted alerted) {
         userAlertService.findAllByUserId(alerted.userIds())
             .stream()
             .map(userAlert -> Pair.of(userAlert.getToken(),
