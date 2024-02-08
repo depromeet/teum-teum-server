@@ -14,6 +14,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.Map;
 import net.teumteum.alert.domain.Alert;
 import net.teumteum.alert.domain.AlertPublisher;
 import org.springframework.context.annotation.Profile;
@@ -31,12 +32,12 @@ public class FcmAlertPublisher implements AlertPublisher {
 
     @Override
     @Async(FCM_ALERT_EXECUTOR)
-    public void publish(String token, Alert alert) {
-        var message = buildMessage(token, alert);
+    public void publish(String token, Alert alert, Map<String, String> data) {
+        var message = buildMessage(token, alert, data);
         publishWithRetry(0, message, null);
     }
 
-    private Message buildMessage(String token, Alert alert) {
+    private Message buildMessage(String token, Alert alert, Map<String, String> data) {
         return Message.builder()
             .setToken(token)
             .setNotification(buildNotification(alert))
@@ -44,6 +45,7 @@ public class FcmAlertPublisher implements AlertPublisher {
             .putData("publishedAt", alert.getCreatedAt().toString())
             .putData("userId", alert.getUserId().toString())
             .putData("type", alert.getType().toString())
+            .putAllData(data)
             .build();
     }
 
