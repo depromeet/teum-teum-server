@@ -6,8 +6,8 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.toRadians;
 import static java.util.Comparator.comparingDouble;
 
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.teumteum.core.security.service.RedisService;
@@ -22,18 +22,19 @@ import org.springframework.stereotype.Service;
 public class TeumTeumService {
 
     private static final int SEARCH_LIMIT = 6;
+    private static final long USER_LOCATION_DATA_DURATION = 30L;
 
     private final RedisService redisService;
 
     public UserAroundLocationsResponse saveAndGetUserAroundLocations(UserLocationRequest request) {
-        redisService.setUserLocation(request.toUserLocation(), 60L);
+        redisService.setUserLocation(request.toUserLocation(), USER_LOCATION_DATA_DURATION);
         return getUserAroundLocations(request);
     }
 
     private UserAroundLocationsResponse getUserAroundLocations(UserLocationRequest request) {
         Set<UserLocation> allUserLocations = redisService.getAllUserLocations();
 
-        List<UserLocation> aroundUserLocations = allUserLocations.stream()
+        Set<UserLocation> aroundUserLocations = allUserLocations.stream()
             .filter(userLocation -> !userLocation.id().equals(request.id()))
             .filter(userLocation -> calculateDistance(request.latitude(), request.longitude(),
                 userLocation.latitude(), userLocation.longitude()) <= 100)
@@ -41,7 +42,7 @@ public class TeumTeumService {
                 -> calculateDistance(request.latitude(), request.longitude(),
                 userLocation.latitude(), userLocation.longitude()))
             ).limit(SEARCH_LIMIT)
-            .toList();
+            .collect(Collectors.toSet());
 
         return UserAroundLocationsResponse.of(aroundUserLocations);
     }
