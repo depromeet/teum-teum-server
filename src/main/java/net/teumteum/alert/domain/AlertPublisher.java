@@ -1,8 +1,8 @@
 package net.teumteum.alert.domain;
 
 @FunctionalInterface
-public interface AlertPublisher<T extends Alertable> {
+public interface AlertPublisher {
 
-    void publish(T alertable);
+    void publish(String token, Alert alert);
 
 }
