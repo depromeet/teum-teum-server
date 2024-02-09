@@ -65,6 +65,10 @@ public class Meeting extends TimeBaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> imageUrls = new LinkedHashSet<>();
 
+    @Builder.Default
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Long> bookmarkedUserIds = new HashSet<>();
+
     public void update(Meeting updateMeeting) {
         this.title = updateMeeting.title;
         this.topic = updateMeeting.topic;
@@ -88,6 +92,18 @@ public class Meeting extends TimeBaseEntity {
 
     public boolean alreadyParticipant(Long userId) {
         return participantUserIds.contains(userId);
+    }
+
+    public void addBookmark(Long userId) {
+        bookmarkedUserIds.add(userId);
+    }
+
+    public void cancelBookmark(Long userId) {
+        bookmarkedUserIds.remove(userId);
+    }
+
+    public boolean bookmarked(Long userId) {
+        return bookmarkedUserIds.contains(userId);
     }
 
     public boolean isOpen() {

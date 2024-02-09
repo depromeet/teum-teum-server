@@ -32,6 +32,7 @@ public record UpdateMeetingRequest(
     public static final Long IGNORE_HOST_ID = null;
     public static final Set<Long> IGNORE_PARTICIPANT_USER_IDS = null;
     public static final Set<String> IGNORE_IMAGE_URLS = null;
+    public static final Set<Long> IGNORE_BOOKMARKED_USER_IDS = null;
 
     public Meeting toMeeting() {
         return new Meeting(
@@ -44,7 +45,8 @@ public record UpdateMeetingRequest(
             NewMeetingArea.of(meetingArea),
             numberOfRecruits,
             promiseDateTime,
-            IGNORE_IMAGE_URLS
+            IGNORE_IMAGE_URLS,
+            IGNORE_BOOKMARKED_USER_IDS
         );
     }
 
