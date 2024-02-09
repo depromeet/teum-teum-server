@@ -12,11 +12,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-@DisplayName("AlertRepository 클래스의")
-class AlertRepositoryTest {
+@DisplayName("UserAlertRepository 클래스의")
+class UserAlertRepositoryTest {
 
     @Autowired
-    private AlertRepository alertRepository;
+    private UserAlertRepository alertRepository;
 
     @Autowired
     private EntityManager entityManager;
