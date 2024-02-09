@@ -48,14 +48,14 @@ public class MeetingService {
 
         uploadMeetingImages(images, meeting);
 
-        return MeetingResponse.of(meeting, meeting.bookmarked(userId));
+        return MeetingResponse.of(meeting, meeting.isBookmarked(userId));
     }
 
     @Transactional(readOnly = true)
     public MeetingResponse getMeetingById(Long meetingId, Long userId) {
         var existMeeting = getMeeting(meetingId);
 
-        return MeetingResponse.of(existMeeting, existMeeting.bookmarked(userId));
+        return MeetingResponse.of(existMeeting, existMeeting.isBookmarked(userId));
     }
 
     @Transactional
@@ -72,7 +72,7 @@ public class MeetingService {
 
         existMeeting.update(updateMeetingRequest.toMeeting());
         uploadMeetingImages(images, existMeeting);
-        return MeetingResponse.of(existMeeting, existMeeting.bookmarked(userId));
+        return MeetingResponse.of(existMeeting, existMeeting.isBookmarked(userId));
     }
 
     @Transactional
@@ -126,7 +126,7 @@ public class MeetingService {
         }
 
         existMeeting.addParticipant(userId);
-        return MeetingResponse.of(existMeeting, existMeeting.bookmarked(userId));
+        return MeetingResponse.of(existMeeting, existMeeting.isBookmarked(userId));
     }
 
     @Transactional
@@ -152,7 +152,7 @@ public class MeetingService {
     public void addBookmark(Long meetingId, Long userId) {
         var existMeeting = getMeeting(meetingId);
 
-        if (existMeeting.bookmarked(userId)) {
+        if (existMeeting.isBookmarked(userId)) {
             throw new IllegalArgumentException("이미 북마크한 모임입니다.");
         }
 
@@ -163,7 +163,7 @@ public class MeetingService {
     public void cancelBookmark(Long meetingId, Long userId) {
         var existMeeting = getMeeting(meetingId);
 
-        if (!existMeeting.bookmarked(userId)) {
+        if (!existMeeting.isBookmarked(userId)) {
             throw new IllegalArgumentException("북마크하지 않은 모임입니다.");
         }
 

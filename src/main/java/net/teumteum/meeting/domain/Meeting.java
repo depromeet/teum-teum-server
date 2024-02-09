@@ -102,7 +102,7 @@ public class Meeting extends TimeBaseEntity {
         bookmarkedUserIds.remove(userId);
     }
 
-    public boolean bookmarked(Long userId) {
+    public boolean isBookmarked(Long userId) {
         return bookmarkedUserIds.contains(userId);
     }
 
