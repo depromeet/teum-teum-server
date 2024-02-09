@@ -3,7 +3,7 @@ package net.teumteum.alert.controller;
 import io.sentry.Sentry;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import net.teumteum.alert.domain.AlertService;
+import net.teumteum.alert.domain.UserAlertService;
 import net.teumteum.alert.domain.request.RegisterAlertRequest;
 import net.teumteum.alert.domain.request.UpdateAlertTokenRequest;
 import net.teumteum.core.error.ErrorResponse;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AlertController {
 
-    private final AlertService alertService;
+    private final UserAlertService alertService;
     private final SecurityService securityService;
 
     @PostMapping("/alerts")

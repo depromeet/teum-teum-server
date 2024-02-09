@@ -14,8 +14,9 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.Map;
+import net.teumteum.alert.domain.Alert;
 import net.teumteum.alert.domain.AlertPublisher;
-import net.teumteum.alert.domain.BeforeMeetingAlert;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.lang.Nullable;
@@ -24,16 +25,28 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Profile("prod")
-public class FcmAlertPublisher implements AlertPublisher<BeforeMeetingAlert> {
+public class FcmAlertPublisher implements AlertPublisher {
 
     private static final int MAX_RETRY_COUNT = 5;
     private static final String FCM_TOKEN_PATH = "teum-teum-12611-firebase-adminsdk-cjyx3-ea066f25ef.json";
 
     @Override
     @Async(FCM_ALERT_EXECUTOR)
-    public void publish(BeforeMeetingAlert beforeMeetingAlert) {
-        var message = buildMessage(beforeMeetingAlert);
+    public void publish(String token, Alert alert, Map<String, String> data) {
+        var message = buildMessage(token, alert, data);
         publishWithRetry(0, message, null);
+    }
+
+    private Message buildMessage(String token, Alert alert, Map<String, String> data) {
+        return Message.builder()
+            .setToken(token)
+            .setNotification(buildNotification(alert))
+            .setAndroidConfig(buildAndroidConfig(alert))
+            .putData("publishedAt", alert.getCreatedAt().toString())
+            .putData("userId", alert.getUserId().toString())
+            .putData("type", alert.getType().toString())
+            .putAllData(data)
+            .build();
     }
 
     private void publishWithRetry(int currentRetryCount, Message message, @Nullable ErrorCode errorCode) {
@@ -53,28 +66,18 @@ public class FcmAlertPublisher implements AlertPublisher<BeforeMeetingAlert> {
         }
     }
 
-    private Message buildMessage(BeforeMeetingAlert beforeMeetingAlert) {
-        return Message.builder()
-            .setToken(beforeMeetingAlert.token())
-            .setNotification(buildNotification(beforeMeetingAlert))
-            .setAndroidConfig(buildAndroidConfig(beforeMeetingAlert))
-            .putData("publishedAt", beforeMeetingAlert.publishedAt().toString())
-            .putData("userId", beforeMeetingAlert.userId().toString())
-            .build();
-    }
-
-    private Notification buildNotification(BeforeMeetingAlert beforeMeetingAlert) {
+    private Notification buildNotification(Alert alert) {
         return Notification.builder()
-            .setTitle(beforeMeetingAlert.title())
-            .setBody(beforeMeetingAlert.body())
+            .setTitle(alert.getTitle())
+            .setBody(alert.getBody())
             .build();
     }
 
-    private AndroidConfig buildAndroidConfig(BeforeMeetingAlert beforeMeetingAlert) {
+    private AndroidConfig buildAndroidConfig(Alert alert) {
         return AndroidConfig.builder()
             .setNotification(AndroidNotification.builder()
-                .setTitle(beforeMeetingAlert.title())
-                .setBody(beforeMeetingAlert.body())
+                .setTitle(alert.getTitle())
+                .setBody(alert.getBody())
                 .setClickAction("push_click")
                 .build())
             .build();
