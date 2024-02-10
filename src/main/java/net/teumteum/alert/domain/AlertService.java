@@ -29,7 +29,7 @@ public class AlertService {
     @Transactional
     @Scheduled(cron = EVERY_12AM)
     public void deleteOneMonthBeforeAlert() {
-        var deleteTargets = alertRepository.findAll(Instant.now().minus(1, ChronoUnit.MONTHS));
+        var deleteTargets = alertRepository.findAllByCreatedAt(Instant.now().minus(1, ChronoUnit.MONTHS));
         alertRepository.deleteAllInBatch(deleteTargets);
     }
 }

@@ -97,7 +97,7 @@ class MeetingRepositoryTest {
     }
 
     @Nested
-    @DisplayName("JPA Specification을 이용한 findAll 메소드 중")
+    @DisplayName("JPA Specification을 이용한 findAllByCreatedAt 메소드 중")
     class FindAllWithSpecificationAndPageNation_method {
 
         @Test

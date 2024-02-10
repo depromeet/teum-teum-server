@@ -11,5 +11,5 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
     List<Alert> findAllByUserId(Long userId);
 
     @Query("select a from alert as a where a.createdAt <= :createdAt")
-    List<Alert> findAll(@Param("createdAt") Instant createdAt);
+    List<Alert> findAllByCreatedAt(@Param("createdAt") Instant createdAt);
 }
