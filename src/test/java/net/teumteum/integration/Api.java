@@ -120,6 +120,20 @@ class Api {
             .exchange();
     }
 
+    ResponseSpec addBookmark(String token, Long meetingId) {
+        return webTestClient.post()
+            .uri("/meetings/" + meetingId + "/bookmarks")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
+    ResponseSpec cancelBookmark(String token, Long meetingId) {
+        return webTestClient.delete()
+            .uri("/meetings/" + meetingId + "/bookmarks")
+            .header(HttpHeaders.AUTHORIZATION, token)
+            .exchange();
+    }
+
     ResponseSpec getCommonInterests(String token, List<Long> userIds) {
         var param = new StringBuilder();
         for (Long userId : userIds) {

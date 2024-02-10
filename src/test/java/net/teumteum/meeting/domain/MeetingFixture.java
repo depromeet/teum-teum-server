@@ -141,7 +141,8 @@ public class MeetingFixture {
             meetingBuilder.meetingArea,
             meetingBuilder.numberOfRecruits,
             meetingBuilder.promiseDateTime,
-            meetingBuilder.imageUrls
+            meetingBuilder.imageUrls,
+            meetingBuilder.bookmarkedUserIds
         );
     }
 
@@ -177,6 +178,9 @@ public class MeetingFixture {
 
         @Builder.Default
         private Set<String> imageUrls = new HashSet<>(List.of("/1/image.jpg", "/2/image.jpg"));
+
+        @Builder.Default
+        private Set<Long> bookmarkedUserIds = new HashSet<>(List.of());
     }
 
 }

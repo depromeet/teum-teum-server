@@ -1,8 +1,10 @@
 package net.teumteum.alert.domain;
 
-@FunctionalInterface
-public interface AlertPublisher<T extends Alertable> {
+import java.util.Map;
 
-    void publish(T alertable);
+@FunctionalInterface
+public interface AlertPublisher {
+
+    void publish(String token, Alert alert, Map<String, String> data);
 
 }

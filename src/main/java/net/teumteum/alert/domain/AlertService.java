@@ -1,10 +1,10 @@
 package net.teumteum.alert.domain;
 
-import java.util.List;
-import java.util.Set;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
-import net.teumteum.alert.domain.request.RegisterAlertRequest;
-import net.teumteum.alert.domain.request.UpdateAlertTokenRequest;
+import net.teumteum.alert.domain.response.AlertsResponse;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,28 +13,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AlertService {
 
+    private static final String EVERY_12AM = "0 0 0 * * *";
+
     private final AlertRepository alertRepository;
 
     @Transactional
-    public void registerAlert(Long userId, RegisterAlertRequest registerAlertRequest) {
-        alertRepository.findByUserId(userId)
-            .ifPresentOrElse(userAlert -> {
-                throw new IllegalArgumentException("이미 토큰이 생성된 user입니다. \"" + userId +"\"");
-            }, () -> {
-                var alert = new UserAlert(null, userId, registerAlertRequest.token());
-                alertRepository.save(alert);
-            });
+    public Alert save(Alert alert) {
+        return alertRepository.save(alert);
+    }
+
+    public AlertsResponse findAllByUserId(Long userId) {
+        return AlertsResponse.of(alertRepository.findAllByUserId(userId));
     }
 
     @Transactional
-    public void updateAlertToken(Long userId, UpdateAlertTokenRequest updateAlertTokenRequest) {
-        var userAlert = alertRepository.findByUserIdWithLock(userId)
-            .orElseThrow(() -> new IllegalArgumentException("userId에 해당하는 토큰을 찾을 수 없습니다."));
-
-        userAlert.updateToken(updateAlertTokenRequest.token());
-    }
-
-    public List<UserAlert> findAllByUserId(Set<Long> userIds) {
-        return alertRepository.findAllByUserId(userIds);
+    @Scheduled(cron = EVERY_12AM)
+    public void deleteOneMonthBeforeAlert() {
+        var deleteTargets = alertRepository.findAllByCreatedAt(Instant.now().minus(1, ChronoUnit.MONTHS));
+        alertRepository.deleteAllInBatch(deleteTargets);
     }
 }

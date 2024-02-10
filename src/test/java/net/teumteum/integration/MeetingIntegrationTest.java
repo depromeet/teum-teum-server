@@ -35,8 +35,10 @@ class MeetingIntegrationTest extends IntegrationTest {
         @DisplayName("존재하는 모임의 id가 주어지면, 모임 정보를 응답한다.")
         void Return_meeting_info_if_exist_meeting_id_received() {
             // given
+            var user = repository.saveAndGetUser();
+            securityContextSetting.set(user.getId());
             var meeting = repository.saveAndGetOpenMeeting();
-            var expected = MeetingResponse.of(meeting);
+            var expected = MeetingResponse.of(meeting, false);
             // when
             var result = api.getMeetingById(VALID_TOKEN, meeting.getId());
             // then
@@ -52,12 +54,33 @@ class MeetingIntegrationTest extends IntegrationTest {
         @DisplayName("존재하지 않는 모임의 id가 주어지면, 400 Bad Request를 응답한다.")
         void Return_400_bad_request_if_not_exists_meeting_id_received() {
             // given
+            var user = repository.saveAndGetUser();
+            securityContextSetting.set(user.getId());
             var notExistMeetingId = 1L;
             // when
             var result = api.getMeetingById(VALID_TOKEN, notExistMeetingId);
             // then
             result.expectStatus().isBadRequest()
                 .expectBody(ErrorResponse.class);
+        }
+
+        @Test
+        @DisplayName("유저가 북마크한 모임이라면, isBookmarked를 true로 응답한다.")
+        void Return_is_bookmarked_true_if_user_bookmarked_meeting() {
+            // given
+            var user = repository.saveAndGetUser();
+            securityContextSetting.set(user.getId());
+            var meeting = repository.saveAndGetOpenMeeting();
+            api.addBookmark(VALID_TOKEN, meeting.getId());
+            // when
+            var result = api.getMeetingById(VALID_TOKEN, meeting.getId());
+            // then
+            Assertions.assertThat(
+                    result.expectStatus().isOk()
+                        .expectBody(MeetingResponse.class)
+                        .returnResult().getResponseBody())
+                .extracting(MeetingResponse::isBookmarked)
+                .isEqualTo(true);
         }
     }
 
@@ -71,7 +94,6 @@ class MeetingIntegrationTest extends IntegrationTest {
             // given
             var host = repository.saveAndGetUser();
             securityContextSetting.set(host.getId());
-
 
             var meeting = repository.saveAndGetOpenMeetingWithHostId(host.getId());
             // when
@@ -378,6 +400,76 @@ class MeetingIntegrationTest extends IntegrationTest {
                 )
                 .extracting(ErrorResponse::getMessage)
                 .isEqualTo("종료된 모임에서 참여를 취소할 수 없습니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("북마크 추가 API는")
+    class Add_bookmark_api {
+
+        @Test
+        @DisplayName("존재하는 모임의 id가 주어지면, 모임을 북마크한다.")
+        void Add_bookmark_if_exist_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeeting();
+
+            securityContextSetting.set(me.getId());
+            // when
+            var result = api.addBookmark(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isCreated();
+        }
+
+        @Test
+        @DisplayName("이미 북마크한 모임의 id가 주어지면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_already_bookmarked_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeeting();
+
+            securityContextSetting.set(me.getId());
+            api.addBookmark(VALID_TOKEN, meeting.getId());
+            // when
+            var result = api.addBookmark(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("북마크 취소 API는")
+    class Cancel_bookmark_api {
+
+        @Test
+        @DisplayName("존재하는 모임의 id가 주어지면, 모임의 북마크를 취소한다.")
+        void Cancel_bookmark_if_exist_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeeting();
+
+            securityContextSetting.set(me.getId());
+            api.addBookmark(VALID_TOKEN, meeting.getId());
+            // when
+            var result = api.cancelBookmark(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isOk();
+        }
+
+        @Test
+        @DisplayName("북마크하지 않은 모임의 id가 주어지면, 400 Bad Request를 응답한다.")
+        void Return_400_bad_request_if_not_bookmarked_meeting_id_received() {
+            // given
+            var me = repository.saveAndGetUser();
+            var meeting = repository.saveAndGetOpenMeeting();
+
+            securityContextSetting.set(me.getId());
+            // when
+            var result = api.cancelBookmark(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isBadRequest()
+                .expectBody(ErrorResponse.class);
         }
     }
 }

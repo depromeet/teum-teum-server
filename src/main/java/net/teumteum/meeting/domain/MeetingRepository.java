@@ -13,7 +13,7 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long>, JpaSpec
 
     @Query("select m from meeting as m "
         + "where :startPromiseDate <= m.promiseDateTime and m.promiseDateTime < :endPromiseDate")
-    List<Meeting> findAlertMeetings(@Param("startPromiseDate") LocalDateTime currentTime,
+    List<Meeting> findAlertMeetings(@Param("startPromiseDate") LocalDateTime startPromiseDate,
         @Param("endPromiseDate") LocalDateTime endPromiseDate);
   
     boolean existsById(Long id);
