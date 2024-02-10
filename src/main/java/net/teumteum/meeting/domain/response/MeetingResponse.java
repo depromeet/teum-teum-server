@@ -17,11 +17,13 @@ public record MeetingResponse(
     LocalDateTime promiseDateTime,
     int numberOfRecruits,
     MeetingArea meetingArea,
-    Set<Long> participantIds
+    Set<Long> participantIds,
+    Boolean isBookmarked
 ) {
 
     public static MeetingResponse of(
-        Meeting meeting
+        Meeting meeting,
+        Boolean isBookmarked
     ) {
         return new MeetingResponse(
             meeting.getId(),
@@ -33,7 +35,8 @@ public record MeetingResponse(
             meeting.getPromiseDateTime(),
             meeting.getNumberOfRecruits(),
             MeetingArea.of(meeting),
-            meeting.getParticipantUserIds()
+            meeting.getParticipantUserIds(),
+            isBookmarked
         );
     }
 

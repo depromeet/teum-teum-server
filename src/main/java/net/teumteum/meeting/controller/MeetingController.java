@@ -49,7 +49,8 @@ public class MeetingController {
     @GetMapping("/{meetingId}")
     @ResponseStatus(HttpStatus.OK)
     public MeetingResponse getMeetingById(@PathVariable("meetingId") Long meetingId) {
-        return meetingService.getMeetingById(meetingId);
+        Long userId = securityService.getCurrentUserId();
+        return meetingService.getMeetingById(meetingId, userId);
     }
 
     @GetMapping
@@ -101,6 +102,20 @@ public class MeetingController {
     public void reportMeeting(@PathVariable("meetingId") Long meetingId) {
         Long userId = securityService.getCurrentUserId();
         meetingService.reportMeeting(meetingId, userId);
+    }
+
+    @PostMapping("/{meetingId}/bookmarks")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addBookmark(@PathVariable("meetingId") Long meetingId) {
+        Long userId = securityService.getCurrentUserId();
+        meetingService.addBookmark(meetingId, userId);
+    }
+
+    @DeleteMapping("/{meetingId}/bookmarks")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteBookmark(@PathVariable("meetingId") Long meetingId) {
+        Long userId = securityService.getCurrentUserId();
+        meetingService.cancelBookmark(meetingId, userId);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
