@@ -96,7 +96,7 @@ create table if not exists users_reviews
 
 create table if not exists alert(
     id bigint not null auto_increment,
-    userId bigint not null,
+    user_id bigint not null,
     title varchar(20) not null,
     `body` varchar(20) not null,
     type enum('BEFORE_MEETING'),
