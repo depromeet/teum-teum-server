@@ -23,9 +23,9 @@ import org.springframework.data.domain.Sort;
 class MeetingIntegrationTest extends IntegrationTest {
 
     public static final int DEFAULT_QUERY_SIZE = 5;
+    public static final Pageable FIRST_PAGE_NATION = PageRequest.of(0, DEFAULT_QUERY_SIZE, Sort.Direction.DESC, "id");
     private static final String VALID_TOKEN = "VALID_TOKEN";
     private static final String INVALID_TOKEN = "IN_VALID_TOKEN";
-    public static final Pageable FIRST_PAGE_NATION = PageRequest.of(0, DEFAULT_QUERY_SIZE, Sort.Direction.DESC, "id");
 
     @Nested
     @DisplayName("단일 미팅 조회 API는")
@@ -288,7 +288,6 @@ class MeetingIntegrationTest extends IntegrationTest {
 
             securityContextSetting.set(me.getId());
 
-            loginContext.setUserId(me.getId());
             api.joinMeeting(VALID_TOKEN, meeting.getId());
             // when
             var result = api.joinMeeting(VALID_TOKEN, meeting.getId());
@@ -470,6 +469,22 @@ class MeetingIntegrationTest extends IntegrationTest {
             // then
             result.expectStatus().isBadRequest()
                 .expectBody(ErrorResponse.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("미팅 참가자 조회 API는")
+    class Get_meeting_participants_api {
+
+        @Test
+        @DisplayName("참여한 meeting id 가 주어지면, 참여한 참가자들의 정보가 주어진다.")
+        void Get_participants_if_exist_meeting_id_received() {
+            // given
+            var meeting = repository.saveAndGetOpenMeeting();
+            // when
+            var result = api.getMeetingParticipants(VALID_TOKEN, meeting.getId());
+            // then
+            result.expectStatus().isOk();
         }
     }
 }
