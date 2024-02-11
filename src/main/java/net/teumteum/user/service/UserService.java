@@ -82,7 +82,6 @@ public class UserService {
         var existUser = getUser(userId);
 
         redisService.deleteData(String.valueOf(userId));
-        redisService.deleteUserLocation(userId);
 
         userRepository.delete(existUser);
 
@@ -100,7 +99,6 @@ public class UserService {
     @Transactional
     public void logout(Long userId) {
         redisService.deleteData(String.valueOf(userId));
-        redisService.deleteUserLocation(userId);
 
         SecurityService.clearSecurityContext();
     }
