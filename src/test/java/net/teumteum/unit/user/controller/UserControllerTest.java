@@ -166,7 +166,7 @@ public class UserControllerTest {
         }
 
         @Test
-        @DisplayName("회원 탈퇴 하고자 하는 회원이 존재하지 않으면")
+        @DisplayName("회원 탈퇴 하고자 하는 회원이 존재하지 않으면, 400 Bad Request을 반환한다.")
         void Return_400_bad_request_if_user_is_not_exist() throws Exception {
             // given
             UserWithdrawRequest request
