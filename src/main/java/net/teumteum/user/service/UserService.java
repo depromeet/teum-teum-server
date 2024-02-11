@@ -144,10 +144,11 @@ public class UserService {
     }
 
     private void checkUserExistence(Authenticated authenticated, String oauthId) {
-        userRepository.findByAuthenticatedAndOAuthId(authenticated, oauthId)
-            .ifPresent(user -> {
+        boolean userExists = userRepository.findByAuthenticatedAndOAuthId(authenticated, oauthId).isPresent();
+        Assert.isTrue(!userExists, () -> {
                 throw new IllegalArgumentException("일치하는 user 가 이미 존재합니다.");
-            });
+            }
+        );
     }
 
     private void checkMeetingExistence(Long meetingId) {

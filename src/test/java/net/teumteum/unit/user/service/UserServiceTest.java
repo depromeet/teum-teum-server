@@ -154,6 +154,24 @@ public class UserServiceTest {
             verify(redisService, times(1)).deleteData(anyString());
             verify(withdrawReasonRepository, times(1)).saveAll(any());
         }
+
+        @Test
+        @DisplayName("유저 id에 해당하는 유저가 존재하지 않는 경우, 400 Bad Request 을 반환한다.")
+        void Return_400_bad_request_if_user_is_not_exist() {
+            // given
+            UserWithdrawRequest request
+                = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
+
+            long userId = 1L;
+
+            given(userRepository.findById(anyLong()))
+                .willThrow(new IllegalArgumentException("userId 에 해당하는 user를 찾을 수 없습니다."));
+
+            // When & Then
+            assertThatThrownBy(() -> userService.withdraw(request, userId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("userId 에 해당하는 user를 찾을 수 없습니다.");
+        }
     }
 
     @Nested

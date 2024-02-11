@@ -12,10 +12,11 @@ import net.teumteum.meeting.domain.MeetingSpecification;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.request.CreateMeetingRequest;
 import net.teumteum.meeting.domain.request.UpdateMeetingRequest;
-import net.teumteum.meeting.domain.response.MeetingParticipantsResponse;
+import net.teumteum.meeting.domain.response.MeetingParticipantsForReviewResponse;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
+import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserConnector;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -153,14 +154,15 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public List<MeetingParticipantsResponse> getParticipants(Long meetingId) {
+    public MeetingParticipantsForReviewResponse getParticipants(Long meetingId) {
         var existMeeting = getMeeting(meetingId);
 
-        return existMeeting.getParticipantUserIds().stream()
+        List<User> participantUsers = existMeeting.getParticipantUserIds().stream()
             .map(userConnector::findUserById)
             .flatMap(Optional::stream)
-            .map(MeetingParticipantsResponse::of)
             .toList();
+
+        return MeetingParticipantsForReviewResponse.of(participantUsers);
     }
 
     @Transactional

@@ -107,6 +107,26 @@ public class UserControllerTest {
         }
 
         @Test
+        @DisplayName("이미 카드 등록한 사용자의 등록 요청값이 주어지면, 400 Bad Request을 반환한다.")
+        void Return_400_bad_request_if_user_already_exist() throws Exception {
+            // given
+            UserRegisterRequest request = RequestFixture.userRegisterRequest(user);
+
+            given(userService.register(any(UserRegisterRequest.class)))
+                .willThrow(new IllegalArgumentException("일치하는 user 가 이미 존재합니다."));
+
+            // when && then
+            mockMvc.perform(post("/users")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(APPLICATION_JSON)
+                    .with(csrf())
+                    .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("일치하는 user 가 이미 존재합니다."));
+        }
+
+        @Test
         @DisplayName("유효하지 않은 사용자의 등록 요청값이 주어지면, 400 Bad Request 상태값을 반환한다.")
         void Register_user_card_with_400_bad_request() throws Exception {
             // given
@@ -143,6 +163,26 @@ public class UserControllerTest {
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
                 .andDo(print())
                 .andExpect(status().isOk());
+        }
+
+        @Test
+        @DisplayName("회원 탈퇴 하고자 하는 회원이 존재하지 않으면")
+        void Return_400_bad_request_if_user_is_not_exist() throws Exception {
+            // given
+            UserWithdrawRequest request
+                = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
+
+            doThrow(new IllegalArgumentException("일치하는 user가 이미 존재합니다.")).when(userService).withdraw(any(
+                UserWithdrawRequest.class), anyLong());
+
+            // when && then
+            mockMvc.perform(post("/users/withdraws")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(APPLICATION_JSON)
+                    .with(csrf())
+                    .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
         }
     }
 

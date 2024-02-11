@@ -64,7 +64,7 @@ public class AlertHandler {
         for (int i = 0; i < ids.size() - 1; i++) {
             stringBuilder.append(ids.get(i)).append(",");
         }
-        stringBuilder.append(ids.get(ids.size() - 1));
+        stringBuilder.append(ids.getLast());
         return stringBuilder.toString();
     }
 
