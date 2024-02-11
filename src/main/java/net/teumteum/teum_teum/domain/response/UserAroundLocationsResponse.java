@@ -1,13 +1,14 @@
 package net.teumteum.teum_teum.domain.response;
 
 import java.util.List;
+import java.util.Set;
 import net.teumteum.teum_teum.domain.UserLocation;
 
 public record UserAroundLocationsResponse(
     List<UserAroundLocationResponse> aroundUserLocations
 ) {
 
-    public static UserAroundLocationsResponse of(List<UserLocation> userData) {
+    public static UserAroundLocationsResponse of(Set<UserLocation> userData) {
         return new UserAroundLocationsResponse(
             userData.stream()
                 .map(UserAroundLocationResponse::of)

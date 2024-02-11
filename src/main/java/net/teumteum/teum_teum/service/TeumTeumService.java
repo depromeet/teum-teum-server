@@ -6,42 +6,43 @@ import static java.lang.Math.sqrt;
 import static java.lang.Math.toRadians;
 import static java.util.Comparator.comparingDouble;
 
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.teumteum.core.security.service.RedisService;
 import net.teumteum.teum_teum.domain.UserLocation;
 import net.teumteum.teum_teum.domain.request.UserLocationRequest;
 import net.teumteum.teum_teum.domain.response.UserAroundLocationsResponse;
 import org.springframework.stereotype.Service;
 
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class TeumTeumService {
 
     private static final int SEARCH_LIMIT = 6;
+    private static final long USER_LOCATION_DATA_DURATION = 10L;
+    private static final int AROUND_USER_LOCATION_DISTANCE = 100;
 
     private final RedisService redisService;
 
     public UserAroundLocationsResponse saveAndGetUserAroundLocations(UserLocationRequest request) {
-        redisService.setUserLocation(request.toUserLocation(), 60L);
+        redisService.setUserLocation(request.toUserLocation(), USER_LOCATION_DATA_DURATION);
         return getUserAroundLocations(request);
     }
 
     private UserAroundLocationsResponse getUserAroundLocations(UserLocationRequest request) {
         Set<UserLocation> allUserLocations = redisService.getAllUserLocations();
 
-        List<UserLocation> aroundUserLocations = allUserLocations.stream()
+        Set<UserLocation> aroundUserLocations = allUserLocations.stream()
             .filter(userLocation -> !userLocation.id().equals(request.id()))
             .filter(userLocation -> calculateDistance(request.latitude(), request.longitude(),
-                userLocation.latitude(), userLocation.longitude()) <= 100)
+                userLocation.latitude(), userLocation.longitude()) <= AROUND_USER_LOCATION_DISTANCE)
             .sorted(comparingDouble(userLocation
                 -> calculateDistance(request.latitude(), request.longitude(),
                 userLocation.latitude(), userLocation.longitude()))
             ).limit(SEARCH_LIMIT)
-            .toList();
+            .collect(Collectors.toSet());
 
         return UserAroundLocationsResponse.of(aroundUserLocations);
     }

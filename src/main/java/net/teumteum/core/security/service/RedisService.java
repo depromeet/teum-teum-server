@@ -55,7 +55,7 @@ public class RedisService {
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(e);
         }
-        setDataWithExpiration(key,value,duration);
+        setDataWithExpiration(key, value, duration);
     }
 
     public Set<UserLocation> getAllUserLocations() {
@@ -68,5 +68,9 @@ public class RedisService {
                 throw new IllegalArgumentException(e);
             }
         }).collect(Collectors.toSet());
+    }
+
+    public void deleteUserLocation(Long id) {
+        deleteData(HASH_KEY + id);
     }
 }
