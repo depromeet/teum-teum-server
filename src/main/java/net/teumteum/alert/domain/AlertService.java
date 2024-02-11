@@ -22,8 +22,12 @@ public class AlertService {
         return alertRepository.save(alert);
     }
 
+    @Transactional
     public AlertsResponse findAllByUserId(Long userId) {
-        return AlertsResponse.of(alertRepository.findAllByUserId(userId));
+        var alerts = alertRepository.findAllByUserId(userId);
+        var alertsResponse = AlertsResponse.of(alerts);
+        alerts.forEach(Alert::read);
+        return alertsResponse;
     }
 
     @Transactional

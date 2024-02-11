@@ -36,7 +36,7 @@ public class AlertHandler {
             .stream()
             .map(userAlert -> Pair.of(userAlert.getToken(),
                 new Alert(null, userAlert.getUserId(), "5분 뒤에 모임이 시작돼요!",
-                    "모임 장소로 가서 틈틈 모임을 준비해주세요.", AlertType.BEFORE_MEETING)))
+                    "모임 장소로 가서 틈틈 모임을 준비해주세요.", AlertType.BEFORE_MEETING, true)))
             .map(tokenAndAlert -> Pair.of(tokenAndAlert.getFirst(), alertService.save(tokenAndAlert.getSecond())))
             .forEach(
                 tokenAndAlert -> alertPublisher.publish(tokenAndAlert.getFirst(), tokenAndAlert.getSecond(), Map.of())
@@ -50,7 +50,7 @@ public class AlertHandler {
             .stream()
             .map(userAlert -> Pair.of(userAlert.getToken(),
                 new Alert(null, userAlert.getUserId(), alerted.meetingTitle(),
-                    "모임이 종료되었어요", AlertType.END_MEETING)))
+                    "모임이 종료되었어요", AlertType.END_MEETING, true)))
             .map(tokenAndAlert -> Pair.of(tokenAndAlert.getFirst(), alertService.save(tokenAndAlert.getSecond())))
             .forEach(tokenAndAlert ->
                 alertPublisher.publish(tokenAndAlert.getFirst(), tokenAndAlert.getSecond(),
@@ -75,7 +75,7 @@ public class AlertHandler {
             .stream()
             .map(userAlert -> Pair.of(userAlert.getToken(),
                 new Alert(null, userAlert.getUserId(), "틈 채우기",
-                    alerted.recommenderName() + "님이 당신을 추천했어요!", AlertType.RECOMMEND_USER)))
+                    alerted.recommenderName() + "님이 당신을 추천했어요!", AlertType.RECOMMEND_USER, true)))
             .map(tokenAndAlert -> Pair.of(tokenAndAlert.getFirst(), alertService.save(tokenAndAlert.getSecond())))
             .forEach(tokenAndAlert ->
                 alertPublisher.publish(tokenAndAlert.getFirst(), tokenAndAlert.getSecond(), Map.of())
