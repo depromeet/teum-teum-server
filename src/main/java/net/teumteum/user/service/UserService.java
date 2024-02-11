@@ -96,7 +96,6 @@ public class UserService {
         return UserRegisterResponse.of(savedUser.getId(), jwtService.createServiceToken(savedUser));
     }
 
-    @Transactional
     public void logout(Long userId) {
         redisService.deleteData(String.valueOf(userId));
 
