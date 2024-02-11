@@ -9,7 +9,7 @@ import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.request.CreateMeetingRequest;
 import net.teumteum.meeting.domain.request.UpdateMeetingRequest;
-import net.teumteum.meeting.domain.response.MeetingParticipantsResponse;
+import net.teumteum.meeting.domain.response.MeetingParticipantsForReviewResponse;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
@@ -100,7 +100,7 @@ public class MeetingController {
 
     @GetMapping("/{meetingId}/participants")
     @ResponseStatus(HttpStatus.OK)
-    public List<MeetingParticipantsResponse> getParticipants(@PathVariable("meetingId") Long meetingId) {
+    public MeetingParticipantsForReviewResponse getParticipants(@PathVariable("meetingId") Long meetingId) {
         return meetingService.getParticipants(meetingId);
     }
 
