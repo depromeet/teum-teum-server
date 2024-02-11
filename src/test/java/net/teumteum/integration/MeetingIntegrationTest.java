@@ -1,11 +1,17 @@
 package net.teumteum.integration;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Stream;
 import net.teumteum.core.error.ErrorResponse;
 import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.Topic;
+import net.teumteum.meeting.domain.response.MeetingParticipantsForReviewResponse;
+import net.teumteum.meeting.domain.response.MeetingParticipantsForReviewResponse.MeetingParticipantForReviewResponse;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
@@ -484,7 +490,21 @@ class MeetingIntegrationTest extends IntegrationTest {
             // when
             var result = api.getMeetingParticipants(VALID_TOKEN, meeting.getId());
             // then
-            result.expectStatus().isOk();
+            result.expectStatus().isOk()
+                .expectBody(MeetingParticipantsForReviewResponse.class)
+                .consumeWith(response -> {
+                    MeetingParticipantsForReviewResponse responseBody = response.getResponseBody();
+                    assertNotNull(responseBody);
+                    List<MeetingParticipantForReviewResponse> participants = responseBody.participants();
+                    assertNotNull(participants);
+
+                    assertTrue(participants.stream().allMatch(participant ->
+                        participant.id() != null &&
+                            participant.characterId() != null &&
+                            participant.name() != null &&
+                            participant.job() != null
+                    ));
+                });
         }
     }
 }
