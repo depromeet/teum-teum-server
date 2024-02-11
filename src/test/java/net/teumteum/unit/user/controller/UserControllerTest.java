@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -218,6 +219,27 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].count", is(2)))
                 .andExpect(jsonPath("$[0].review").value("별로에요"));
+        }
+    }
+
+    @Nested
+    @DisplayName("회원 로그아웃 API는")
+    class Logout_user_api_unit {
+
+        @Test
+        @DisplayName("")
+        void Logout_user_with_200_ok() throws Exception {
+            // given
+            var userId = 1L;
+
+            doNothing().when(userService).logout(anyLong());
+
+            // when && then
+            mockMvc.perform(post("/users/logouts")
+                    .with(csrf())
+                    .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
+                .andDo(print())
+                .andExpect(status().isOk());
         }
     }
 }

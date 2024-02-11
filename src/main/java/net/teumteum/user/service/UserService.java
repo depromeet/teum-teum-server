@@ -81,8 +81,9 @@ public class UserService {
     public void withdraw(UserWithdrawRequest request, Long userId) {
         var existUser = getUser(userId);
 
-        userRepository.delete(existUser);
         redisService.deleteData(String.valueOf(userId));
+
+        userRepository.delete(existUser);
 
         withdrawReasonRepository.saveAll(request.toEntity());
     }
@@ -95,9 +96,9 @@ public class UserService {
         return UserRegisterResponse.of(savedUser.getId(), jwtService.createServiceToken(savedUser));
     }
 
-    @Transactional
     public void logout(Long userId) {
         redisService.deleteData(String.valueOf(userId));
+
         SecurityService.clearSecurityContext();
     }
 

@@ -213,4 +213,12 @@ class Api {
             .bodyValue(request)
             .exchange();
     }
+
+    ResponseSpec getMeetingParticipants(String accessToken, Long meetingId) {
+        return webTestClient
+            .get()
+            .uri("/meetings/" + meetingId + "/participants")
+            .header(HttpHeaders.AUTHORIZATION, accessToken)
+            .exchange();
+    }
 }
