@@ -1,6 +1,7 @@
 package net.teumteum.meeting.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.meeting.domain.ImageUpload;
@@ -11,9 +12,11 @@ import net.teumteum.meeting.domain.MeetingSpecification;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.request.CreateMeetingRequest;
 import net.teumteum.meeting.domain.request.UpdateMeetingRequest;
+import net.teumteum.meeting.domain.response.MeetingParticipantsResponse;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
+import net.teumteum.user.domain.UserConnector;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -27,6 +30,7 @@ public class MeetingService {
 
     private final MeetingRepository meetingRepository;
     private final ImageUpload imageUpload;
+    private final UserConnector userConnector;
 
     @Transactional
     public MeetingResponse createMeeting(List<MultipartFile> images, CreateMeetingRequest meetingRequest, Long userId) {
@@ -146,6 +150,17 @@ public class MeetingService {
         }
 
         existMeeting.cancelParticipant(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MeetingParticipantsResponse> getParticipants(Long meetingId) {
+        var existMeeting = getMeeting(meetingId);
+
+        return existMeeting.getParticipantUserIds().stream()
+            .map(userConnector::findUserById)
+            .flatMap(Optional::stream)
+            .map(MeetingParticipantsResponse::of)
+            .toList();
     }
 
     @Transactional
