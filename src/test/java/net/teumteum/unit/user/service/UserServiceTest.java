@@ -116,19 +116,17 @@ public class UserServiceTest {
     class Logout_user_api_unit {
 
         @Test
-        @DisplayName("")
+        @DisplayName("정상적인 요청시, 회원 로그아웃을 진행하고 200 OK을 반환한다.")
         void If_valid_user_logout_request_return_200_OK() {
             // given
             Long userId = 1L;
             doNothing().when(redisService).deleteData(anyString());
-            doNothing().when(redisService).deleteUserLocation(anyLong());
 
             // when
             userService.logout(userId);
 
             // then
             verify(redisService, times(1)).deleteData(anyString());
-            verify(redisService, times(1)).deleteUserLocation(anyLong());
         }
     }
 
@@ -149,13 +147,11 @@ public class UserServiceTest {
             doNothing().when(userRepository).delete(any());
 
             doNothing().when(redisService).deleteData(anyString());
-            doNothing().when(redisService).deleteUserLocation(anyLong());
             // when
             userService.withdraw(request, user.getId());
             // then
             verify(userRepository, times(1)).findById(anyLong());
             verify(redisService, times(1)).deleteData(anyString());
-            verify(redisService, times(1)).deleteUserLocation(anyLong());
             verify(withdrawReasonRepository, times(1)).saveAll(any());
         }
     }
