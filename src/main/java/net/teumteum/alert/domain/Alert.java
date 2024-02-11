@@ -25,7 +25,7 @@ public class Alert extends TimeBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     @Column(name = "title", nullable = false, length = 20)
@@ -37,4 +37,11 @@ public class Alert extends TimeBaseEntity {
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private AlertType type;
+
+    @Column(name = "is_read", nullable = false)
+    private Boolean isRead;
+
+    public void read() {
+        isRead = true;
+    }
 }
