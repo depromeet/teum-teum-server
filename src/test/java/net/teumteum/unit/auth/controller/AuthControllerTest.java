@@ -1,10 +1,10 @@
 package net.teumteum.unit.auth.controller;
 
 
-import static net.teumteum.unit.auth.common.SecurityValue.INVALID_ACCESS_TOKEN;
-import static net.teumteum.unit.auth.common.SecurityValue.INVALID_REFRESH_TOKEN;
-import static net.teumteum.unit.auth.common.SecurityValue.VALID_ACCESS_TOKEN;
-import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.INVALID_ACCESS_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.INVALID_REFRESH_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.VALID_ACCESS_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
