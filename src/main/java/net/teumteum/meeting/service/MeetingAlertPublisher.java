@@ -1,6 +1,8 @@
 package net.teumteum.meeting.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.meeting.domain.BeforeMeetingAlerted;
 import net.teumteum.meeting.domain.EndMeetingAlerted;
@@ -23,9 +25,12 @@ public class MeetingAlertPublisher {
 
     @Scheduled(cron = EVERY_ONE_MINUTES)
     public void alertBeforeMeeting() {
-        var alertStart = LocalDateTime.now().plusMinutes(5).withNano(0).withSecond(0);
+        var alertStart = LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(5).withNano(0).withSecond(0);
+        System.out.println(">>> alertStart = " + alertStart);
         var alertEnd = alertStart.plusMinutes(1).withNano(0).withSecond(0);
+        System.out.println(">>> alertEnd = " + alertEnd);
         var alertTargets = meetingRepository.findAlertMeetings(alertStart, alertEnd);
+        alertTargets.forEach(target -> System.out.println(">>> target id = " + target.getId()));
         alertTargets.forEach(meeting -> eventPublisher.publishEvent(
                 new BeforeMeetingAlerted(meeting.getParticipantUserIds())
             )
@@ -34,7 +39,7 @@ public class MeetingAlertPublisher {
 
     @Scheduled(cron = EVERY_12PM)
     public void alertEndMeeting() {
-        var today = LocalDateTime.now()
+        var today = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
             .withNano(0)
             .withSecond(0)
             .withMinute(0)
