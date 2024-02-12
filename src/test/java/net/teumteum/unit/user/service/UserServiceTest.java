@@ -1,7 +1,8 @@
 package net.teumteum.unit.user.service;
 
-import static net.teumteum.unit.auth.common.SecurityValue.VALID_ACCESS_TOKEN;
-import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
+
+import static net.teumteum.unit.common.SecurityValue.VALID_ACCESS_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static net.teumteum.user.domain.Review.별로에요;
 import static net.teumteum.user.domain.Review.최고에요;
 import static org.assertj.core.api.Assertions.assertThat;

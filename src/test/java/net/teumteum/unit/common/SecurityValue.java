@@ -1,4 +1,4 @@
-package net.teumteum.unit.auth.common;
+package net.teumteum.unit.common;
 
 public final class SecurityValue {
 
