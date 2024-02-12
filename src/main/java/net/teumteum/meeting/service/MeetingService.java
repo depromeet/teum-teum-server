@@ -112,7 +112,6 @@ public class MeetingService {
         } else if (Boolean.TRUE.equals(isBookmarked)) {
             spec = MeetingSpecification.withBookmarkedUserId(userId);
         }
-
         var meetings = meetingRepository.findAll(spec, pageable);
 
         return PageDto.of(MeetingsResponse.of(meetings.getContent()), meetings.hasNext());
