@@ -28,10 +28,10 @@ public class Alert extends TimeBaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "title", nullable = false, length = 20)
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "body", nullable = false, length = 20)
+    @Column(name = "body", nullable = false)
     private String body;
 
     @Column(name = "type")
