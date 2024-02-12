@@ -9,7 +9,7 @@ import net.teumteum.core.security.service.SecurityService;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.request.CreateMeetingRequest;
 import net.teumteum.meeting.domain.request.UpdateMeetingRequest;
-import net.teumteum.meeting.domain.response.MeetingParticipantsForReviewResponse;
+import net.teumteum.meeting.domain.response.MeetingParticipantsResponse;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
@@ -40,7 +40,8 @@ public class MeetingController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public MeetingResponse createMeeting(@RequestPart @Valid CreateMeetingRequest meetingRequest,
+    public MeetingResponse createMeeting(
+        @RequestPart @Valid CreateMeetingRequest meetingRequest,
         @RequestPart List<MultipartFile> images) {
         Long userId = securityService.getCurrentUserId();
         return meetingService.createMeeting(images, meetingRequest, userId);
@@ -55,8 +56,10 @@ public class MeetingController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageDto<MeetingsResponse> getMeetingsByCondition(Pageable pageable,
-        @RequestParam(value = "isOpen") boolean isOpen, @RequestParam(value = "topic", required = false) Topic topic,
+    public PageDto<MeetingsResponse> getMeetingsByCondition(
+        Pageable pageable,
+        @RequestParam(value = "isOpen") boolean isOpen,
+        @RequestParam(value = "topic", required = false) Topic topic,
         @RequestParam(value = "meetingAreaStreet", required = false) String meetingAreaStreet,
         @RequestParam(value = "participantUserId", required = false) Long participantUserId,
         @RequestParam(value = "searchWord", required = false) String searchWord) {
@@ -67,7 +70,8 @@ public class MeetingController {
 
     @PutMapping("/{meetingId}")
     @ResponseStatus(HttpStatus.OK)
-    public MeetingResponse updateMeeting(@PathVariable Long meetingId, @RequestPart @Valid UpdateMeetingRequest request,
+    public MeetingResponse updateMeeting(@PathVariable Long meetingId,
+        @RequestPart @Valid UpdateMeetingRequest request,
         @RequestPart List<MultipartFile> images) {
         Long userId = securityService.getCurrentUserId();
         return meetingService.updateMeeting(meetingId, images, request, userId);
@@ -96,7 +100,7 @@ public class MeetingController {
 
     @GetMapping("/{meetingId}/participants")
     @ResponseStatus(HttpStatus.OK)
-    public MeetingParticipantsForReviewResponse getParticipants(@PathVariable("meetingId") Long meetingId) {
+    public List<MeetingParticipantsResponse> getParticipants(@PathVariable("meetingId") Long meetingId) {
         return meetingService.getParticipants(meetingId);
     }
 
