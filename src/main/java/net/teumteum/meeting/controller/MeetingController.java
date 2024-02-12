@@ -62,10 +62,11 @@ public class MeetingController {
         @RequestParam(value = "topic", required = false) Topic topic,
         @RequestParam(value = "meetingAreaStreet", required = false) String meetingAreaStreet,
         @RequestParam(value = "participantUserId", required = false) Long participantUserId,
+        @RequestParam(value = "isBookmarked", required = false) Boolean isBookmarked,
         @RequestParam(value = "searchWord", required = false) String searchWord) {
-
+        Long userId = securityService.getCurrentUserId();
         return meetingService.getMeetingsBySpecification(pageable, topic, meetingAreaStreet, participantUserId,
-            searchWord, isOpen);
+            searchWord, isBookmarked, isOpen, userId);
     }
 
     @PutMapping("/{meetingId}")

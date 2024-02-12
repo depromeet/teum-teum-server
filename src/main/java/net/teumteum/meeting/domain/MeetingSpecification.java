@@ -39,4 +39,8 @@ public class MeetingSpecification {
             participantUserId);
     }
 
+    public static Specification<Meeting> withBookmarkedUserId(Long userId) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("bookmarkedUserIds"), userId);
+    }
+
 }
