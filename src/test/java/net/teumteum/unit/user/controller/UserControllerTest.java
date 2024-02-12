@@ -1,7 +1,7 @@
 package net.teumteum.unit.user.controller;
 
-import static net.teumteum.unit.auth.common.SecurityValue.VALID_ACCESS_TOKEN;
-import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.VALID_ACCESS_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static net.teumteum.user.domain.Review.별로에요;
 import static net.teumteum.user.domain.Review.최고에요;
 import static org.hamcrest.Matchers.hasSize;
@@ -267,11 +267,9 @@ public class UserControllerTest {
     class Logout_user_api_unit {
 
         @Test
-        @DisplayName("")
+        @DisplayName("로그인한 회원의 로그아웃을 진행하고, 200 OK 을 반환합니다.")
         void Logout_user_with_200_ok() throws Exception {
             // given
-            var userId = 1L;
-
             doNothing().when(userService).logout(anyLong());
 
             // when && then

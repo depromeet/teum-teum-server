@@ -1,8 +1,8 @@
 package net.teumteum.unit.auth.service;
 
 import static net.teumteum.core.security.Authenticated.네이버;
-import static net.teumteum.unit.auth.common.SecurityValue.INVALID_ACCESS_TOKEN;
-import static net.teumteum.unit.auth.common.SecurityValue.VALID_REFRESH_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.INVALID_ACCESS_TOKEN;
+import static net.teumteum.unit.common.SecurityValue.VALID_REFRESH_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
