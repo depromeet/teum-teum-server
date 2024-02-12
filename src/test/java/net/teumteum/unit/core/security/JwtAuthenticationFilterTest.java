@@ -36,21 +36,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @DisplayName("JwtAuthenticationFilter 단위 테스트의")
 public class JwtAuthenticationFilterTest {
 
+    private static final String ATTRIBUTE_NAME = "exception";
     @Mock
     JwtService jwtService;
-
     @Mock
     AuthService authService;
-
     @Mock
     JwtProperty jwtProperty;
-
     @Mock
     JwtProperty.Access access;
-
     @Mock
     FilterChain filterChain;
-
     @InjectMocks
     JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -111,7 +107,7 @@ public class JwtAuthenticationFilterTest {
             jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
             // then
-            assertThat(request.getAttribute("exception")).isEqualTo("요청에 대한 JWT 가 유효하지 않습니다.");
+            assertThat(request.getAttribute(ATTRIBUTE_NAME)).isEqualTo("요청에 대한 JWT 가 유효하지 않습니다.");
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             assertThat(authentication).isNull();
             verify(filterChain, times(1)).doFilter(request, response);
@@ -135,7 +131,7 @@ public class JwtAuthenticationFilterTest {
             jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
             // then
-            assertThat(request.getAttribute("exception")).isEqualTo("요청에 대한 JWT 정보가 존재하지 않습니다.");
+            assertThat(request.getAttribute(ATTRIBUTE_NAME)).isEqualTo("요청에 대한 JWT 정보가 존재하지 않습니다.");
             verify(jwtService, times(0)).validateToken(anyString());
         }
     }

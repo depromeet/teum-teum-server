@@ -27,18 +27,15 @@ import org.springframework.security.core.AuthenticationException;
 @DisplayName("JwtAuthenticationEntryPoint 단위 테스트의")
 public class JwtAuthenticationEntryPointTest {
 
+    private static final String ATTRIBUTE_NAME = "exception";
     @Mock
     private ObjectMapper objectMapper;
-
     @Mock
     private AuthenticationException authenticationException;
-
     @Mock
     private HttpServletRequest request;
-
     @Mock
     private HttpServletResponse response;
-
     @InjectMocks
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
@@ -53,7 +50,7 @@ public class JwtAuthenticationEntryPointTest {
             var errorMessage = "Authentication Exception Occurred";
             var outputStream = new ByteArrayOutputStream();
 
-            given(request.getAttribute("exception")).willReturn(errorMessage);
+            given(request.getAttribute(ATTRIBUTE_NAME)).willReturn(errorMessage);
             given(response.getOutputStream()).willReturn(new DelegatingServletOutputStream(outputStream));
 
             // when
