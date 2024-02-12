@@ -1,6 +1,6 @@
 package net.teumteum.alert.domain.response;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import net.teumteum.alert.domain.Alert;
 
@@ -26,7 +26,7 @@ public record AlertsResponse(
         String title,
         String body,
         String type,
-        Instant createdAt,
+        LocalDateTime createdAt,
         boolean isRead
     ) {
 
