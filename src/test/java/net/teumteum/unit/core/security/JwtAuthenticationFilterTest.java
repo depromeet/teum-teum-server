@@ -16,7 +16,6 @@ import net.teumteum.core.property.JwtProperty;
 import net.teumteum.core.security.UserAuthentication;
 import net.teumteum.core.security.filter.JwtAuthenticationFilter;
 import net.teumteum.core.security.service.JwtService;
-import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,17 +36,17 @@ public class JwtAuthenticationFilterTest {
 
     private static final String ATTRIBUTE_NAME = "exception";
     @Mock
-    JwtService jwtService;
+    private JwtService jwtService;
     @Mock
-    AuthService authService;
+    private AuthService authService;
     @Mock
-    JwtProperty jwtProperty;
+    private JwtProperty jwtProperty;
     @Mock
-    JwtProperty.Access access;
+    private JwtProperty.Access access;
     @Mock
-    FilterChain filterChain;
+    private FilterChain filterChain;
     @InjectMocks
-    JwtAuthenticationFilter jwtAuthenticationFilter;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Nested
     @DisplayName("API 요청시 JWT 파싱 및 회원 조회 로직은")
@@ -64,8 +62,8 @@ public class JwtAuthenticationFilterTest {
         @DisplayName("유효한 JWT 인 경우, JWT 을 파싱하고 성공적으로 UserAuthentication 을 SecurityContext 에 저장한다.")
         void Parsing_jwt_and_save_user_in_security_context() throws ServletException, IOException {
             // given
-            MockHttpServletRequest request = new MockHttpServletRequest();
-            MockHttpServletResponse response = new MockHttpServletResponse();
+            var request = new MockHttpServletRequest();
+            var response = new MockHttpServletResponse();
 
             given(jwtProperty.getAccess()).willReturn(access);
             given(jwtProperty.getAccess().getHeader()).willReturn("Authorization");
@@ -74,7 +72,7 @@ public class JwtAuthenticationFilterTest {
             request.addHeader(jwtProperty.getAccess().getHeader(),
                 jwtProperty.getBearer() + " " + VALID_ACCESS_TOKEN);
 
-            User user = UserFixture.getIdUser();
+            var user = UserFixture.getIdUser();
 
             given(jwtService.validateToken(anyString())).willReturn(true);
             given(authService.findUserByAccessToken(anyString())).willReturn(user);
@@ -83,7 +81,7 @@ public class JwtAuthenticationFilterTest {
             jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
             // then
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            var authentication = SecurityContextHolder.getContext().getAuthentication();
             assertThat(authentication).isInstanceOf(UserAuthentication.class);
         }
 
@@ -91,8 +89,8 @@ public class JwtAuthenticationFilterTest {
         @DisplayName("유효하지 않은 JWT 와 함께 요청이 들어오면, 요청 처리를 중단하고 에러 메세지를 반환한다.")
         void Return_error_when_jwt_is_invalid() throws ServletException, IOException {
             // given
-            MockHttpServletRequest request = new MockHttpServletRequest();
-            MockHttpServletResponse response = new MockHttpServletResponse();
+            var request = new MockHttpServletRequest();
+            var response = new MockHttpServletResponse();
 
             given(jwtProperty.getAccess()).willReturn(access);
             given(jwtProperty.getAccess().getHeader()).willReturn("Authorization");
@@ -108,7 +106,7 @@ public class JwtAuthenticationFilterTest {
 
             // then
             assertThat(request.getAttribute(ATTRIBUTE_NAME)).isEqualTo("요청에 대한 JWT 가 유효하지 않습니다.");
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            var authentication = SecurityContextHolder.getContext().getAuthentication();
             assertThat(authentication).isNull();
             verify(filterChain, times(1)).doFilter(request, response);
         }
@@ -117,8 +115,8 @@ public class JwtAuthenticationFilterTest {
         @DisplayName("JWT 가 존재하지 않는 경우, 요청 처리를 중단하고 에러 메세지를 반환한다.")
         void Return_error_when_jwt_is_not_exist() throws ServletException, IOException {
             // given
-            MockHttpServletRequest request = new MockHttpServletRequest();
-            MockHttpServletResponse response = new MockHttpServletResponse();
+            var request = new MockHttpServletRequest();
+            var response = new MockHttpServletResponse();
 
             given(jwtProperty.getAccess()).willReturn(access);
             given(jwtProperty.getAccess().getHeader()).willReturn("Authorization");
