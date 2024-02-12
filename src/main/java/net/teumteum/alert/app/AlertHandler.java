@@ -32,7 +32,6 @@ public class AlertHandler {
     @Async(ALERT_EXECUTOR)
     @EventListener(BeforeMeetingAlerted.class)
     public void handleBeforeMeetingAlerts(BeforeMeetingAlerted alerted) {
-        System.out.println(">>> handleBeforeMeetingAlerts(" + alerted + " )");
         userAlertService.findAllByUserId(alerted.userIds())
             .stream()
             .map(userAlert -> Pair.of(userAlert.getToken(),

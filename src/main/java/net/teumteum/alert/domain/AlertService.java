@@ -1,7 +1,7 @@
 package net.teumteum.alert.domain;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.alert.domain.response.AlertsResponse;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,7 +33,8 @@ public class AlertService {
     @Transactional
     @Scheduled(cron = EVERY_12AM)
     public void deleteOneMonthBeforeAlert() {
-        var deleteTargets = alertRepository.findAllByCreatedAt(LocalDateTime.now().minus(1, ChronoUnit.MONTHS));
+        var deleteTargets = alertRepository.findAllByCreatedAt(
+            LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusMonths(1));
         alertRepository.deleteAllInBatch(deleteTargets);
     }
 }

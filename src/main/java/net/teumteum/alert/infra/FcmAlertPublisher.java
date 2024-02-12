@@ -36,7 +36,6 @@ public class FcmAlertPublisher implements AlertPublisher {
     @Async(FCM_ALERT_EXECUTOR)
     public void publish(String token, Alert alert, Map<String, String> data) {
         var message = buildMessage(token, alert, data);
-        System.out.println(">>> message" + message);
         publishWithRetry(0, message, null);
     }
 

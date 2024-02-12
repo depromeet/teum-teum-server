@@ -26,11 +26,8 @@ public class MeetingAlertPublisher {
     @Scheduled(cron = EVERY_ONE_MINUTES)
     public void alertBeforeMeeting() {
         var alertStart = LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusMinutes(5).withNano(0).withSecond(0);
-        System.out.println(">>> alertStart = " + alertStart);
         var alertEnd = alertStart.plusMinutes(1).withNano(0).withSecond(0);
-        System.out.println(">>> alertEnd = " + alertEnd);
         var alertTargets = meetingRepository.findAlertMeetings(alertStart, alertEnd);
-        alertTargets.forEach(target -> System.out.println(">>> target id = " + target.getId()));
         alertTargets.forEach(meeting -> eventPublisher.publishEvent(
                 new BeforeMeetingAlerted(meeting.getParticipantUserIds())
             )
