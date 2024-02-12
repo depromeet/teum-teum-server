@@ -95,7 +95,7 @@ public class MeetingService {
 
     @Transactional(readOnly = true)
     public PageDto<MeetingsResponse> getMeetingsBySpecification(Pageable pageable, Topic topic, String meetingAreaStreet,
-        Long participantUserId, String searchWord, Boolean isBookmarked, boolean isOpen, Long userId) {
+        Long participantUserId, String searchWord, Boolean isBookmarked, Boolean isOpen, Long userId) {
 
         Specification<Meeting> spec = MeetingSpecification.withIsOpen(isOpen);
 
@@ -110,7 +110,7 @@ public class MeetingService {
                 .or(MeetingSpecification.withSearchWordInIntroduction(searchWord))
                 .and(MeetingSpecification.withIsOpen(isOpen));
         } else if (Boolean.TRUE.equals(isBookmarked)) {
-            spec = spec.and(MeetingSpecification.withBookmarkedUserId(userId));
+            spec = MeetingSpecification.withBookmarkedUserId(userId);
         }
 
         var meetings = meetingRepository.findAll(spec, pageable);
