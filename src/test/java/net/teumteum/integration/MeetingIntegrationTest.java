@@ -141,6 +141,8 @@ class MeetingIntegrationTest extends IntegrationTest {
         @DisplayName("존재하는 topic이 주어지면 페이지 네이션을 적용해 미팅 목록을 최신순으로 응답한다.")
         void Return_meeting_list_if_topic_and_page_nation_received() {
             // given
+            var user = repository.saveAndGetUser();
+            securityContextSetting.set(user.getId());
             var size = 2;
             var openMeetingsByTopic = repository.saveAndGetOpenMeetingsByTopic(size, Topic.스터디);
             var closeTopicMeetingsByTopic = repository.saveAndGetOpenMeetingsByTopic(size, Topic.고민_나누기);
@@ -169,6 +171,8 @@ class MeetingIntegrationTest extends IntegrationTest {
         @DisplayName("제목이나 설명에 존재하는 검색어가 주어지면 페이지 네이션을 적용해 미팅 목록을 최신순으로 응답한다.")
         void Return_meeting_list_if_search_word_and_page_nation_received() {
             // given
+            var user = repository.saveAndGetUser();
+            securityContextSetting.set(user.getId());
             var size = 2;
             var openMeetingsByTitle = repository.saveAndGetOpenMeetingsByTitle(size, "개발자 스터디");
             var closeMeetingsByTitle = repository.saveAndGetCloseMeetingsByTitle(size, "개발자 스터디");
@@ -201,6 +205,8 @@ class MeetingIntegrationTest extends IntegrationTest {
         @DisplayName("참여자 id가 주어지면 페이지 네이션을 적용해 미팅 목록을 최신순으로 응답한다.")
         void Return_meeting_list_if_participant_user_id_and_page_nation_received() {
             // given
+            var user = repository.saveAndGetUser();
+            securityContextSetting.set(user.getId());
             var size = 2;
             var openMeetingsByParticipantUserId = repository.saveAndGetOpenMeetingsByParticipantUserId(size, 2L);
             var closeMeetingsByParticipantUserId = repository.saveAndGetCloseMeetingsByParticipantUserId(size, 2L);
@@ -229,6 +235,8 @@ class MeetingIntegrationTest extends IntegrationTest {
         @DisplayName("요청한 size와 page보다 더 많은 데이터가 존재하면, hasNext를 true로 응답한다.")
         void Return_has_next_true_if_more_data_exists_than_requested_size_and_page() {
             // given
+            var user = repository.saveAndGetUser();
+            securityContextSetting.set(user.getId());
             var size = 10;
             var openMeetingsByTopic = repository.saveAndGetOpenMeetingsByTopic(size, Topic.스터디);
 
