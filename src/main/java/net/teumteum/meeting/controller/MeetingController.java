@@ -58,7 +58,7 @@ public class MeetingController {
     @ResponseStatus(HttpStatus.OK)
     public PageDto<MeetingsResponse> getMeetingsByCondition(
         Pageable pageable,
-        @RequestParam(value = "isOpen") boolean isOpen,
+        @RequestParam(value = "isOpen", required = false) Boolean isOpen,
         @RequestParam(value = "topic", required = false) Topic topic,
         @RequestParam(value = "meetingAreaStreet", required = false) String meetingAreaStreet,
         @RequestParam(value = "participantUserId", required = false) Long participantUserId,
