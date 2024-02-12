@@ -100,8 +100,8 @@ create table if not exists alert(
     title text not null,
     `body` text not null,
     type enum('BEFORE_MEETING'),
-    created_at timestamp(6) not null,
-    updated_at timestamp(6) not null,
+    created_at datetime not null,
+    updated_at datetime not null,
     is_read boolean not null,
     primary key (id)
 );
