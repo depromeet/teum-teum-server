@@ -196,10 +196,10 @@ class Api {
             .exchange();
     }
 
-    ResponseSpec getUserReviews(String accessToken) {
+    ResponseSpec getUserReviews(Long userId, String accessToken) {
         return webTestClient
             .get()
-            .uri("/users/reviews")
+            .uri("/users/" + userId + "/reviews")
             .header(HttpHeaders.AUTHORIZATION, accessToken)
             .exchange();
     }
