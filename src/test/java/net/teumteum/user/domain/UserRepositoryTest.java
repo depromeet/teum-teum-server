@@ -7,7 +7,7 @@ import static net.teumteum.user.domain.Review.최고에요;
 import jakarta.persistence.EntityManager;
 import java.util.Optional;
 import net.teumteum.core.config.AppConfig;
-import net.teumteum.user.domain.response.UserReviewsResponse;
+import net.teumteum.user.domain.response.UserReviewResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -85,13 +85,14 @@ class UserRepositoryTest {
             entityManager.clear();
 
             // when
-            var result = userRepository.countUserReviewsByUserId(id);
+            var result = userRepository.countUserReviewsByUser(existUser);
 
             // then
             Assertions.assertThat(result)
                 .isNotEmpty()
                 .hasSize(3)
-                .extracting(UserReviewsResponse::review, UserReviewsResponse::count)
+                .extracting(UserReviewResponse::review,
+                    UserReviewResponse::count)
                 .contains(
                     Assertions.tuple(최고에요, 3L),
                     Assertions.tuple(별로에요, 1L),

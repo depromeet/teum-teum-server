@@ -37,6 +37,7 @@ import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.UserRegisterResponse;
+import net.teumteum.user.domain.response.UserReviewResponse;
 import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -238,27 +239,25 @@ public class UserControllerTest {
     class Get_user_reviews_api_unit {
 
         @Test
-        @DisplayName("로그인한 회원 id 에 해당하는 회원 리뷰와 200 OK을 반환한다.")
+        @DisplayName("user id 에 해당하는 회원 리뷰와 200 OK을 반환한다.")
         void Get_user_reviews_with_200_ok() throws Exception {
             // given
             var userId = 1L;
 
-            given(securityService.getCurrentUserId()).willReturn(userId);
-
             given(userService.getUserReviews(anyLong()))
-                .willReturn(List.of(new UserReviewsResponse(별로에요, 2L),
-                    new UserReviewsResponse(최고에요, 3L)));
+                .willReturn(UserReviewsResponse.of(List.of(new UserReviewResponse(별로에요, 2L),
+                    new UserReviewResponse(최고에요, 3L))));
 
             // when & then
-            mockMvc.perform(get("/users/reviews")
+            mockMvc.perform(get("/users/{userId}/reviews", 1)
                     .with(csrf())
                     .header(AUTHORIZATION, VALID_ACCESS_TOKEN))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].count", is(2)))
-                .andExpect(jsonPath("$[0].review").value("별로에요"));
+                .andExpect(jsonPath("$.reviews", notNullValue()))
+                .andExpect(jsonPath("$.reviews", hasSize(2)))
+                .andExpect(jsonPath("$.reviews[0].count", is(2)))
+                .andExpect(jsonPath("$.reviews[0].review").value("별로에요"));
         }
     }
 
