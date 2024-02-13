@@ -346,10 +346,12 @@ class UserIntegrationTest extends IntegrationTest {
             // given
             var existUser = repository.saveAndGetUser();
 
+            var userId = existUser.getId();
+
             securityContextSetting.set(existUser.getId());
 
             // when
-            var expected = api.getUserReviews(VALID_TOKEN);
+            var expected = api.getUserReviews(userId, VALID_TOKEN);
 
             // then
             Assertions.assertThat(expected.expectStatus().isOk()

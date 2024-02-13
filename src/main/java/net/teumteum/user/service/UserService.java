@@ -116,8 +116,10 @@ public class UserService {
             });
     }
 
-    public List<UserReviewsResponse> getUserReviews(Long userId) {
-        return userRepository.countUserReviewsByUserId(userId);
+    public UserReviewsResponse getUserReviews(Long userId) {
+        var user = getUser(userId);
+
+        return UserReviewsResponse.of(userRepository.countUserReviewsByUser(user));
     }
 
     public FriendsResponse findFriendsByUserId(Long userId) {

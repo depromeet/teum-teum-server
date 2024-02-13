@@ -116,10 +116,10 @@ public class UserController {
         userService.registerReview(meetingId, getCurrentUserId(), request);
     }
 
-    @GetMapping("/reviews")
+    @GetMapping("/{userId}/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserReviewsResponse> getUserReviews() {
-        return userService.getUserReviews(getCurrentUserId());
+    public UserReviewsResponse getUserReviews(@PathVariable("userId") Long userId) {
+        return userService.getUserReviews(userId);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

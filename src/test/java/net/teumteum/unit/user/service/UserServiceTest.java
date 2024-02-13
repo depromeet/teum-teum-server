@@ -30,7 +30,7 @@ import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.request.UserRegisterRequest;
 import net.teumteum.user.domain.request.UserWithdrawRequest;
 import net.teumteum.user.domain.response.UserRegisterResponse;
-import net.teumteum.user.domain.response.UserReviewsResponse;
+import net.teumteum.user.domain.response.UserReviewResponse;
 import net.teumteum.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -251,23 +251,24 @@ public class UserServiceTest {
         void Return_user_reviews_with_200_ok() {
             // given
             var userId = 1L;
+            var existUser = UserFixture.getIdUser();
 
-            var response = List.of(new UserReviewsResponse(최고에요, 2L)
-                , new UserReviewsResponse(별로에요, 3L));
+            var response = List.of(new UserReviewResponse(최고에요, 2L)
+                , new UserReviewResponse(별로에요, 3L));
 
-            given(userRepository.countUserReviewsByUserId(anyLong())).willReturn(response);
+            given(userRepository.findById(anyLong())).willReturn(Optional.of(existUser));
+            given(userRepository.countUserReviewsByUser(any(User.class))).willReturn(response);
 
             // when
             var result = userService.getUserReviews(userId);
 
             // then
-            assertThat(result).hasSize(2);
-            assertThat(result.get(0).review()).isEqualTo(최고에요);
-            assertThat(result.get(0).count()).isEqualTo(2L);
-            assertThat(result.get(1).review()).isEqualTo(별로에요);
-            assertThat(result.get(1).count()).isEqualTo(3L);
+            assertThat(result.reviews()).hasSize(2);
+            assertThat(result.reviews().get(0).review()).isEqualTo(최고에요);
+            assertThat(result.reviews().get(0).count()).isEqualTo(2L);
+            assertThat(result.reviews().get(1).review()).isEqualTo(별로에요);
 
-            verify(userRepository, times(1)).countUserReviewsByUserId(anyLong());
+            verify(userRepository, times(1)).countUserReviewsByUser(any(User.class));
         }
     }
 }
