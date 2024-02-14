@@ -4,7 +4,9 @@
 
 > 사람 사이의 **틈**을 이어주는 IT 커리어 네트워킹 서비스 `repo:server`
 
-[![download](https://img.shields.io/badge/playstore-download-brightgreen?style=for-the-badge&logo=google&logoColor=white&color=36B2FF)](https://play.google.com/store/apps/details?id=com.teumteum.teumteum&pcampaignid=web_share) ![Build](https://img.shields.io/github/actions/workflow/status/depromeet/teum-teum-server/integration-tester.yml?branch=develop&style=for-the-badge&logo=github&logoColor=white&color=36B2FF) ![](https://img.shields.io/sonar/test_success_density/depromeet_teum-teum-server?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonar&logoColor=white&color=36B2FF) ![](https://img.shields.io/sonar/quality_gate/depromeet_teum-teum-server/develop?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonar&logoColor=white&color=36B2FF) ![](https://img.shields.io/github/v/release/depromeet/teum-teum-server?include_prereleases&style=for-the-badge&color=36B2FF)
+![Build](https://img.shields.io/github/actions/workflow/status/depromeet/teum-teum-server/integration-tester.yml?branch=develop&style=for-the-badge&logo=github&logoColor=white&color=36B2FF) ![](https://img.shields.io/sonar/test_success_density/depromeet_teum-teum-server?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonar&logoColor=white&color=36B2FF) ![](https://img.shields.io/sonar/quality_gate/depromeet_teum-teum-server/develop?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonar&logoColor=white&color=36B2FF) ![](https://img.shields.io/github/v/release/depromeet/teum-teum-server?include_prereleases&style=for-the-badge&color=36B2FF)
+
+[![download](https://img.shields.io/badge/playstore-download-brightgreen?style=social&logo=googleplay&color=36B2FF)](https://play.google.com/store/apps/details?id=com.teumteum.teumteum&pcampaignid=web_share) [![instagram](https://img.shields.io/badge/instagram-click-brightgreen?style=social&logo=instagram&color=36B2FF)](https://www.instagram.com/teumteum_official/) [![behance](https://img.shields.io/badge/behance-click-brightgreen?style=social&logo=behance&color=36B2FF)](https://www.behance.net/gallery/191510163/%08TEUMTEUM-IT-Career-Growth-Networking-Service)
 
 ---
 
@@ -25,30 +27,25 @@
   <img width="49%" alt="MOBILE_8" src="https://github.com/depromeet/teum-teum-server/assets/91249216/5aa5c9e9-6e02-43b0-a2e3-81f6aff298b5">
 </p>
 
-![Behance](https://img.shields.io/badge/Behance-1769ff?style=for-the-badge&logo=behance&logoColor=white)
-
 ## 🌐 Architecture
+
 <p align="center" width="100%">
   <img width="80%"  src="https://github.com/depromeet/teum-teum-server/assets/91249216/5ffde24a-fb5d-4b85-a71d-e108a3254451">
 </p>
 
 ## ⚒️ Tech Stack
 
-<img src="https://img.shields.io/badge/Framework-%23121011?style=for-the-badge"> ![SpringBoot](https://img.shields.io/badge/springboot-%236DB33F.svg?style=for-the-badge&logo=springboot&logoColor=white)![spring_data_JPA](https://img.shields.io/badge/spring_data_JPA-%236DB33F?style=for-the-badge&logo=databricks&logoColor=white)![SpringSecurity](https://img.shields.io/badge/spring_security-%236DB33F.svg?style=for-the-badge&logo=springsecurity&logoColor=white)![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
+<img src="https://img.shields.io/badge/Framework-555555?style=for-the-badge">![SpringBoot](https://img.shields.io/badge/springboot-%236DB33F.svg?style=for-the-badge&logo=springboot&logoColor=white)![spring_data_JPA](https://img.shields.io/badge/spring_data_JPA-%236DB33F?style=for-the-badge&logo=databricks&logoColor=white)![SpringSecurity](https://img.shields.io/badge/spring_security-%236DB33F.svg?style=for-the-badge&logo=springsecurity&logoColor=white) <img src="https://img.shields.io/badge/build-555555?style=for-the-badge">![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
 
-<img src="https://img.shields.io/badge/Test-%23121011?style=for-the-badge"> ![junit5](https://img.shields.io/badge/junit5-25A162?style=for-the-badge&logo=junit5&logoColor=white)![test_containers](https://img.shields.io/badge/test_containers-328ba3?style=for-the-badge&logo=reasonstudios&logoColor=white)
+<img src="https://img.shields.io/badge/Test-555555?style=for-the-badge">![junit5](https://img.shields.io/badge/junit5-25A162?style=for-the-badge&logo=junit5&logoColor=white)![test_containers](https://img.shields.io/badge/test_containers-328ba3?style=for-the-badge&logo=reasonstudios&logoColor=white) <img src="https://img.shields.io/badge/performance-555555?style=for-the-badge">![gatling](https://img.shields.io/badge/gatling-FF9E2A?style=for-the-badge&logo=gatling&logoColor=white)
 
-<img src="https://img.shields.io/badge/Database-%23121011?style=for-the-badge"> ![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)![flyway](https://img.shields.io/badge/flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
+<img src="https://img.shields.io/badge/Database-555555?style=for-the-badge">![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white) <img src="https://img.shields.io/badge/migration-555555?style=for-the-badge">![flyway](https://img.shields.io/badge/flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
 
-<img src="https://img.shields.io/badge/Infrastructure-%23121011?style=for-the-badge"> ![Amazon Ec2](https://img.shields.io/badge/amazon_ec2-FF9900.svg?style=for-the-badge&logo=amazonec2&logoColor=white)![Amazon S3](https://img.shields.io/badge/AWS_S3-569A31.svg?style=for-the-badge&logo=amazons3&logoColor=white)![Amazon RDS](https://img.shields.io/badge/amazon_RDS-527FFF.svg?style=for-the-badge&logo=amazonrds&logoColor=white)![Amazon ElastiCache](https://img.shields.io/badge/amazon_elasticache-FF9900.svg?style=for-the-badge&logo=amazondocumentdb&logoColor=white)![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
+<img src="https://img.shields.io/badge/Infrastructure-555555?style=for-the-badge">![Amazon Ec2](https://img.shields.io/badge/amazon_ec2-FF9900.svg?style=for-the-badge&logo=amazonec2&logoColor=white)![Amazon S3](https://img.shields.io/badge/AWS_S3-569A31.svg?style=for-the-badge&logo=amazons3&logoColor=white)![Amazon RDS](https://img.shields.io/badge/amazon_RDS-527FFF.svg?style=for-the-badge&logo=amazonrds&logoColor=white)![Amazon ElastiCache](https://img.shields.io/badge/amazon_elasticache-FF9900.svg?style=for-the-badge&logo=amazondocumentdb&logoColor=white)![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 
-<img src="https://img.shields.io/badge/CICD-%23121011?style=for-the-badge"> ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)![github container](https://img.shields.io/badge/github_container-181717.svg?style=for-the-badge&logo=github&logoColor=white)![squarespace](https://img.shields.io/badge/squarespace-000000?style=for-the-badge&logo=squarespace&logoColor=white)
+<img src="https://img.shields.io/badge/CICD-555555?style=for-the-badge">![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)![github container](https://img.shields.io/badge/github_container-181717.svg?style=for-the-badge&logo=github&logoColor=white) <img src="https://img.shields.io/badge/domain-555555?style=for-the-badge">![squarespace](https://img.shields.io/badge/squarespace-000000?style=for-the-badge&logo=squarespace&logoColor=white)
 
-<img src="https://img.shields.io/badge/Code_Analysis-%23121011?style=for-the-badge"> ![SonarCloud](https://img.shields.io/badge/SonarCloud-F3702A?style=for-the-badge&logo=SonarCloud&logoColor=white)
-
-<img src="https://img.shields.io/badge/Others-%23121011?style=for-the-badge"> ![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
-
-<img src="https://img.shields.io/badge/Monitering-%23121011?style=for-the-badge"> ![sentry](https://img.shields.io/badge/sentry-362D59?style=for-the-badge&logo=sentry&logoColor=white)
+<img src="https://img.shields.io/badge/Code_Analysis-555555?style=for-the-badge">![SonarCloud](https://img.shields.io/badge/SonarCloud-F3702A?style=for-the-badge&logo=SonarCloud&logoColor=white) <img src="https://img.shields.io/badge/Monitering-555555?style=for-the-badge">![sentry](https://img.shields.io/badge/sentry-362D59?style=for-the-badge&logo=sentry&logoColor=white) <img src="https://img.shields.io/badge/API-555555?style=for-the-badge">![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
 
 ## 👥 Contributors
 
