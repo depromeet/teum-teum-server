@@ -6,11 +6,31 @@
 
 [![download](https://img.shields.io/badge/playstore-download-brightgreen?style=for-the-badge&logo=google&logoColor=white&color=36B2FF)](https://play.google.com/store/apps/details?id=com.teumteum.teumteum&pcampaignid=web_share) ![Build](https://img.shields.io/github/actions/workflow/status/depromeet/teum-teum-server/integration-tester.yml?branch=develop&style=for-the-badge&logo=github&logoColor=white&color=36B2FF) ![](https://img.shields.io/sonar/test_success_density/depromeet_teum-teum-server?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonar&logoColor=white&color=36B2FF) ![](https://img.shields.io/sonar/quality_gate/depromeet_teum-teum-server/develop?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonar&logoColor=white&color=36B2FF) ![](https://img.shields.io/github/v/release/depromeet/teum-teum-server?include_prereleases&style=for-the-badge&color=36B2FF)
 
-## 👋 Introduction
+---
+
+<p align="center" width="100%">
+  <img width="49%" alt="MOBILE_1" src="https://github.com/depromeet/teum-teum-server/assets/91249216/c8c97700-b1a0-4393-ab14-edcf077627cb">
+  <img width="49%" alt="MOBILE_2" src="https://github.com/depromeet/teum-teum-server/assets/91249216/52a606d7-77dd-48fc-9f2f-3bb1a130ad75">
+</p>
+<p align="center" width="100%">
+  <img width="49%" alt="MOBILE_3" src="https://github.com/depromeet/teum-teum-server/assets/91249216/015f52bb-7e76-45f5-ba8f-aa9d92d133dd">
+  <img width="49%" alt="MOBILE_4" src="https://github.com/depromeet/teum-teum-server/assets/91249216/589184e0-bd3d-4583-9315-2b1ad3c624ad">
+</p>
+<p align="center" width="100%">
+  <img width="49%" alt="MOBILE_5" src="https://github.com/depromeet/teum-teum-server/assets/91249216/3dd859ef-ed72-45c7-8f82-6c5a92f33fa5">
+  <img width="49%" alt="MOBILE_6" src="https://github.com/depromeet/teum-teum-server/assets/91249216/642bff83-30ae-4ff6-aa01-53561ce00db3">
+</p>
+<p align="center" width="100%">
+  <img width="49%" alt="MOBILE_7" src="https://github.com/depromeet/teum-teum-server/assets/91249216/7d66866d-b07f-4ebf-8699-feffa8c6b8fd">
+  <img width="49%" alt="MOBILE_8" src="https://github.com/depromeet/teum-teum-server/assets/91249216/5aa5c9e9-6e02-43b0-a2e3-81f6aff298b5">
+</p>
 
 ![Behance](https://img.shields.io/badge/Behance-1769ff?style=for-the-badge&logo=behance&logoColor=white)
 
 ## 🌐 Architecture
+<p align="center" width="100%">
+  <img width="80%"  src="https://github.com/depromeet/teum-teum-server/assets/91249216/5ffde24a-fb5d-4b85-a71d-e108a3254451">
+</p>
 
 ## ⚒️ Tech Stack
 
@@ -30,7 +50,7 @@
 
 <img src="https://img.shields.io/badge/Monitering-%23121011?style=for-the-badge"> ![sentry](https://img.shields.io/badge/sentry-362D59?style=for-the-badge&logo=sentry&logoColor=white)
 
-## 👥 Members
+## 👥 Contributors
 
 |                                                                  Server                                                                  |                                                                  Server                                                                  |                                                                  Server                                                                  |                        
 |:----------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------:| 
