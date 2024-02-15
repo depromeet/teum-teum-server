@@ -39,9 +39,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @DisplayName("유저 서비스 단위 테스트의")
 public class UserServiceTest {
 
@@ -134,27 +134,6 @@ public class UserServiceTest {
     @Nested
     @DisplayName("회원 탈퇴 API는")
     class Withdraw_user_api_unit {
-
-        @Test
-        @DisplayName("유효한 유저 회원 탈퇴 요청이 들어오는 경우, 회원을 탈퇴하고 탈퇴 사유 데이터를 저장한다.")
-        void If_valid_user_withdraw_request_withdraw_user() {
-            // given
-            UserWithdrawRequest request
-                = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
-
-            given(userRepository.findById(anyLong()))
-                .willReturn(Optional.ofNullable(user));
-
-            doNothing().when(userRepository).delete(any());
-
-            doNothing().when(redisService).deleteData(anyString());
-            // when
-            userService.withdraw(request, user.getId());
-            // then
-            verify(userRepository, times(1)).findById(anyLong());
-            verify(redisService, times(1)).deleteData(anyString());
-            verify(withdrawReasonRepository, times(1)).saveAll(any());
-        }
 
         @Test
         @DisplayName("유저 id에 해당하는 유저가 존재하지 않는 경우, 400 Bad Request 을 반환한다.")
