@@ -99,7 +99,7 @@ create table if not exists alert(
     user_id bigint not null,
     title text not null,
     `body` text not null,
-    type enum('BEFORE_MEETING'),
+    type enum('BEFORE_MEETING', 'END_MEETING', 'RECOMMEND_USER'),
     created_at datetime not null,
     updated_at datetime not null,
     is_read boolean not null,
