@@ -31,7 +31,7 @@ public class AlertHandler {
     private final AlertPublisher alertPublisher;
 
     @EventListener(UserDeletedEvent.class)
-    public void handleUserDeleteEvent(UserDeletedEvent userDeletedEvent) {
+    public void handleDeleteUserEvent(UserDeletedEvent userDeletedEvent) {
         userAlertService.deleteAlertByUserId(userDeletedEvent.id());
     }
 
