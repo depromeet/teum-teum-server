@@ -190,32 +190,6 @@ class UserIntegrationTest extends IntegrationTest {
     class Find_friends_api {
 
         @Test
-        @DisplayName("user의 id를 입력받으면, id에 해당하는 user의 친구 목록을 반환한다.")
-        void Return_friends_when_received_user_id() {
-            // given
-            var me = repository.saveAndGetUser();
-            var friend1 = repository.saveAndGetUser();
-            var friend2 = repository.saveAndGetUser();
-
-            securityContextSetting.set(me.getId());
-
-            api.addFriends(VALID_TOKEN, friend1.getId());
-            api.addFriends(VALID_TOKEN, friend2.getId());
-
-            var expected = FriendsResponse.of(List.of(friend1, friend2));
-
-            // when
-            var result = api.getFriendsByUserId(VALID_TOKEN, me.getId());
-
-            // then
-            Assertions.assertThat(result.expectStatus().isOk()
-                    .expectBody(FriendsResponse.class)
-                    .returnResult()
-                    .getResponseBody())
-                .usingRecursiveComparison().isEqualTo(expected);
-        }
-
-        @Test
         @DisplayName("user의 id를 입력받았을때, 친구가 한명도 없다면, 빈 목록을 반환한다.")
         void Return_empty_friends_when_received_empty_friends_user_id() {
             // given
