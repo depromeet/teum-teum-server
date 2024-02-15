@@ -5,7 +5,6 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.alert.domain.request.RegisterAlertRequest;
 import net.teumteum.alert.domain.request.UpdateAlertTokenRequest;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
