@@ -14,6 +14,7 @@ import net.teumteum.alert.domain.UserAlertService;
 import net.teumteum.meeting.domain.BeforeMeetingAlerted;
 import net.teumteum.meeting.domain.EndMeetingAlerted;
 import net.teumteum.user.UserRecommended;
+import net.teumteum.user.domain.UserDeletedEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.util.Pair;
@@ -28,6 +29,11 @@ public class AlertHandler {
     private final UserAlertService userAlertService;
     private final AlertService alertService;
     private final AlertPublisher alertPublisher;
+
+    @EventListener(UserDeletedEvent.class)
+    public void handleDeleteUserEvent(UserDeletedEvent userDeletedEvent) {
+        userAlertService.deleteAlertByUserId(userDeletedEvent.id());
+    }
 
     @Async(ALERT_EXECUTOR)
     @EventListener(BeforeMeetingAlerted.class)

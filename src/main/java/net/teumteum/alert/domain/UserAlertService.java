@@ -19,11 +19,17 @@ public class UserAlertService {
     public void registerAlert(Long userId, RegisterAlertRequest registerAlertRequest) {
         alertRepository.findByUserId(userId)
             .ifPresentOrElse(userAlert -> {
-                throw new IllegalArgumentException("이미 토큰이 생성된 user입니다. \"" + userId +"\"");
+                throw new IllegalArgumentException("이미 토큰이 생성된 user입니다. \"" + userId + "\"");
             }, () -> {
                 var alert = new UserAlert(null, userId, registerAlertRequest.token());
                 alertRepository.save(alert);
             });
+    }
+
+    @Transactional
+    public void deleteAlertByUserId(Long userId) {
+        alertRepository.findByUserId(userId).ifPresentOrElse(alertRepository::delete, () -> {
+        });
     }
 
     @Transactional

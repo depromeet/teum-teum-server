@@ -10,6 +10,7 @@ import net.teumteum.meeting.domain.MeetingConnector;
 import net.teumteum.user.domain.BalanceGameType;
 import net.teumteum.user.domain.InterestQuestion;
 import net.teumteum.user.domain.User;
+import net.teumteum.user.domain.UserDeletedEvent;
 import net.teumteum.user.domain.UserRepository;
 import net.teumteum.user.domain.WithdrawReasonRepository;
 import net.teumteum.user.domain.request.ReviewRegisterRequest;
@@ -23,6 +24,7 @@ import net.teumteum.user.domain.response.UserMeGetResponse;
 import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -38,6 +40,7 @@ public class UserService {
     private final RedisService redisService;
     private final JwtService jwtService;
     private final MeetingConnector meetingConnector;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public UserGetResponse getUserById(Long userId) {
         var existUser = getUser(userId);
@@ -86,6 +89,7 @@ public class UserService {
         userRepository.delete(existUser);
 
         withdrawReasonRepository.saveAll(request.toEntity());
+        applicationEventPublisher.publishEvent(new UserDeletedEvent(existUser.getId()));
     }
 
     @Transactional
