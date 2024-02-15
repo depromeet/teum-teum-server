@@ -74,7 +74,7 @@ public class UserService {
         var me = getUser(myId);
         var friend = getUser(friendId);
 
-        me.addFriend(friend);
+        friend.addFriend(me);
     }
 
     @Transactional
