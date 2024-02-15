@@ -2,7 +2,6 @@ package net.teumteum.meeting.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.meeting.domain.BeforeMeetingAlerted;
 import net.teumteum.meeting.domain.EndMeetingAlerted;
@@ -45,6 +44,23 @@ public class MeetingAlertPublisher {
         var yesterday = today.minusDays(1);
 
         var alertTargets = meetingRepository.findAlertMeetings(yesterday, today);
+        alertTargets.forEach(meeting -> eventPublisher.publishEvent(
+            new EndMeetingAlerted(meeting.getId(), meeting.getTitle(), meeting.getParticipantUserIds())
+        ));
+    }
+
+    @Scheduled(cron = EVERY_ONE_MINUTES)
+    public void alertEndMeetingForQa() {
+        var today = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+            .withNano(0)
+            .withSecond(0)
+            .withMinute(0)
+            .withHour(0);
+
+        var future = today.plusDays(365);
+        var yesterday = today.minusDays(365);
+
+        var alertTargets = meetingRepository.findAlertMeetings(yesterday, future);
         alertTargets.forEach(meeting -> eventPublisher.publishEvent(
             new EndMeetingAlerted(meeting.getId(), meeting.getTitle(), meeting.getParticipantUserIds())
         ));
