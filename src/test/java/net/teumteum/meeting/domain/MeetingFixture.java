@@ -82,6 +82,14 @@ public class MeetingFixture {
         );
     }
 
+    public static Meeting getCloseMeetingWithParticipantUserIds(List<Long> participantUserIds) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .participantUserIds(new HashSet<>(participantUserIds))
+            .build()
+        );
+    }
+
     public static Meeting getOpenMeetingWithTitle(String title) {
         return newMeetingByBuilder(MeetingBuilder.builder()
             .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))

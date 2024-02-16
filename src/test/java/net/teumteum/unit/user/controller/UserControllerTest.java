@@ -63,10 +63,11 @@ import org.springframework.test.web.servlet.MockMvc;
 public class UserControllerTest {
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private UserService userService;
 

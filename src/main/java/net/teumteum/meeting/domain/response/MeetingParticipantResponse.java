@@ -2,17 +2,17 @@ package net.teumteum.meeting.domain.response;
 
 import net.teumteum.user.domain.User;
 
-public record MeetingParticipantsResponse(
+public record MeetingParticipantResponse(
     Long id,
     Long characterId,
     String name,
     String job
 ) {
 
-    public static MeetingParticipantsResponse of(
+    public static MeetingParticipantResponse of(
         User user
     ) {
-        return new MeetingParticipantsResponse(
+        return new MeetingParticipantResponse(
             user.getId(),
             user.getCharacterId(),
             user.getName(),
