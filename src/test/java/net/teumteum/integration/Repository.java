@@ -2,7 +2,6 @@ package net.teumteum.integration;
 
 
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.config.AppConfig;
@@ -82,6 +81,11 @@ public class Repository {
         return meetingRepository.saveAndFlush(meeting);
     }
 
+    Meeting saveAndGetClosedMetingWithParticipantUserIds(List<Long> participantUserIds) {
+        var meeting = MeetingFixture.getCloseMeetingWithParticipantUserIds(participantUserIds);
+        return meetingRepository.saveAndFlush(meeting);
+    }
+
     List<Meeting> saveAndGetOpenMeetingsByTopic(int size, Topic topic) {
         var meetings = Stream.generate(() -> MeetingFixture.getOpenMeetingWithTopic(topic))
             .limit(size)
@@ -145,6 +149,7 @@ public class Repository {
             .toList();
         return meetingRepository.saveAllAndFlush(meetings);
     }
+
 
     void clear() {
         userRepository.deleteAll();

@@ -12,7 +12,7 @@ import net.teumteum.meeting.domain.MeetingSpecification;
 import net.teumteum.meeting.domain.Topic;
 import net.teumteum.meeting.domain.request.CreateMeetingRequest;
 import net.teumteum.meeting.domain.request.UpdateMeetingRequest;
-import net.teumteum.meeting.domain.response.MeetingParticipantsResponse;
+import net.teumteum.meeting.domain.response.MeetingParticipantResponse;
 import net.teumteum.meeting.domain.response.MeetingResponse;
 import net.teumteum.meeting.domain.response.MeetingsResponse;
 import net.teumteum.meeting.model.PageDto;
@@ -94,7 +94,8 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public PageDto<MeetingsResponse> getMeetingsBySpecification(Pageable pageable, Topic topic, String meetingAreaStreet,
+    public PageDto<MeetingsResponse> getMeetingsBySpecification(Pageable pageable, Topic topic,
+        String meetingAreaStreet,
         Long participantUserId, String searchWord, Boolean isBookmarked, Boolean isOpen, Long userId) {
 
         Specification<Meeting> spec = MeetingSpecification.withIsOpen(isOpen);
@@ -153,13 +154,16 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public List<MeetingParticipantsResponse> getParticipants(Long meetingId) {
+    public List<MeetingParticipantResponse> getParticipants(Long meetingId, Long userId) {
         var existMeeting = getMeeting(meetingId);
 
+        checkMeetingContainUser(existMeeting, userId);
+
         return existMeeting.getParticipantUserIds().stream()
+            .filter(id -> !id.equals(userId))
             .map(userConnector::findUserById)
             .flatMap(Optional::stream)
-            .map(MeetingParticipantsResponse::of)
+            .map(MeetingParticipantResponse::of)
             .toList();
     }
 
@@ -205,6 +209,12 @@ public class MeetingService {
 
         if (existMeeting.isHost(userId)) {
             throw new IllegalArgumentException("모임 개설자는 모임을 신고할 수 없습니다.");
+        }
+    }
+
+    private void checkMeetingContainUser(Meeting meeting, Long userId) {
+        if (!meeting.getParticipantUserIds().contains(userId)) {
+            throw new IllegalArgumentException("모임에 참여하지 않은 회원입니다.");
         }
     }
 }
