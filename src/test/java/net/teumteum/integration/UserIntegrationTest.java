@@ -4,10 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.util.List;
 import net.teumteum.core.error.ErrorResponse;
-import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
-import net.teumteum.user.domain.request.ReviewRegisterRequest;
 import net.teumteum.user.domain.response.FriendsResponse;
 import net.teumteum.user.domain.response.UserGetResponse;
 import net.teumteum.user.domain.response.UserMeGetResponse;
@@ -15,7 +13,6 @@ import net.teumteum.user.domain.response.UserRegisterResponse;
 import net.teumteum.user.domain.response.UserReviewsResponse;
 import net.teumteum.user.domain.response.UsersGetByIdResponse;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -341,48 +338,101 @@ class UserIntegrationTest extends IntegrationTest {
     @DisplayName("회원 리뷰 등록 API는")
     class Register_user_review_api {
 
-        User existUser;
-
-        List<User> users;
-
-        ReviewRegisterRequest request;
-
-        Meeting meeting;
-
-        @BeforeEach
-        void setUp() {
-            existUser = repository.saveAndGetUser();
-            users = repository.saveAndGetUsers(3);
-            request = RequestFixture.reviewRegisterRequest(users);
-            meeting = repository.saveAndGetOpenMeetings(1).get(0);
-        }
-
         @Test
-        @DisplayName("회원 리뷰 등록 요청이 들어오면 리뷰를 등록하고, 200 OK 을 반환한다.")
-        void Return_200_OK_with_success_register_user_review() {
+        @DisplayName("정상적인 요청이 오는 경우, 해당 회원의 리뷰 등록과 함께 200 OK 을 반환한다.")
+        void Return_200_OK_and_register_review_if_request_is_valid() {
             // given
-            securityContextSetting.set(existUser.getId());
+            var user = repository.saveAndGetUser();
+            var participant1 = repository.saveAndGetUser();
+            var participant2 = repository.saveAndGetUser();
+
+            var closedMeeting = repository.saveAndGetCloseMeetingByParticipantUserIds(
+                List.of(user.getId(), participant1.getId(), participant2.getId()));
+
+            var request = RequestFixture.reviewRegisterRequest(List.of(participant1, participant2));
+
+            securityContextSetting.set(user.getId());
 
             // when
-            var expected = api.registerUserReview(VALID_TOKEN, meeting.getId(), request);
+            var expected = api.registerUserReview(VALID_TOKEN, closedMeeting.getId(), request);
 
             // then
             Assertions.assertThat(expected.expectStatus().isOk());
         }
 
         @Test
-        @DisplayName("현재 로그인한 회원의 id 가 리뷰 등록 요청에 포함된다면, 회원 리뷰 등록을 실패하고 400 bad request 을 반환한다.")
-        void Return_400_bad_request_if_current_user_id_in_request() {
+        @DisplayName("meeting id 에 해당하는 meeting 이 아직 종료되지 않았다면, 400 Bad Request 와 함께 리뷰 등록을 실패한다.")
+        void Return_400_bad_request_if_meeting_is_not_closed() {
             // given
-            securityContextSetting.set(users.get(0).getId());
+            var user = repository.saveAndGetUser();
+            var participant = repository.saveAndGetUser();
+
+            var openMeeting = repository.saveAndGetOpenMeeting();
+            var request = RequestFixture.reviewRegisterRequest(List.of(participant));
+
+            securityContextSetting.set(user.getId());
 
             // when
-            var expected = api.registerUserReview(VALID_TOKEN, meeting.getId(), request);
+            var expected = api.registerUserReview(VALID_TOKEN, openMeeting.getId(), request);
 
             // then
             Assertions.assertThat(expected.expectStatus().isBadRequest()
-                .expectBody(ErrorResponse.class)
-                .returnResult().getResponseBody());
+                    .expectBody(ErrorResponse.class)
+                    .returnResult().getResponseBody())
+                .extracting(ErrorResponse::getMessage)
+                .isEqualTo("해당 모임은 아직 종료되지 않았습니다.");
+        }
+
+        @Test
+        @DisplayName("현재 로그인한 회원의 id 가 리뷰 등록 요청에 포함된다면, 회원 리뷰 등록을 실패하고 400 bad request 을 반환한다.")
+        void Return_400_bad_request_if_current_user_id_in_request() {
+            // given
+            var user = repository.saveAndGetUser();
+            var participant = repository.saveAndGetUser();
+
+            var closedMeeting = repository.saveAndGetCloseMeetingByParticipantUserIds(
+                List.of(user.getId(), participant.getId()));
+
+            var request = RequestFixture.reviewRegisterRequest(List.of(user, participant));
+
+            securityContextSetting.set(user.getId());
+
+            // when
+            var expected = api.registerUserReview(VALID_TOKEN, closedMeeting.getId(), request);
+
+            // then
+            Assertions.assertThat(expected.expectStatus().isBadRequest()
+                    .expectBody(ErrorResponse.class)
+                    .returnResult().getResponseBody())
+                .extracting(ErrorResponse::getMessage)
+                .isEqualTo("나의 리뷰에 대한 리뷰를 작성할 수 없습니다.");
+        }
+
+        @Test
+        @DisplayName("현재 로그인한 회원의 id 가 모임 참여자에 포함되지 않는다면, 회원 리뷰 등록을 실패하고 400 bad request 을 반환한다.")
+        void Return_400_bad_request_if_meeting_not_contain_current_user_id_() {
+            // given
+            var user = repository.saveAndGetUser();
+            var participant1 = repository.saveAndGetUser();
+            var participant2 = repository.saveAndGetUser();
+
+            var closedMeeting = repository.saveAndGetCloseMeetingByParticipantUserIds(
+                List.of(participant1.getId(), participant2.getId()));
+
+            var request = RequestFixture.reviewRegisterRequest(List.of(participant1, participant2));
+
+            securityContextSetting.set(user.getId());
+
+            // when
+            var expected = api.registerUserReview(VALID_TOKEN, closedMeeting.getId(), request);
+
+            // then
+            Assertions.assertThat(expected.expectStatus().isBadRequest()
+                    .expectBody(ErrorResponse.class)
+                    .returnResult().getResponseBody())
+                .extracting(ErrorResponse::getMessage)
+                .isEqualTo("모임에 참여하지 않은 회원입니다.");
         }
     }
 }
+
