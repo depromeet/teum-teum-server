@@ -143,6 +143,11 @@ public class Repository {
         return meetingRepository.saveAllAndFlush(meetings);
     }
 
+    Meeting saveAndGetCloseMeetingByParticipantUserIds(List<Long> participantUserIds) {
+        var meeting = MeetingFixture.getCloseMeetingWithParticipantIds(participantUserIds);
+        return meetingRepository.save(meeting);
+    }
+
     List<Meeting> saveAndGetOpenMeetings(int size) {
         var meetings = Stream.generate(MeetingFixture::getOpenMeeting)
             .limit(size)

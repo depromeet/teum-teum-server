@@ -8,7 +8,7 @@ import net.teumteum.user.domain.Review;
 
 public record ReviewRegisterRequest(
     @Valid
-    @Size(min = 2, max = 5)
+    @Size(min = 1, max = 5)
     List<UserReviewRegisterRequest> reviews
 ) {
 
