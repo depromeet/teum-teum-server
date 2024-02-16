@@ -26,11 +26,42 @@ public class MeetingFixture {
         );
     }
 
+    public static Meeting getOpenMeetingWithId(Long meetingId) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+            .id(meetingId)
+            .promiseDateTime(LocalDateTime.of(4000, 1, 1, 0, 0))
+            .build());
+
+    }
+
     public static Meeting getCloseMeeting() {
         return newMeetingByBuilder(MeetingBuilder.builder()
             .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
             .build()
         );
+    }
+
+    public static Meeting getCloseMeetingWithId(Long meetingId) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+            .id(meetingId)
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .build());
+    }
+
+    public static Meeting getCloseMeetingWithIdAndParticipantIds(Long meetingId, List<Long> participantIds) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+            .id(meetingId)
+            .participantUserIds(new HashSet<>(participantIds))
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .build()
+        );
+    }
+
+    public static Meeting getCloseMeetingWithParticipantIds(List<Long> participantIds) {
+        return newMeetingByBuilder(MeetingBuilder.builder()
+            .participantUserIds(new HashSet<>(participantIds))
+            .promiseDateTime(LocalDateTime.of(2000, 1, 1, 0, 0))
+            .build());
     }
 
     public static Meeting getOpenFullMeeting() {

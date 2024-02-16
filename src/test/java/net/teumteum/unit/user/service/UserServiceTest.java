@@ -22,6 +22,7 @@ import net.teumteum.core.security.service.JwtService;
 import net.teumteum.core.security.service.RedisService;
 import net.teumteum.integration.RequestFixture;
 import net.teumteum.meeting.domain.MeetingConnector;
+import net.teumteum.meeting.domain.MeetingFixture;
 import net.teumteum.user.domain.User;
 import net.teumteum.user.domain.UserFixture;
 import net.teumteum.user.domain.UserRepository;
@@ -164,60 +165,56 @@ public class UserServiceTest {
             // given
             ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
 
-            Long meetingId = 1L;
+            var meeting = MeetingFixture.getCloseMeetingWithIdAndParticipantIds(1L, List.of(1L, 2L, 10L));
+            var userId = 10L;
 
-            Long userId = 10L;
-
-            Long currentUserId = 20L;
-
-            given(meetingConnector.existById(anyLong()))
-                .willReturn(true);
+            given(meetingConnector.findById(anyLong()))
+                .willReturn(Optional.of(meeting));
 
             given(userRepository.findById(anyLong()))
-                .willReturn(Optional.of(UserFixture.getUserWithId(userId++)));
+                .willReturn(Optional.of(UserFixture.getUserWithId(userId)));
 
             // when
-            userService.registerReview(meetingId, currentUserId, reviewRegisterRequest);
+            userService.registerReview(meeting.getId(), userId, reviewRegisterRequest);
 
             // then
-            verify(meetingConnector, times(1)).existById(anyLong());
+            verify(meetingConnector, times(1)).findById(anyLong());
             verify(userRepository, times(3)).findById(anyLong());
-        }
-
-        @Test
-        @DisplayName("회원 id 가 리뷰 정보 요청에 포함되면, 400 Bad Request 와 함께 리뷰 등록을 실패한다.")
-        void Return_400_bad_request_if_current_user_id_in_request() {
-            // given
-            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
-
-            Long meetingId = 1L;
-
-            Long currentUserId = reviewRegisterRequest.reviews().get(0).id();
-
-            given(meetingConnector.existById(anyLong()))
-                .willReturn(true);
-
-            // when & then
-            assertThatThrownBy(() -> userService.registerReview(meetingId, currentUserId, reviewRegisterRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("나의 리뷰에 대한 리뷰를 작성할 수 없습니다.");
         }
 
         @Test
         @DisplayName("meeting id 에 해당하는 meeting 이 존재하지 않는 경우, 400 Bad Request 와 함께 리뷰 등록을 실패한다.")
         void Return_400_bad_request_if_meeting_is_not_exist() {
             // given
-            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+            var reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
 
-            Long meetingId = 1L;
-            Long currentUserId = 1L;
+            var meeting = MeetingFixture.getCloseMeetingWithId(1L);
+            var currentUserId = 1L;
 
-            given(meetingConnector.existById(anyLong()))
-                .willReturn(false);
+            given(meetingConnector.findById(anyLong()))
+                .willReturn(Optional.empty());
             // when & then
-            assertThatThrownBy(() -> userService.registerReview(meetingId, currentUserId, reviewRegisterRequest))
+            assertThatThrownBy(() -> userService.registerReview(meeting.getId(), currentUserId, reviewRegisterRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("meetingId에 해당하는 meeting을 찾을 수 없습니다. \"" + meetingId + "\"");
+                .hasMessage("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meeting.getId() + "\"");
+        }
+
+        @Test
+        @DisplayName("meeting id 에 해당하는 meeting 이 아직 종료되지 않았다면, 400 Bad Request 와 함께 리뷰 등록을 실패한다.")
+        void Return_400_bad_request_if_meeting_is_not_closed() {
+            // given
+            var reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+
+            var meeting = MeetingFixture.getOpenMeetingWithId(1L);
+            var currentUserId = 1L;
+
+            given(meetingConnector.findById(anyLong()))
+                .willReturn(Optional.of(meeting));
+
+            // when & then
+            assertThatThrownBy(() -> userService.registerReview(meeting.getId(), currentUserId, reviewRegisterRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 모임은 아직 종료되지 않았습니다.");
         }
     }
 
