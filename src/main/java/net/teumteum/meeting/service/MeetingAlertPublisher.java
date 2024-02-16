@@ -54,7 +54,7 @@ public class MeetingAlertPublisher {
             ));
     }
 
-    @Scheduled(cron = EVERY_ONE_MINUTES)
+//    @Scheduled(cron = EVERY_ONE_MINUTES)
     public void alertEndMeetingForQa() {
         var today = LocalDateTime.now(ZoneId.of(KR_TIME_ZONE))
             .withNano(0)
