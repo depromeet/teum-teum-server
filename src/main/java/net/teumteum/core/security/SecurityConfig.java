@@ -29,7 +29,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private static final String[] PATTERNS = {"/css/**", "/images/**", "/js/**", "/favicon.ico/**", "/h2-console/**",
-        "/logins/**", "/auth/**"};
+        "/logins/**", "/auth/**", "/forcereviewalarm"};
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler accessDeniedHandler;
