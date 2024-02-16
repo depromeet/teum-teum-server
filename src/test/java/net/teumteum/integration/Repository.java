@@ -2,7 +2,6 @@ package net.teumteum.integration;
 
 
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.config.AppConfig;
@@ -137,6 +136,11 @@ public class Repository {
             .toList();
 
         return meetingRepository.saveAllAndFlush(meetings);
+    }
+
+    Meeting saveAndGetCloseMeetingByParticipantUserIds(List<Long> participantUserIds) {
+        var meeting = MeetingFixture.getCloseMeetingWithParticipantIds(participantUserIds);
+        return meetingRepository.save(meeting);
     }
 
     List<Meeting> saveAndGetOpenMeetings(int size) {
