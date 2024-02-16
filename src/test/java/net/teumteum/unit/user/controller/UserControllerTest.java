@@ -67,6 +67,7 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private UserService userService;
 
@@ -88,9 +89,9 @@ public class UserControllerTest {
         @DisplayName("유효한 사용자의 등록 요청값이 주어지면, 201 Created 상태값을 반환한다.")
         void Register_user_card_with_201_created() throws Exception {
             // given
-            UserRegisterRequest request = RequestFixture.userRegisterRequest(user);
+            var request = RequestFixture.userRegisterRequest(user);
 
-            UserRegisterResponse response = new UserRegisterResponse(1L, VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN);
+            var response = new UserRegisterResponse(1L, VALID_ACCESS_TOKEN, VALID_REFRESH_TOKEN);
 
             given(userService.register(any(UserRegisterRequest.class))).willReturn(response);
 
@@ -111,7 +112,7 @@ public class UserControllerTest {
         @DisplayName("이미 카드 등록한 사용자의 등록 요청값이 주어지면, 400 Bad Request을 반환한다.")
         void Return_400_bad_request_if_user_already_exist() throws Exception {
             // given
-            UserRegisterRequest request = RequestFixture.userRegisterRequest(user);
+            var request = RequestFixture.userRegisterRequest(user);
 
             given(userService.register(any(UserRegisterRequest.class)))
                 .willThrow(new IllegalArgumentException("일치하는 user 가 이미 존재합니다."));
@@ -131,7 +132,7 @@ public class UserControllerTest {
         @DisplayName("유효하지 않은 사용자의 등록 요청값이 주어지면, 400 Bad Request 상태값을 반환한다.")
         void Register_user_card_with_400_bad_request() throws Exception {
             // given
-            UserRegisterRequest request = RequestFixture.userRegisterRequestWithNoValid(user);
+            var request = RequestFixture.userRegisterRequestWithNoValid(user);
             // when
             // then
             mockMvc.perform(post("/users")
@@ -153,7 +154,7 @@ public class UserControllerTest {
         @DisplayName("회원 탈퇴 사유와 회원 탈퇴 요청이 들어오면, 탈퇴를 진행하고 200 OK을 반환한다.")
         void Withdraw_user_with_200_ok() throws Exception {
             // given
-            UserWithdrawRequest request
+            var request
                 = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
 
             // when & then
@@ -170,7 +171,7 @@ public class UserControllerTest {
         @DisplayName("회원 탈퇴 하고자 하는 회원이 존재하지 않으면, 400 Bad Request을 반환한다.")
         void Return_400_bad_request_if_user_is_not_exist() throws Exception {
             // given
-            UserWithdrawRequest request
+            var request
                 = RequestFixture.userWithdrawRequest(List.of("쓰지 않는 앱이에요", "오류가 생겨서 쓸 수 없어요"));
 
             doThrow(new IllegalArgumentException("일치하는 user가 이미 존재합니다.")).when(userService).withdraw(any(
@@ -195,7 +196,7 @@ public class UserControllerTest {
         @DisplayName("회원 id 와 리뷰 정보 요청이 들어오면, 회원 리뷰를 등록하고 200 OK을 반환한다.")
         void Register_user_review_with_200_ok() throws Exception {
             // given
-            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+            var reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
 
             // when & then
             mockMvc.perform(post("/users/reviews")
@@ -210,11 +211,11 @@ public class UserControllerTest {
 
         @Test
         @DisplayName("현재 로그인한 회원의 id 가 리뷰 등록 요청에 포함된다면, 회원 리뷰 등록을 실패하고 400 bad request을 반환한다.")
-        void Register_reviews_with_400_bad_request() throws Exception {
+        void Return_400_bad_request_if_request_contains_current_user_id() throws Exception {
             // given
-            ReviewRegisterRequest reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
+            var reviewRegisterRequest = RequestFixture.reviewRegisterRequest();
 
-            String errorMessage = "나의 리뷰에 대한 리뷰를 작성할 수 없습니다.";
+            var errorMessage = "나의 리뷰에 대한 리뷰를 작성할 수 없습니다.";
 
             doThrow(new IllegalArgumentException(errorMessage))
                 .when(userService)
