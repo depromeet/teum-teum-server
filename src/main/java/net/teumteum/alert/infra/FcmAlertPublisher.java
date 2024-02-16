@@ -42,7 +42,6 @@ public class FcmAlertPublisher implements AlertPublisher {
     private Message buildMessage(String token, Alert alert, Map<String, String> data) {
         return Message.builder()
             .setToken(token)
-            .setNotification(buildNotification(alert))
             .setAndroidConfig(buildAndroidConfig(alert))
             .putData("title", alert.getTitle())
             .putData("body", alert.getBody())
