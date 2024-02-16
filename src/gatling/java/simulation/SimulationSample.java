@@ -16,8 +16,7 @@ public class SimulationSample extends Simulation {
     private final ScenarioBuilder scn = scenario(this.getClass().getSimpleName())
         .exec(http("get user")
             .get("/users/1")
-            .check(status().is(200))
-        );
+            .check(status().is(200)));
 
     {
         setUp(

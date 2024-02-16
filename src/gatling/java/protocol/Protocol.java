@@ -7,7 +7,7 @@ public class Protocol {
 
     private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0";
 
-    public static final HttpProtocolBuilder httpProtocol = HttpDsl.http.baseUrl("https://api.teum.org")
+    public static final HttpProtocolBuilder httpProtocol = HttpDsl.http.baseUrl("http://localhost:8080")
         .header("Content-Type", "application/json")
         .userAgentHeader(USER_AGENT);
 
