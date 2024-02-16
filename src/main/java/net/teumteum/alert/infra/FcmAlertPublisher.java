@@ -6,12 +6,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.ErrorCode;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.AndroidConfig;
-import com.google.firebase.messaging.AndroidNotification;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Map;
@@ -42,7 +39,6 @@ public class FcmAlertPublisher implements AlertPublisher {
     private Message buildMessage(String token, Alert alert, Map<String, String> data) {
         return Message.builder()
             .setToken(token)
-            .setAndroidConfig(buildAndroidConfig(alert))
             .putData("title", alert.getTitle())
             .putData("body", alert.getBody())
             .putData("publishedAt", alert.getCreatedAt().toString())
@@ -69,23 +65,6 @@ public class FcmAlertPublisher implements AlertPublisher {
         } else {
             log.error("fcm error " + errorCode);
         }
-    }
-
-    private Notification buildNotification(Alert alert) {
-        return Notification.builder()
-            .setTitle(alert.getTitle())
-            .setBody(alert.getBody())
-            .build();
-    }
-
-    private AndroidConfig buildAndroidConfig(Alert alert) {
-        return AndroidConfig.builder()
-            .setNotification(AndroidNotification.builder()
-                .setTitle(alert.getTitle())
-                .setBody(alert.getBody())
-                .setClickAction("push_click")
-                .build())
-            .build();
     }
 
     @PostConstruct
