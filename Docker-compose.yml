@@ -1,0 +1,56 @@
+services:
+  db:
+    image: "mysql:8.3.0"
+    container_name: load_test_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root#1234
+      MYSQL_DATABASE: load_test_db
+      TZ: UTC
+
+    ports:
+      - "3000:3306"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512MB"
+
+  redis:
+    image: "docker.io/bitnami/redis:7.2"
+    container_name: load_test_redis
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_AOF_ENABLED=yes
+      - REDIS_RDB_ENABLED=no
+    ports:
+      - "6299:6379"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "512MB"
+
+  teumteum-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      DB_URL: jdbc:mysql://db:3306/load_test_db
+      DB_USERNAME: root
+      DB_PASSWORD: root#1234
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECERT_KEY: ${JWT_ACCESS_KEY}
+
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8080:8080"
+
+networks:
+  teumteum_local:
+    driver: bridge
