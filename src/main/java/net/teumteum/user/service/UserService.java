@@ -1,11 +1,13 @@
 package net.teumteum.user.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import net.teumteum.core.security.Authenticated;
 import net.teumteum.core.security.service.JwtService;
 import net.teumteum.core.security.service.RedisService;
 import net.teumteum.core.security.service.SecurityService;
+import net.teumteum.meeting.domain.Meeting;
 import net.teumteum.meeting.domain.MeetingConnector;
 import net.teumteum.user.domain.BalanceGameType;
 import net.teumteum.user.domain.InterestQuestion;
@@ -109,7 +111,10 @@ public class UserService {
 
     @Transactional
     public void registerReview(Long meetingId, Long currentUserId, ReviewRegisterRequest request) {
-        checkMeetingExistence(meetingId);
+        var meeting = getMeeting(meetingId);
+
+        checkMeetingIsClosed(meeting);
+        checkUserParticipationInMeeting(meeting, currentUserId);
         checkUserNotRegisterSelfReview(request, currentUserId);
 
         request.reviews()
@@ -157,12 +162,9 @@ public class UserService {
         );
     }
 
-    private void checkMeetingExistence(Long meetingId) {
-        Assert.isTrue(meetingConnector.existById(meetingId),
-            () -> {
-                throw new IllegalArgumentException("meetingId에 해당하는 meeting을 찾을 수 없습니다. \"" + meetingId + "\"");
-            }
-        );
+    private Meeting getMeeting(Long meetingId) {
+        return meetingConnector.findById(meetingId)
+            .orElseThrow(() -> new IllegalArgumentException("meetingId에 해당하는 모임을 찾을 수 없습니다. \"" + meetingId + "\""));
     }
 
     private void checkUserNotRegisterSelfReview(ReviewRegisterRequest request, Long currentUserId) {
@@ -171,5 +173,17 @@ public class UserService {
                 throw new IllegalArgumentException("나의 리뷰에 대한 리뷰를 작성할 수 없습니다.");
             }
         );
+    }
+
+    private void checkUserParticipationInMeeting(Meeting meeting, Long userId) {
+        if (!meeting.getParticipantUserIds().contains(userId)) {
+            throw new IllegalArgumentException("모임에 참여하지 않은 회원입니다.");
+        }
+    }
+
+    private void checkMeetingIsClosed(Meeting meeting) {
+        if (!LocalDateTime.now().isAfter(meeting.getPromiseDateTime())) {
+            throw new IllegalArgumentException("해당 모임은 아직 종료되지 않았습니다.");
+        }
     }
 }
